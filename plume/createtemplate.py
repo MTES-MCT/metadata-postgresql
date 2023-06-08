@@ -23,16 +23,16 @@ class Ui_Dialog_CreateTemplate(object):
     def setupUiCreateTemplate(self, DialogCreateTemplate, Dialog):
         #-
         self.mDic_LH = returnAndSaveDialogParam(self, "Load")
-        self.editStyle        = self.mDic_LH["QEdit"]              #style saisie
-        self.labelBackGround  = self.mDic_LH["QLabelBackGround"] #QLabel    
-        self.epaiQGroupBox    = self.mDic_LH["QGroupBoxEpaisseur"] #épaisseur QGroupBox
-        self.lineQGroupBox    = self.mDic_LH["QGroupBoxLine"]    #trait QGroupBox
-        self.policeQGroupBox  = self.mDic_LH["QGroupBoxPolice"]  #Police QGroupBox
-        self.policeQTabWidget = self.mDic_LH["QTabWidgetPolice"] #Police QTabWidget
-        self.colorTemplateInVersOut  = self.mDic_LH["colorTemplateInVersOut"]  
-        self.colorTemplateOutVersIn  = self.mDic_LH["colorTemplateOutVersIn"]     
-        self.sepLeftTemplate  = self.mDic_LH["sepLeftTemplate"]
-        self.sepRightTemplate = self.mDic_LH["sepRightTemplate"]
+        self.editStyle              = self.mDic_LH["QEdit"]              #style saisie
+        self.labelBackGround        = self.mDic_LH["QLabelBackGround"]   #QLabel    
+        self.epaiQGroupBox          = self.mDic_LH["QGroupBoxEpaisseur"] #épaisseur QGroupBox
+        self.lineQGroupBox          = self.mDic_LH["QGroupBoxLine"]      #trait QGroupBox
+        self.policeQGroupBox        = self.mDic_LH["QGroupBoxPolice"]    #Police QGroupBox
+        self.policeQTabWidget       = self.mDic_LH["QTabWidgetPolice"]   #Police QTabWidget
+        self.colorTemplateInVersOut = self.mDic_LH["colorTemplateInVersOut"]  
+        self.colorTemplateOutVersIn = self.mDic_LH["colorTemplateOutVersIn"]     
+        self.sepLeftTemplate        = self.mDic_LH["sepLeftTemplate"]
+        self.sepRightTemplate       = self.mDic_LH["sepRightTemplate"]
         self.fontCategorieInVersOut = int(self.mDic_LH["fontCategorieInVersOut"])
         #-
         #-
@@ -44,10 +44,7 @@ class Ui_Dialog_CreateTemplate(object):
         #-
         self.DialogCreateTemplate = DialogCreateTemplate
         self.Dialog               = Dialog               #Pour remonter les variables de la boite de dialogue
-        
-        self.zMessTitle    =  QtWidgets.QApplication.translate("CreateTemplate_ui", "model management", None)   #Gestion des modèles
         myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
-
         self.DialogCreateTemplate.setObjectName("DialogConfirme")
         mLargDefaut, mHautDefaut = int(self.mDic_LH["dialogLargeurTemplate"]), int(self.mDic_LH["dialogHauteurTemplate"]) #900, 650    
         self.DialogCreateTemplate.resize(mLargDefaut, mHautDefaut)
@@ -294,7 +291,6 @@ class Ui_Dialog_CreateTemplate(object):
         
         self.groupBoxdisplayHelpFocus.setStyleSheet("QGroupBox { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); \
                                                                  border-radius: 9px; margin-top: 0.5em;}")
-        self.groupBoxdisplayHelpFocus.setVisible(False)
         #-
         self.layoutDisplayHelpFocus = QtWidgets.QGridLayout()
         self.layoutDisplayHelpFocus.setObjectName("layoutDisplayHelpFocus")
@@ -310,9 +306,20 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutDisplayHelpFocus.addWidget( self.zoneDisplayHelpFocus, 0, 1)
         self.zoneDisplayHelpFocus.setAlignment( Qt.AlignJustify | Qt.AlignVCenter )
         #-
+        #=====================================
+        # [ == scrolling HELP == ]
+        self.scroll_bar_help_AttributsModeleCategorie = QtWidgets.QScrollArea() 
+        self.scroll_bar_help_AttributsModeleCategorie.setStyleSheet("QScrollArea { border: 0px solid red; margin-left: 10px; margin-right: 10px;}")
+        self.scroll_bar_help_AttributsModeleCategorie.setWidgetResizable(True)
+        self.scroll_bar_help_AttributsModeleCategorie.setWidget(self.groupBoxdisplayHelpFocus)
+        self.scroll_bar_help_AttributsModeleCategorie.setContentsMargins(50, 0, 50, 0)
+        self.layout_tab_widget_Association.addWidget(self.scroll_bar_help_AttributsModeleCategorie, 2, 0)
+        #=====================================
+        #=====================================
+        self.groupBoxdisplayHelpFocus.setVisible(False)
 
         #Liste ATTRIBUTS modeles / catégories
-        self.groupBoxAttributsModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid green;}")
+        self.groupBoxAttributsModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid green}")
         #-
         self.layoutAttributsModeleCategorie = QtWidgets.QGridLayout()
         self.layoutAttributsModeleCategorie.setObjectName("layoutAttributsModeleCategorie")
@@ -320,9 +327,9 @@ class Ui_Dialog_CreateTemplate(object):
         self.layout_tab_widget_Association.addWidget(self.groupBoxAttributsModeleCategorie, 2, 1)
 
         #=====================================
-        # [ == scrolling == ]
-        self.scroll_bar_AttributsModeleCategorie = QtWidgets.QScrollArea(self.tab_widget_Association) 
-        self.scroll_bar_AttributsModeleCategorie.setStyleSheet("QScrollArea { border: 0px solid red;}")
+        # [ == scrolling Attributs == ]
+        self.scroll_bar_AttributsModeleCategorie = QtWidgets.QScrollArea() 
+        self.scroll_bar_AttributsModeleCategorie.setStyleSheet("QScrollArea { border: 0px solid red; margin-left: 10px; margin-right: 10px;}")
         self.scroll_bar_AttributsModeleCategorie.setWidgetResizable(True)
         self.scroll_bar_AttributsModeleCategorie.setWidget(self.groupBoxAttributsModeleCategorie)
         self.layout_tab_widget_Association.addWidget(self.scroll_bar_AttributsModeleCategorie, 2, 1)
@@ -385,7 +392,8 @@ class Ui_Dialog_CreateTemplate(object):
         #--
         #----------
         self.DialogCreateTemplate.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(returnVersion()) + ")")
-        self.label_2.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", self.zMessTitle, None))
+        self.zMessTitle    =  QtWidgets.QApplication.translate("CreateTemplate_ui", "model management", None)   #Gestion des modèles
+        self.label_2.setText(self.zMessTitle)
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("CreateTemplate_ui", "Cancel", None))
         # 
         afficheLabelAndLibelle(self, False, False, False, False)
@@ -421,18 +429,16 @@ class Ui_Dialog_CreateTemplate(object):
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         self.mListTemplates = [row[0] for row in r]
         listeModeleCol1, listeModeleCol2 = returnList_Id_Label( self.mListTemplates )
-        self.modeleActif = listeModeleCol1[0] #Pour la première initialisation
+        self.modeleActif = listeModeleCol1[0] if len(listeModeleCol1) > 0  else "" #Pour la première initialisation 
 
         self.voletsRessource.addItem(self.zoneModele, QtWidgets.QApplication.translate("CreateTemplate_ui", "List of models"))
         #====
-
-
-        # ICI CICI ICI ICI
         #=====================================
          #Liste ATTRIBUTS modeles
         self.groupBoxHelpAttributsModele = QtWidgets.QGroupBox()
         self.groupBoxHelpAttributsModele.setObjectName("groupBoxHelpAttributsModele")
         self.groupBoxHelpAttributsModele.setStyleSheet("QGroupBox { border: 0px solid blue;}")
+        self.groupBoxHelpAttributsModele.setContentsMargins(0, 0, 0, 0)
         #-
         self.layoutHelpAttributsModele = QtWidgets.QGridLayout()
         self.layoutHelpAttributsModele.setObjectName("layoutHelpAttributsModele")
@@ -442,9 +448,20 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBoxHelpAttributsModele.setLayout(self.layoutHelpAttributsModele)
         self.layoutZoneModele.addWidget(self.groupBoxHelpAttributsModele, 1, 0)
         #=====================================
+        # [ == scrolling HELP et Attributs == ]
+        self.scroll_bar_help_AttributsModele = QtWidgets.QScrollArea() 
+        self.scroll_bar_help_AttributsModele.setStyleSheet("QScrollArea { border: 0px solid red;}")
+        self.scroll_bar_help_AttributsModele.setWidgetResizable(True)
+        self.scroll_bar_help_AttributsModele.setWidget(self.groupBoxHelpAttributsModele)
+        self.layoutZoneModele.addWidget(self.scroll_bar_help_AttributsModele, 1, 0)
+        #=====================================
+        #=====================================
+
+        #=====================================
         self.groupBoxAttributsModele = QtWidgets.QGroupBox()
         self.groupBoxAttributsModele.setObjectName("groupBoxAttributsModele")
         self.groupBoxAttributsModele.setStyleSheet("QGroupBox { border: 0px solid yellow;}")
+        self.groupBoxAttributsModele.setContentsMargins(0, 0, 0, 0)
         #-
         self.layoutAttributsModele = QtWidgets.QGridLayout()
         self.layoutAttributsModele.setObjectName("layoutAttributsModele")
@@ -454,7 +471,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBoxAttributsModele.setLayout(self.layoutAttributsModele)
         self.layoutHelpAttributsModele.addWidget(self.groupBoxAttributsModele, 0, 1)
         #=====================================
-        # [ == scrolling == ]
+        # [ == scrolling Attributs == ]
         self.scroll_bar_AttributsModele = QtWidgets.QScrollArea() 
         self.scroll_bar_AttributsModele.setStyleSheet("QScrollArea { border: 0px solid red;}")
         self.scroll_bar_AttributsModele.setWidgetResizable(True)
@@ -463,13 +480,12 @@ class Ui_Dialog_CreateTemplate(object):
         #Affichage de l'aide pour les attributs
         self.groupBoxdisplayHelpFocusAttributsModele = QtWidgets.QGroupBox()
         self.groupBoxdisplayHelpFocusAttributsModele.setObjectName("groupBoxdisplayHelpFocusAttributsModele")
-        
+        self.groupBoxdisplayHelpFocusAttributsModele.setContentsMargins(0, 0, 0, 0)
         self.groupBoxdisplayHelpFocusAttributsModele.setStyleSheet("QGroupBox { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); \
                                                                  border-radius: 9px; margin-top: 0.5em;}")
-        self.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
         #-
         self.layoutDisplayHelpFocusAttributsModele = QtWidgets.QGridLayout()
-        self.layoutDisplayHelpFocusAttributsModele.setObjectName("layoutDisplayHelpFocus")
+        self.layoutDisplayHelpFocusAttributsModele.setObjectName("layoutDisplayHelpFocusAttributsModele")
         self.groupBoxdisplayHelpFocusAttributsModele.setLayout(self.layoutDisplayHelpFocusAttributsModele)
         self.layoutHelpAttributsModele.addWidget(self.groupBoxdisplayHelpFocusAttributsModele, 0, 0)
         #-
@@ -483,15 +499,23 @@ class Ui_Dialog_CreateTemplate(object):
         self.zoneDisplayHelpFocusAttributsModele.setAlignment( Qt.AlignJustify | Qt.AlignVCenter )
         #-
         #=====================================
+        # [ == scrolling HELP == ]
+        self.scroll_bar_help_displayHelpFocusAttributsModele = QtWidgets.QScrollArea() 
+        self.scroll_bar_help_displayHelpFocusAttributsModele.setStyleSheet("QScrollArea { border: 0px solid red;}")
+        self.scroll_bar_help_displayHelpFocusAttributsModele.setWidgetResizable(True)
+        self.scroll_bar_help_displayHelpFocusAttributsModele.setWidget(self.groupBoxdisplayHelpFocusAttributsModele)
+        self.layoutHelpAttributsModele.addWidget(self.scroll_bar_help_displayHelpFocusAttributsModele, 0, 0)
+        #=====================================
+        #=====================================
+        self.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
+
+        #=====================================
         # [ == création des attributs == ]
         genereAttributs( self, self.mapping_templates, self.layoutAttributsModele, self.groupBoxdisplayHelpFocusAttributsModele, self.zoneDisplayHelpFocusAttributsModele )
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, False ) 
         # [ == création des attributs == ]
         #------
         self.mTreeListeRessourceModele.afficheMODELE(self, listeModeleCol1, listeModeleCol2)
-        # ICI CICI ICI ICI
-        
-        
         self.layoutAttributsModele.setRowStretch(self.layoutAttributsModele.rowCount(), 1) #Permet de pousser vers le haut les attributs
         #------
         #Button Add
@@ -526,12 +550,13 @@ class Ui_Dialog_CreateTemplate(object):
         # Zone CATEGORIES
         self.zoneCategorie       = QWidget()
         self.layoutZoneCategorie = QtWidgets.QGridLayout()
+        self.layoutZoneCategorie.setRowStretch(0, 6)
+        self.layoutZoneCategorie.setRowStretch(1, 6)
+        self.layoutZoneCategorie.setRowStretch(2, 1)
         self.zoneCategorie.setLayout(self.layoutZoneCategorie)
         #Liste Categories
-        #------ Déclare TREEVIEW
-        self.mTreeListeRessourceCategorie = TREEVIEWCATEGORIE()
-        #-
         #------ TREEVIEW CATEGORIES
+        self.mTreeListeRessourceCategorie = TREEVIEWCATEGORIE()
         self.layoutZoneCategorie.addWidget(self.mTreeListeRessourceCategorie)
         #-
         self.mTreeListeRessourceCategorie.clear()
@@ -542,7 +567,7 @@ class Ui_Dialog_CreateTemplate(object):
 
         if len(self.mListCategories)  > 0 : 
            self.listeRessourceCategorie = returnListRessourceCategorie( self, self.mListCategories )
-           self.categorieActif = self.listeRessourceCategorie[0] #Pour la première initialisation
+           self.categorieActif = self.listeRessourceCategorie[0] if len(self.listeRessourceCategorie) > 0  else "" #Pour la première initialisation 
         else :   
            self.listeRessourceCategorie = []
            self.categorieActif = ""
@@ -552,45 +577,102 @@ class Ui_Dialog_CreateTemplate(object):
 
         #=====================================
          #Liste ATTRIBUTS catégories
-        self.groupBoxAttributsCategories = QtWidgets.QGroupBox()
-        self.groupBoxAttributsCategories.setObjectName("groupBoxAttributsCategories")
-        self.groupBoxAttributsCategories.setStyleSheet("QGroupBox { border: 0px solid blue;}")
+        self.groupBoxHelpAttributsCategories = QtWidgets.QGroupBox()
+        self.groupBoxHelpAttributsCategories.setObjectName("groupBoxHelpAttributsCategories")
+        self.groupBoxHelpAttributsCategories.setStyleSheet("QGroupBox { border: 0px solid blue;}")
         #-
-        self.layoutAttributsCategories = QtWidgets.QGridLayout()
-        self.layoutAttributsCategories.setObjectName("layoutAttributsCategories")
-        self.layoutAttributsCategories.setColumnStretch(0, 3)
-        self.layoutAttributsCategories.setColumnStretch(1, 7)
-        self.layoutAttributsCategories.setColumnStretch(2, 1)
-        self.groupBoxAttributsCategories.setLayout(self.layoutAttributsCategories)
-        self.layoutZoneCategorie.addWidget(self.groupBoxAttributsCategories)
-
-        self.mTreeListeRessourceCategorie.afficheCATEGORIE(self, self.listeRessourceCategorie)
+        self.layoutHelpAttributsCategorie = QtWidgets.QGridLayout()
+        self.layoutHelpAttributsCategorie.setObjectName("layoutAttributsCategories")
+        self.layoutHelpAttributsCategorie.setColumnStretch(0, 1)
+        self.layoutHelpAttributsCategorie.setColumnStretch(1, 1)
+        self.groupBoxHelpAttributsCategories.setLayout(self.layoutHelpAttributsCategorie)
+        self.layoutZoneCategorie.addWidget(self.groupBoxHelpAttributsCategories, 1, 0)
         #=====================================
-        # [ == scrolling == ]
+        self.groupBoxAttributsCategorie = QtWidgets.QGroupBox()
+        self.groupBoxAttributsCategorie.setObjectName("groupBoxAttributsCategorie")
+        self.groupBoxAttributsCategorie.setStyleSheet("QGroupBox { border: 0px solid yellow;}")
+        #-
+        self.layoutAttributsCategorie = QtWidgets.QGridLayout()
+        self.layoutAttributsCategorie.setObjectName("layoutAttributsCategorie")
+        #-
+        self.layoutAttributsCategorie.setColumnStretch(0, 1)
+        self.layoutAttributsCategorie.setColumnStretch(1, 4)
+        self.groupBoxAttributsCategorie.setLayout(self.layoutAttributsCategorie)
+        self.layoutHelpAttributsCategorie.addWidget(self.groupBoxAttributsCategorie, 0, 1)
+        #=====================================
+        # [ == scrolling Attributs == ]
         self.scroll_bar_AttributsCategorie = QtWidgets.QScrollArea() 
         self.scroll_bar_AttributsCategorie.setStyleSheet("QScrollArea { border: 0px solid red;}")
         self.scroll_bar_AttributsCategorie.setWidgetResizable(True)
-        self.scroll_bar_AttributsCategorie.setWidget(self.groupBoxAttributsCategories)
-        self.layoutZoneCategorie.addWidget(self.scroll_bar_AttributsCategorie)
-        #=====================================
+        self.scroll_bar_AttributsCategorie.setWidget(self.groupBoxAttributsCategorie)
+        self.layoutHelpAttributsCategorie.addWidget(self.scroll_bar_AttributsCategorie, 0, 1)
+        #Affichage de l'aide pour les attributs
+        self.groupBoxdisplayHelpFocusAttributsCategorie = QtWidgets.QGroupBox()
+        self.groupBoxdisplayHelpFocusAttributsCategorie.setObjectName("groupBoxdisplayHelpFocusAttributsCategorie")
         
+        self.groupBoxdisplayHelpFocusAttributsCategorie.setStyleSheet("QGroupBox { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); \
+                                                                 border-radius: 9px; margin-top: 0.5em;}")
+        #-
+        self.layoutDisplayHelpFocusAttributsCategorie = QtWidgets.QGridLayout()
+        self.layoutDisplayHelpFocusAttributsCategorie.setObjectName("layoutDisplayHelpFocusAttributsCategorie")
+        self.groupBoxdisplayHelpFocusAttributsCategorie.setLayout(self.layoutDisplayHelpFocusAttributsCategorie)
+        self.layoutHelpAttributsCategorie.addWidget(self.groupBoxdisplayHelpFocusAttributsCategorie, 0, 0)
+        #-
+        mText = "" 
+        _Listkeys   = [ "typeWidget",       "textWidget", "nameWidget", "aligneWidget", "wordWrap" ]
+        _ListValues = [ QtWidgets.QLabel(), mText,        "label_" ,     QtCore.Qt.AlignCenter, True ]
+        dicParamLabel = dict(zip(_Listkeys, _ListValues))
+        self.zoneDisplayHelpFocusAttributsCategorie = genereLabelWithDict( dicParamLabel )
+        self.zoneDisplayHelpFocusAttributsCategorie.setTextFormat(Qt.MarkdownText)        
+        self.layoutDisplayHelpFocusAttributsCategorie.addWidget( self.zoneDisplayHelpFocusAttributsCategorie, 0, 0)
+        self.zoneDisplayHelpFocusAttributsCategorie.setAlignment( Qt.AlignJustify | Qt.AlignVCenter )
+        #-
+        #=====================================
+        # [ == scrolling HELP == ]
+        self.scroll_bar_help_displayHelpFocusAttributsCategorie = QtWidgets.QScrollArea() 
+        self.scroll_bar_help_displayHelpFocusAttributsCategorie.setStyleSheet("QScrollArea { border: 0px solid red;}")
+        self.scroll_bar_help_displayHelpFocusAttributsCategorie.setWidgetResizable(True)
+        self.scroll_bar_help_displayHelpFocusAttributsCategorie.setWidget(self.groupBoxdisplayHelpFocusAttributsCategorie)
+        self.layoutHelpAttributsCategorie.addWidget(self.scroll_bar_help_displayHelpFocusAttributsCategorie, 0, 0)
+        #=====================================
+        #=====================================
+        self.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
+      
         #=====================================
         # [ == création des attributs == ]
-        genereAttributs( self, self.mapping_categories, self.layoutAttributsCategories, self.groupBoxAttributsCategories, self.zoneDisplayHelpFocus )
-        afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, False ) 
+        genereAttributs( self, self.mapping_categories, self.layoutAttributsCategorie, self.groupBoxdisplayHelpFocusAttributsCategorie, self.zoneDisplayHelpFocusAttributsCategorie )
+        afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, False ) 
         # [ == création des attributs == ]
+        #------
+        self.mTreeListeRessourceCategorie.afficheCATEGORIE(self, self.listeRessourceCategorie)
         
-        self.layoutAttributsCategories.setRowStretch(self.layoutAttributsCategories.rowCount(), 1) #Permet de pousser vers le haut les attributs
+        self.layoutAttributsCategorie.setRowStretch(self.layoutAttributsCategorie.rowCount(), 1) #Permet de pousser vers le haut les attributs
         
         #------
         #Button Add
+        self.groupBoxAttributsCategorieButton = QtWidgets.QGroupBox()
+        self.groupBoxAttributsCategorieButton.setObjectName("groupBoxAttributsCategorieButton")
+        self.groupBoxAttributsCategorieButton.setStyleSheet("QGroupBox { border: 0px solid yellow;}")
+        self.groupBoxAttributsCategorieButton.setContentsMargins(0, 0, 0, 0)
+        #-
+        self.layoutAttributsCategorieButton = QtWidgets.QGridLayout()
+        self.layoutAttributsCategorieButton.setObjectName("layoutAttributsCategorieButton")
+        self.layoutAttributsCategorieButton.setContentsMargins(0, 0, 0, 0)
+        self.groupBoxAttributsCategorieButton.setLayout(self.layoutAttributsCategorieButton)
+        #-
+        self.layoutAttributsCategorieButton.setColumnStretch(0, 4)
+        self.layoutAttributsCategorieButton.setColumnStretch(1, 1)
+        self.layoutAttributsCategorieButton.setColumnStretch(2, 3)
+        self.layoutZoneCategorie.addWidget(self.groupBoxAttributsCategorieButton, 2, 0)
+        #------
         self.buttonAddCategorie = QtWidgets.QToolButton()
         self.buttonAddCategorie.setObjectName("buttonAddCategorie")
         self.buttonAddCategorie.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify a category as well as these attributes.", None)
         self.buttonAddCategorie.setToolTip(mbuttonAddToolTip)
-        self.buttonAddCategorie.clicked.connect(lambda : self.functionAddCategorie())
-        self.layoutAttributsCategories.addWidget(self.buttonAddCategorie, 0, 2)
+        self.buttonAddCategorie.clicked.connect(lambda : self.functionUpdateCategorie())
+        self.layoutAttributsCategorieButton.addWidget(self.buttonAddCategorie, 0, 2, Qt.AlignCenter)
+        self.buttonAddCategorie.setVisible(False)
         #Button Add
         #------
 
@@ -599,6 +681,9 @@ class Ui_Dialog_CreateTemplate(object):
         # Zone ONGLETS
         self.zoneOnglet       = QWidget()
         self.layoutZoneOnglet = QtWidgets.QGridLayout()  
+        self.layoutZoneOnglet.setRowStretch(0, 6)
+        self.layoutZoneOnglet.setRowStretch(1, 6)
+        self.layoutZoneOnglet.setRowStretch(2, 1)
         self.zoneOnglet.setLayout(self.layoutZoneOnglet)
         #Liste Onglets
         #------ Déclare TREEVIEW
@@ -611,7 +696,7 @@ class Ui_Dialog_CreateTemplate(object):
 
         if len(self.mListTabs)  > 0 : 
            listeOngletCol1, listeOngletCol2 = returnList_Id_Label( self.mListTabs )
-           self.ongleteActif = listeOngletCol1[0] #Pour la première initialisation
+           self.ongleteActif = listeOngletCol1[0] if len(listeOngletCol1) > 0  else "" #Pour la première initialisation 
         else :   
            listeOngletCol1, listeOngletCol2 = [], []
            self.ongleteActif = ""
@@ -620,47 +705,103 @@ class Ui_Dialog_CreateTemplate(object):
 
         #=====================================
          #Liste ATTRIBUTS Onglets
-        self.groupBoxAttributsOnglets = QtWidgets.QGroupBox()
-        self.groupBoxAttributsOnglets.setObjectName("groupBoxAttributsOnglets")
-        self.groupBoxAttributsOnglets.setStyleSheet("QGroupBox { border: 0px solid blue;}")
+        self.groupBoxHelpAttributsOnglets = QtWidgets.QGroupBox()
+        self.groupBoxHelpAttributsOnglets.setObjectName("groupBoxHelpAttributsOnglets")
+        self.groupBoxHelpAttributsOnglets.setStyleSheet("QGroupBox { border: 0px solid blue;}")
         #-
-        self.layoutAttributsOnglets = QtWidgets.QGridLayout()
-        self.layoutAttributsOnglets.setObjectName("layoutAttributsOnglets")
-        self.layoutAttributsOnglets.setColumnStretch(0, 3)
-        self.layoutAttributsOnglets.setColumnStretch(1, 7)
-        self.layoutAttributsOnglets.setColumnStretch(2, 1)
-        self.groupBoxAttributsOnglets.setLayout(self.layoutAttributsOnglets)
-        self.layoutZoneOnglet.addWidget(self.groupBoxAttributsOnglets)
-
-        self.mTreeListeRessourceOnglet.afficheONGLET(self, listeOngletCol1, listeOngletCol2)
+        self.layoutHelpAttributsOnglet = QtWidgets.QGridLayout()
+        self.layoutHelpAttributsOnglet.setObjectName("layoutAttributsOnglets")
+        self.layoutHelpAttributsOnglet.setColumnStretch(0, 1)
+        self.layoutHelpAttributsOnglet.setColumnStretch(1, 1)
+        self.groupBoxHelpAttributsOnglets.setLayout(self.layoutHelpAttributsOnglet)
+        self.layoutZoneOnglet.addWidget(self.groupBoxHelpAttributsOnglets, 1, 0)
         #=====================================
-        # [ == scrolling == ]
+        self.groupBoxAttributsOnglet = QtWidgets.QGroupBox()
+        self.groupBoxAttributsOnglet.setObjectName("groupBoxAttributsOnglet")
+        self.groupBoxAttributsOnglet.setStyleSheet("QGroupBox { border: 0px solid yellow;}")
+        #-
+        self.layoutAttributsOnglet = QtWidgets.QGridLayout()
+        self.layoutAttributsOnglet.setObjectName("layoutAttributsOnglet")
+        #-
+        self.layoutAttributsOnglet.setColumnStretch(0, 1)
+        self.layoutAttributsOnglet.setColumnStretch(1, 4)
+        self.groupBoxAttributsOnglet.setLayout(self.layoutAttributsOnglet)
+        self.layoutHelpAttributsOnglet.addWidget(self.groupBoxAttributsOnglet, 0, 1)
+        #=====================================
+        # [ == scrolling Attributs == ]
         self.scroll_bar_AttributsOnglet = QtWidgets.QScrollArea() 
         self.scroll_bar_AttributsOnglet.setStyleSheet("QScrollArea { border: 0px solid red;}")
         self.scroll_bar_AttributsOnglet.setWidgetResizable(True)
-        self.scroll_bar_AttributsOnglet.setWidget(self.groupBoxAttributsOnglets)
-        self.layoutZoneOnglet.addWidget(self.scroll_bar_AttributsOnglet)
+        self.scroll_bar_AttributsOnglet.setWidget(self.groupBoxAttributsOnglet)
+        self.layoutHelpAttributsOnglet.addWidget(self.scroll_bar_AttributsOnglet, 0, 1)
+        #Affichage de l'aide pour les attributs
+        self.groupBoxdisplayHelpFocusAttributsOnglet = QtWidgets.QGroupBox()
+        self.groupBoxdisplayHelpFocusAttributsOnglet.setObjectName("groupBoxdisplayHelpFocusAttributsOnglet")
+        
+        self.groupBoxdisplayHelpFocusAttributsOnglet.setStyleSheet("QGroupBox { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 #958B62, stop: 1 white); \
+                                                                 border-radius: 9px; margin-top: 0.5em;}")
+        #-
+        self.layoutDisplayHelpFocusAttributsOnglet = QtWidgets.QGridLayout()
+        self.layoutDisplayHelpFocusAttributsOnglet.setObjectName("layoutDisplayHelpFocusAttributsOnglet")
+        self.groupBoxdisplayHelpFocusAttributsOnglet.setLayout(self.layoutDisplayHelpFocusAttributsOnglet)
+        self.layoutHelpAttributsOnglet.addWidget(self.groupBoxdisplayHelpFocusAttributsOnglet, 0, 0)
+        #-
+        mText = "" 
+        _Listkeys   = [ "typeWidget",       "textWidget", "nameWidget", "aligneWidget", "wordWrap" ]
+        _ListValues = [ QtWidgets.QLabel(), mText,        "label_" ,     QtCore.Qt.AlignCenter, True ]
+        dicParamLabel = dict(zip(_Listkeys, _ListValues))
+        self.zoneDisplayHelpFocusAttributsOnglet = genereLabelWithDict( dicParamLabel )
+        self.zoneDisplayHelpFocusAttributsOnglet.setTextFormat(Qt.MarkdownText)        
+        self.layoutDisplayHelpFocusAttributsOnglet.addWidget( self.zoneDisplayHelpFocusAttributsOnglet, 0, 0)
+        self.zoneDisplayHelpFocusAttributsOnglet.setAlignment( Qt.AlignJustify | Qt.AlignVCenter )
+        #-
+        #=====================================
+        # [ == scrolling HELP == ]
+        self.scroll_bar_help_displayHelpFocusAttributsOnglet = QtWidgets.QScrollArea() 
+        self.scroll_bar_help_displayHelpFocusAttributsOnglet.setStyleSheet("QScrollArea { border: 0px solid red;}")
+        self.scroll_bar_help_displayHelpFocusAttributsOnglet.setWidgetResizable(True)
+        self.scroll_bar_help_displayHelpFocusAttributsOnglet.setWidget(self.groupBoxdisplayHelpFocusAttributsOnglet)
+        self.layoutHelpAttributsOnglet.addWidget(self.scroll_bar_help_displayHelpFocusAttributsOnglet, 0, 0)
         #=====================================
         #=====================================
+        self.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
 
         #=====================================
         # [ == création des attributs == ]
-        genereAttributs( self, self.mapping_tabs, self.layoutAttributsOnglets, self.groupBoxAttributsOnglets, self.zoneDisplayHelpFocus )
-        afficheAttributs( self, self.groupBoxAttributsOnglets, self.mapping_tabs, False ) 
+        genereAttributs( self, self.mapping_tabs, self.layoutAttributsOnglet, self.groupBoxdisplayHelpFocusAttributsOnglet, self.zoneDisplayHelpFocusAttributsOnglet )
+        afficheAttributs( self, self.groupBoxAttributsOnglet, self.mapping_tabs, False ) 
         # [ == création des attributs == ]
+
+        self.mTreeListeRessourceOnglet.afficheONGLET(self, listeOngletCol1, listeOngletCol2)
+        #=====================================
         
-        self.layoutAttributsOnglets.setRowStretch(self.layoutAttributsOnglets.rowCount(), 1) #Permet de pousser vers le haut les attributs
+        self.layoutAttributsOnglet.setRowStretch(self.layoutAttributsOnglet.rowCount(), 1) #Permet de pousser vers le haut les attributs
         
         #------
         #Button Add
+        self.groupBoxAttributsOngletButton = QtWidgets.QGroupBox()
+        self.groupBoxAttributsOngletButton.setObjectName("groupBoxAttributsOngletButton")
+        self.groupBoxAttributsOngletButton.setStyleSheet("QGroupBox { border: 0px solid yellow;}")
+        self.groupBoxAttributsOngletButton.setContentsMargins(0, 0, 0, 0)
+        #-
+        self.layoutAttributsOngletButton = QtWidgets.QGridLayout()
+        self.layoutAttributsOngletButton.setObjectName("layoutAttributsOngletButton")
+        self.layoutAttributsOngletButton.setContentsMargins(0, 0, 0, 0)
+        self.groupBoxAttributsOngletButton.setLayout(self.layoutAttributsOngletButton)
+        #-
+        self.layoutAttributsOngletButton.setColumnStretch(0, 4)
+        self.layoutAttributsOngletButton.setColumnStretch(1, 1)
+        self.layoutAttributsOngletButton.setColumnStretch(2, 3)
+        self.layoutZoneOnglet.addWidget(self.groupBoxAttributsOngletButton, 2, 0)
+        #------
         self.buttonAddOnglet = QtWidgets.QToolButton()
         self.buttonAddOnglet.setObjectName("buttonAddOnglet")
         self.buttonAddOnglet.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         mbuttonAddToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Modify a tab as well as these attributes.", None)
         self.buttonAddOnglet.setToolTip(mbuttonAddToolTip)
-        self.buttonAddOnglet.clicked.connect(lambda : self.functionAddOnglet())
+        self.buttonAddOnglet.clicked.connect(lambda : self.functionUpdateOnglet())
+        self.layoutAttributsOngletButton.addWidget(self.buttonAddOnglet, 0, 2, Qt.AlignCenter)
         self.buttonAddOnglet.setVisible(False)
-        self.layoutAttributsOnglets.addWidget(self.buttonAddOnglet, 0, 2)
         #Button Add
         #------
 
@@ -680,6 +821,8 @@ class Ui_Dialog_CreateTemplate(object):
         mItemClicAssociation        = self.modelComboListeModeleCategorie.item(self.comboListeModeleCategorie.currentIndex(),1).text()
         
         self.groupBoxdisplayHelpFocus.setVisible(False)
+        self.zoneDisplayHelpFocus.setText("")
+        
         if mItemClicLibelleAssociation == "" : 
            self.mTreeListeCategorieIn.clear()
            self.mTreeListeCategorieOut.clear()
@@ -740,7 +883,11 @@ class Ui_Dialog_CreateTemplate(object):
              self.mListCategories = [row[0] for row in r]
       
              listeAssociationCol1, listeAssociationCol2 = returnList_Id_Label( self.mListTemplates )
-             self.modeleAssociationActif = listeAssociationCol1[0] #Pour la première initialisation 
+             self.modeleAssociationActif = listeAssociationCol1[0] if len(listeAssociationCol1) > 0 else "" #Pour la première initialisation 
+             #------ DATA Tab 
+             mKeySql = queries.query_read_meta_tab()
+             r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+             self.mListTabs = [row[0] for row in r]
 
              #------ DATA 
              self.modelComboListeModeleCategorie = QStandardItemModel()
@@ -826,6 +973,22 @@ class Ui_Dialog_CreateTemplate(object):
        return
 
     #===============================              
+    def functionUpdateCategorie(self):
+        pass
+
+    #===============================              
+    def functionUpdateOnglet(self):
+       zTitre = QtWidgets.QApplication.translate("CreateTemplate_ui", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("CreateTemplate_ui", "You must enter a label.", None)
+       mTestExisteOnglet = returnListObjAttributsId(self, self.groupBoxAttributsOnglet, self.mapping_tabs)[0]
+       if mTestExisteOnglet.text() == "" :
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+       else :   
+          self.flagNewOnglet = True
+          self.mTreeListeRessourceOnglet.ihmsPlumeUpdateOnglet(self.Dialog, mTestExisteOnglet.text())
+       return
+
+    #===============================              
     def functionAddCategorie(self):
        zTitre = QtWidgets.QApplication.translate("CreateTemplate_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("CreateTemplate_ui", "You must enter a label.", None)
@@ -837,17 +1000,6 @@ class Ui_Dialog_CreateTemplate(object):
           self.mTreeListeRessourceCategorie.ihmsPlumeUpdateCategorie(self.Dialog, mTestExisteCategorie.text())
        return
 
-    #===============================              
-    def functionAddOnglet(self):
-       zTitre = QtWidgets.QApplication.translate("CreateTemplate_ui", "PLUME : Warning", None)
-       zMess  = QtWidgets.QApplication.translate("CreateTemplate_ui", "You must enter a label.", None)
-       mTestExisteOnglet = returnListObjAttributsId(self, self.groupBoxAttributsOnglets, self.mapping_tabs)[0]
-       if mTestExisteOnglet.text() == "" :
-          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
-       else :   
-          self.flagNewOnglet = True
-          self.mTreeListeRessourceOnglet.ihmsPlumeUpdateOnglet(self.Dialog, mTestExisteOnglet.text())
-       return
 
     #==========================
     def resizeEvent(self, event):
@@ -1094,7 +1246,7 @@ def genereAttributs(self,  mapping, zoneLayout, _groupBoxdisplayHelpFocus, _zone
 
          if zoneLayout.objectName()   in ["layoutAttributsModeleCategorie", ] : 
             colonneLib, colonneAttrib = _col + 2, _col + 3        
-         elif zoneLayout.objectName() in [ "layoutAttributsModele", "layoutAttributsCategories", "layoutAttributsOnglets"] : 
+         elif zoneLayout.objectName() in [ "layoutAttributsModele", "layoutAttributsCategorie", "layoutAttributsOnglet"] : 
             colonneLib, colonneAttrib = _col, _col + 1
                     
          zoneLayout.addWidget(_modCat_Lib_Attrib, _row, colonneLib,    QtCore.Qt.AlignTop)
@@ -1169,8 +1321,16 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
            elif _type in ("QComboBox",) :
               #Alim la QcomboBox
               if _mapping_template_categories[ mObj.objectName()[5:] ]["dicListItems" ] == ("tabs") :
-                 _mListTabs.insert( 0, {"tab_label" : "Aucun", "tab_id" : ""} )
-                 listItems    = sorted(set([ elem["tab_label"] for elem in _mListTabs ]), key=lambda col: col.lower())                 
+                 listItems    = sorted(set([ elem["tab_label"] for elem in _mListTabs ]), key=lambda col: col.lower())
+                 mLibAucun    = "Aucun"
+                 mDicLibAucun = {"tab_label" : "Aucun", "tab_id" : ""}
+                 if mLibAucun in listItems  : 
+                    del listItems[listItems.index(mLibAucun)]       # Pour gérer le tri avec Aucun en tête
+                 if mDicLibAucun in _mListTabs  : 
+                    del _mListTabs[_mListTabs.index(mDicLibAucun)]  # Pour gérer le tri avec Aucun en tête
+                 if mLibAucun not in listItems :                 
+                    listItems.insert( 0, "Aucun" )
+                    _mListTabs.insert( 0, {"tab_label" : "Aucun", "tab_id" : ""} )
                  __valCurrent = [ elem["tab_label"] for elem in _mListTabs if str(elem["tab_id"]) == __Val ]
                  mObj.clear()
                  mObj.addItems(listItems)
@@ -1338,8 +1498,12 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource = returnIcon(_pathIcons + "/plume.svg")  
         self.setHeaderLabels([ header[2] if header[0] == "CAT_IN" else header[1] ])  
-        self.groupBoxdisplayHelpFocus         = _selfCreateTemplate.groupBoxdisplayHelpFocus        
+        self.groupBoxdisplayHelpFocus         = _selfCreateTemplate.groupBoxdisplayHelpFocus  
+        self.scroll_bar_help_displayHelpFocusAttributsModele = _selfCreateTemplate.scroll_bar_help_displayHelpFocusAttributsModele
+      
         self.groupBoxAttributsModeleCategorie = _selfCreateTemplate.groupBoxAttributsModeleCategorie
+
+        self.zoneDisplayHelpFocus             = _selfCreateTemplate.zoneDisplayHelpFocus
         self.mListTemplates                   = _selfCreateTemplate.mListTemplates
         self.mListTemplateCategories          = _selfCreateTemplate.mListTemplateCategories
         self.mListCategories                  = _selfCreateTemplate.mListCategories   
@@ -1550,6 +1714,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
               mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
               #-------
               self.groupBoxdisplayHelpFocus.setVisible(False)
+              self.zoneDisplayHelpFocus.setText("")
               if mOrigine == "CAT_IN" :
                  if returnIfExisteCategorie(item) : 
                     #Affiche les attributs
@@ -1624,6 +1789,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
 
         self._selfCreateTemplate.groupBoxdisplayHelpFocus.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocus.setText("")
         if mOrigine == "CAT_IN" :
            if returnIfExisteCategorie(item) : 
               #Affiche les attributs
@@ -1890,7 +2056,7 @@ class TREEVIEWMODELE(QTreeWidget):
     #===============================              
     def __init__(self, *args):
         QTreeWidget.__init__(self, *args)
-        self.setColumnCount(2)
+        self.setColumnCount(1)
         self.hideColumn (0)   # For hide ID
         self.setHeaderLabels(["Noms", "Libellés"])
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
@@ -1902,6 +2068,7 @@ class TREEVIEWMODELE(QTreeWidget):
         self.groupBoxAttributsModele                 = _selfCreateTemplate.groupBoxAttributsModele
         self.mapping_templates                       = _selfCreateTemplate.mapping_templates
         self.groupBoxdisplayHelpFocusAttributsModele = _selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele
+        self.zoneDisplayHelpFocusAttributsModele     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsModele
         
 
         self.mListTemplates          = _selfCreateTemplate.mListTemplates
@@ -1925,6 +2092,8 @@ class TREEVIEWMODELE(QTreeWidget):
         
     #===============================              
     def menuContextuelPlumeMODELE(self, point):
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         index = self.indexAt(point)
         if not index.isValid():
            return
@@ -1969,6 +2138,7 @@ class TREEVIEWMODELE(QTreeWidget):
         #Initialise les attributs avec valeurs
         initialiseAttributsModelesCategoriesOnglets( self, mItemClicModele, self.groupBoxAttributsModele, self.mapping_templates, self.mListTemplates, True ) 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         return
 
     #===============================              
@@ -1986,6 +2156,8 @@ class TREEVIEWMODELE(QTreeWidget):
         listeModeleCol1, listeModeleCol2 = returnList_Id_Label( self.mListTemplates )
         self.clear()
         self.afficheMODELE(self._selfCreateTemplate, listeModeleCol1, listeModeleCol2)
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         return
 
     #===============================              
@@ -1994,6 +2166,8 @@ class TREEVIEWMODELE(QTreeWidget):
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, True ) 
         self._selfCreateTemplate.buttonAddModele.setVisible(True)
         initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsModele, self.mapping_templates, self.mListTemplates, True, "Vierge" ) 
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         return
                 
     #===============================              
@@ -2010,6 +2184,8 @@ class TREEVIEWMODELE(QTreeWidget):
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, False ) 
         self._selfCreateTemplate.buttonAddModele.setVisible(False)
         self._selfCreateTemplate.flagNewModele = True
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         return
 
 #========================================================     
@@ -2021,7 +2197,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
     #===============================              
     def __init__(self, *args):
         QTreeWidget.__init__(self, *args)
-        self.setColumnCount(6)
+        self.setColumnCount(1)
         self.setHeaderLabels(["Identifiant et chemin"])  
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
         self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / delete a category", None)         #Click droit pour supprimer un Modèle
@@ -2033,7 +2209,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
     def afficheCATEGORIE(self, _selfCreateTemplate, listeRessourceCategorie):
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
         iconSource = returnIcon(_pathIcons + "/plume.svg")  
-        self.groupBoxAttributsCategories          = _selfCreateTemplate.groupBoxAttributsCategories
+        self.groupBoxAttributsCategorie           = _selfCreateTemplate.groupBoxAttributsCategorie
         self.mapping_categories                   = _selfCreateTemplate.mapping_categories
         self.mListCategories                      = _selfCreateTemplate.mListCategories   
         self.listeRessourceCategorie              = _selfCreateTemplate.listeRessourceCategorie
@@ -2041,6 +2217,8 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self.sepLeftTemplate                      = _selfCreateTemplate.sepLeftTemplate
         self.sepRightTemplate                     = _selfCreateTemplate.sepRightTemplate
         self.fontCategorieInVersOut               = _selfCreateTemplate.fontCategorieInVersOut
+        self.groupBoxdisplayHelpFocusAttributsCategorie = _selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie
+        self.zoneDisplayHelpFocusAttributsCategorie     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -2115,6 +2293,8 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         
     #===============================              
     def menuContextuelPlumeCATEGORIE(self, point):
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
         index = self.indexAt(point)
         #-------
         mKeySql = queries.query_read_meta_categorie()
@@ -2167,20 +2347,23 @@ class TREEVIEWCATEGORIE(QTreeWidget):
            #------
            self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
            #Affiche les attributs
-           afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, True ) 
+           afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, True ) 
            self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
            #Initialise les attributs avec valeurs
-           initialiseAttributsModelesCategoriesOnglets( self, mItemClicCategorie, self.groupBoxAttributsCategories, self.mapping_categories, self.mListCategories, True )
+           initialiseAttributsModelesCategoriesOnglets( self, mItemClicCategorie, self.groupBoxAttributsCategorie, self.mapping_categories, self.mListCategories, True )
         else :    
            #Affiche les attributs
-           afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, False ) 
+           afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, False ) 
            self._selfCreateTemplate.buttonAddCategorie.setVisible(False)
+
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
         return
 
     #===============================              
     def ihmsPlumeUpdateCategorie(self, mDialog, mId):
         #===============================              
-        dicForQuerieForAddCategorie = returnListObjKeyValue(self, self.groupBoxAttributsCategories, self.mapping_categories)
+        dicForQuerieForAddCategorie = returnListObjKeyValue(self, self.groupBoxAttributsCategorie, self.mapping_categories)
        
         mKeySql = queries.query_insert_or_update_meta_categorie(dicForQuerieForAddCategorie)
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
@@ -2192,14 +2375,18 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         listeRessourceCategorie = returnListRessourceCategorie( self, self.mListCategories )
         self.clear()
         self.afficheCATEGORIE(self._selfCreateTemplate, listeRessourceCategorie)
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
         return
 
     #===============================              
     def ihmsPlumeAdd(self):
         #===============================              
-        afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, True ) 
+        afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, True ) 
         self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
-        initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsCategories, self.mapping_categories, self.mListCategories, True, "Vierge" ) 
+        initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsCategorie, self.mapping_categories, self.mListCategories, True, "Vierge" ) 
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
         return
                 
     #===============================              
@@ -2208,14 +2395,16 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self.ihmsPlumeCATEGORIE( current_item, None )  #Affiche les attributs pour impélmenter le dicForQuerieForAddCategorie
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
-        dicForQuerieForAddCategorie = returnListObjKeyValue(self, self.groupBoxAttributsCategories, self.mapping_categories)
+        dicForQuerieForAddCategorie = returnListObjKeyValue(self, self.groupBoxAttributsCategorie, self.mapping_categories)
         mKeySql = queries.query_delete_meta_categorie(dicForQuerieForAddCategorie)
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
         self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
         #Efface les attributs
-        afficheAttributs( self, self.groupBoxAttributsCategories, self.mapping_categories, False ) 
+        afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, False ) 
         self._selfCreateTemplate.buttonAddCategorie.setVisible(False)
         self._selfCreateTemplate.flagNewCategorie = True
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
         return
 
 #========================================================     
@@ -2238,11 +2427,13 @@ class TREEVIEWONGLET(QTreeWidget):
 
     #===============================              
     def afficheONGLET(self, _selfCreateTemplate, listeOngletCol1, listeOngletCol2):
-        self.groupBoxAttributsOnglets          = _selfCreateTemplate.groupBoxAttributsOnglets
+        self.groupBoxAttributsOnglet          = _selfCreateTemplate.groupBoxAttributsOnglet
         self.mapping_tabs                      = _selfCreateTemplate.mapping_tabs
 
         self.mListTabs                         = _selfCreateTemplate.mListTabs
         self._selfCreateTemplate               = _selfCreateTemplate
+        self.groupBoxdisplayHelpFocusAttributsOnglet = _selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet
+        self.zoneDisplayHelpFocusAttributsOnglet     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -2313,16 +2504,18 @@ class TREEVIEWONGLET(QTreeWidget):
         #------
         self._selfCreateTemplate.buttonAddOnglet.setVisible(True)
         #Affiche les attributs
-        afficheAttributs( self, self.groupBoxAttributsOnglets, self.mapping_tabs, True ) 
+        afficheAttributs( self, self.groupBoxAttributsOnglet, self.mapping_tabs, True ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(True)
         #Initialise les attributs avec valeurs
-        initialiseAttributsModelesCategoriesOnglets( self, mItemClicOnglet, self.groupBoxAttributsOnglets, self.mapping_tabs, self.mListTabs, True ) 
+        initialiseAttributsModelesCategoriesOnglets( self, mItemClicOnglet, self.groupBoxAttributsOnglet, self.mapping_tabs, self.mListTabs, True ) 
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
         return
 
     #===============================              
     def ihmsPlumeUpdateOnglet(self, mDialog, mId):
         #===============================              
-        dicForQuerieForAddOnglet = returnListObjKeyValue(self, self.groupBoxAttributsOnglets, self.mapping_tabs)
+        dicForQuerieForAddOnglet = returnListObjKeyValue(self, self.groupBoxAttributsOnglet, self.mapping_tabs)
 
         mKeySql = queries.query_insert_or_update_meta_tab(dicForQuerieForAddOnglet)
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
@@ -2334,14 +2527,18 @@ class TREEVIEWONGLET(QTreeWidget):
         listeOngletCol1, listeOngletCol2 = returnList_Id_Label( self.mListTabs )
         self.clear()
         self.afficheONGLET(self._selfCreateTemplate, listeOngletCol1, listeOngletCol2)
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
         return
 
     #===============================              
     def ihmsPlumeAdd(self):
         #===============================              
-        afficheAttributs( self, self.groupBoxAttributsOnglets, self.mapping_tabs, True ) 
+        afficheAttributs( self, self.groupBoxAttributsOnglet, self.mapping_tabs, True ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(True)
-        initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsOnglets, self.mapping_tabs, self.mListTabs, True, "Vierge" ) 
+        initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsOnglet, self.mapping_tabs, self.mListTabs, True, "Vierge" ) 
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
         return
                 
     #===============================              
@@ -2350,12 +2547,14 @@ class TREEVIEWONGLET(QTreeWidget):
         self.ihmsPlumeONGLET( current_item, None )  #Affiche les attributs pour impélmenter le dicForQuerieForAddOnglet
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
-        dicForQuerieForAddOnglet = returnListObjKeyValue(self, self.groupBoxAttributsOnglets, self.mapping_tabs)
+        dicForQuerieForAddOnglet = returnListObjKeyValue(self, self.groupBoxAttributsOnglet, self.mapping_tabs)
         mKeySql = queries.query_delete_meta_tab(dicForQuerieForAddOnglet)
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
         self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
         #Efface les attributs
-        afficheAttributs( self, self.groupBoxAttributsOnglets, self.mapping_tabs, False ) 
+        afficheAttributs( self, self.groupBoxAttributsOnglet, self.mapping_tabs, False ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(False)
         self._selfCreateTemplate.flagNewOnglet = True
+        self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
+        self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
         return
