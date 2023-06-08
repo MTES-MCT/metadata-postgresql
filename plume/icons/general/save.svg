@@ -15,7 +15,7 @@
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <title
-     id="title26606">Enregistrer les métadonnées</title>
+     id="title26606">Enregistrer</title>
   <metadata
      id="metadata11">
     <rdf:RDF>
@@ -37,7 +37,7 @@
             <dc:title>République Française</dc:title>
           </cc:Agent>
         </dc:publisher>
-        <dc:title>Enregistrer les métadonnées</dc:title>
+        <dc:title>Enregistrer</dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>

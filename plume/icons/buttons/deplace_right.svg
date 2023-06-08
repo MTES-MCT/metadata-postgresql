@@ -15,7 +15,7 @@
    sodipodi:docname="deplace_rigth.svg"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
   <title
-     id="title24463">Bouton de sélection de la source</title>
+     id="title24463">Déplacer vers la droite</title>
   <metadata
      id="metadata12">
     <rdf:RDF>
@@ -24,10 +24,10 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:date>2022.08.12</dc:date>
+        <dc:date>2023.06.01</dc:date>
         <dc:creator>
           <cc:Agent>
-            <dc:title>Leslie Lemaire @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
+            <dc:title>Leslie Lemaire et Didier Leclerc @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
           </cc:Agent>
         </dc:creator>
         <dc:publisher>
@@ -35,7 +35,7 @@
             <dc:title>République Française</dc:title>
           </cc:Agent>
         </dc:publisher>
-        <dc:title>Bouton de sélection de la source</dc:title>
+        <dc:title>Déplacer vers la droite</dc:title>
         <cc:license
            rdf:resource="https://spdx.org/licenses/etalab-2.0" />
       </cc:Work>

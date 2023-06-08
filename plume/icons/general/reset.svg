@@ -12,10 +12,10 @@
    width="24"
    height="24"
    viewBox="0 0 24 24.000001"
-   sodipodi:docname="restaurer.svg"
+   sodipodi:docname="reset.svg"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
   <title
-     id="title26606">Enregistrer les métadonnées</title>
+     id="title26606">Réinitialiser</title>
   <metadata
      id="metadata11">
     <rdf:RDF>
@@ -26,10 +26,10 @@
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
         <cc:license
            rdf:resource="https://spdx.org/licenses/etalab-2.0" />
-        <dc:date>2022.08.12</dc:date>
+        <dc:date>2023.05.10</dc:date>
         <dc:creator>
           <cc:Agent>
-            <dc:title>Leslie Lemaire @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
+            <dc:title>Leslie Lemaire et Didier Leclerc @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
           </cc:Agent>
         </dc:creator>
         <dc:publisher>
@@ -37,7 +37,7 @@
             <dc:title>République Française</dc:title>
           </cc:Agent>
         </dc:publisher>
-        <dc:title>Enregistrer les métadonnées</dc:title>
+        <dc:title>Réinitialiser</dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
