@@ -23,7 +23,7 @@ homepage=https://github.com/MTES-MCT/metadata-postgresql
 tracker=https://github.com/MTES-MCT/metadata-postgresql/issues
 repository=https://github.com/MTES-MCT/metadata-postgresql
 icon=icons/logo/plume.svg  
-experimental = True
+experimental = False
 deprecated = False
 
 # Author contact information
