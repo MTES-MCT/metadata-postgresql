@@ -433,9 +433,9 @@ def text_with_link(anystr, anyiri):
     if not anyiri:
         return anystr
     if str(anyiri) == anystr and '&' in anystr or '=' in anystr:
-        elements = anystr.rsplit('/', 1)
-        if len(elements) > 1:
-            anystr = f'{elements[0]}/...'
+        res = re.search('^[^&=]+/', anystr)
+        if res and res[0] != anystr :
+            anystr = f'{res[0]}...'
     return """<a href="{}">{}</a>""".format(
         escape(str(anyiri), quote=True),
         escape(anystr, quote=True)

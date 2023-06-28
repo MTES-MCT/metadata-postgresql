@@ -536,7 +536,8 @@ class UtilsTestCase(unittest.TestCase):
                 'id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&dataType=datasetAggregate',
                 URIRef(
                     'https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?'
-                    'id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&dataType=datasetAggregate')
+                    'id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&dataType=datasetAggregate'
+                )
             ),
             '<a href="https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?'
             'id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&amp;dataType=datasetAggregate">'
@@ -548,6 +549,19 @@ class UtilsTestCase(unittest.TestCase):
                 URIRef("https://www.postgresql.org/docs/10/index.html")
             ),
             '<a href="https://www.postgresql.org/docs/10/index.html">Documentation de PostgreSQL 10 &amp; Note de version</a>'
+        )
+        self.assertEqual(
+            text_with_link(
+                'https://sous.domaine.gouv.fr/applicatif/requete?'
+                'param1=abc&param2=http://espace.de/nommage&param3=ok',
+                URIRef(
+                    'https://sous.domaine.gouv.fr/applicatif/requete?'
+                    'param1=abc&param2=http://espace.de/nommage&param3=ok'
+                )
+            ),
+            '<a href="https://sous.domaine.gouv.fr/applicatif/requete?param1=abc'
+            '&amp;param2=http://espace.de/nommage&amp;param3=ok">'
+            'https://sous.domaine.gouv.fr/applicatif/...</a>'
         )
 
 if __name__ == '__main__':
