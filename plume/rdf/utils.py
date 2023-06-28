@@ -417,6 +417,7 @@ def text_with_link(anystr, anyiri):
     str
         Une chaîne de caractère correspondant à un élément A,
         qui sera interprétée par les widgets comme du texte riche.
+        Si `anyiri` n'est pas défini, `anystr` est renvoyé tel quel.
     
     Examples
     --------
@@ -427,6 +428,14 @@ def text_with_link(anystr, anyiri):
     '<A href="https://www.postgresql.org/docs/10/index.html">Documentation de PostgreSQL 10</A>'
     
     """
+    if not anystr:
+        return
+    if not anyiri:
+        return anystr
+    if str(anyiri) == anystr and '&' in anystr or '=' in anystr:
+        elements = anystr.rsplit('/', 1)
+        if len(elements) > 1:
+            anystr = f'{elements[0]}/...'
     return """<a href="{}">{}</a>""".format(
         escape(str(anyiri), quote=True),
         escape(anystr, quote=True)

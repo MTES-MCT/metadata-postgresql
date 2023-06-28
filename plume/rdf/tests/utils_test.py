@@ -9,7 +9,7 @@ from plume.rdf.utils import (
     str_from_datetime, str_from_date, str_from_time, datetime_from_str, 
     date_from_str, time_from_str, str_from_decimal, decimal_from_str, 
     main_datatype, export_format_from_extension, export_formats, no_logging,
-    MetaCollection, almost_included, all_words_included
+    MetaCollection, almost_included, all_words_included, text_with_link
 )
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
@@ -513,6 +513,42 @@ class UtilsTestCase(unittest.TestCase):
         """Contrôle d'inclusion approximatif (tous les mots dans le désordre)."""
         self.assertTrue(all_words_included('!!!ax-bxb-cxcc?????', 'bxb-a##B--C d?§efg-AX ; cXcc'))
         self.assertFalse(all_words_included('!!!ax-bxb-cxcc?????', 'a##B--C d?§efg-AX ; cXcc'))
+
+    def test_text_with_link(self):
+        """Contrôle de la construction des hyperliens"""
+        self.assertEqual(
+            text_with_link(
+                "Documentation de PostgreSQL 10",
+                URIRef("https://www.postgresql.org/docs/10/index.html")
+            ),
+            '<a href="https://www.postgresql.org/docs/10/index.html">Documentation de PostgreSQL 10</a>'
+        )
+        self.assertEqual(
+            text_with_link(
+                "https://www.postgresql.org/docs/10/index.html",
+                URIRef("https://www.postgresql.org/docs/10/index.html")
+            ),
+            '<a href="https://www.postgresql.org/docs/10/index.html">https://www.postgresql.org/docs/10/index.html</a>'
+        )
+        self.assertEqual(
+            text_with_link(
+                'https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?'
+                'id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&dataType=datasetAggregate',
+                URIRef(
+                    'https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?'
+                    'id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&dataType=datasetAggregate')
+            ),
+            '<a href="https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?'
+            'id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&amp;dataType=datasetAggregate">'
+            'https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/...</a>'
+        )
+        self.assertEqual(
+            text_with_link(
+                "Documentation de PostgreSQL 10 & Note de version",
+                URIRef("https://www.postgresql.org/docs/10/index.html")
+            ),
+            '<a href="https://www.postgresql.org/docs/10/index.html">Documentation de PostgreSQL 10 &amp; Note de version</a>'
+        )
 
 if __name__ == '__main__':
     unittest.main()
