@@ -3500,6 +3500,43 @@ class WidgetsDictTestCase(unittest.TestCase):
         w = WidgetsDict(langList=('en', 'de', 'it'))
         self.assertEqual(w.langlist, ('en', 'de', 'it'))
 
+    def test_value_help_text(self):
+        """Contrôle la génération du texte à afficher en infobulle sur certaines valeurs."""
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix uuid: <urn:uuid:> .
+            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dcat:theme <http://inspire.ec.europa.eu/theme/au> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046" ;
+                dcat:distribution [ a dcat:Distribution ;
+                    dcat:packageFormat <http://publications.europa.eu/resource/authority/file-type/ZIP> ;
+                    dct:license [ a dct:LicenseDocument ;
+                        rdfs:label "Licence ouverte Etalab 2.0"@fr ] ;
+                    dcat:accessURL <https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&dataType=datasetAggregate> ] .
+            """
+        # en mode lecture...
+        metagraph = Metagraph().parse(data=metadata)
+        widgetsdict = WidgetsDict(metagraph=metagraph, mode='read')
+        themekey = widgetsdict.root.search_from_path(DCAT.theme)
+        self.assertEqual(widgetsdict[themekey]['value help text'], 'http://inspire.ec.europa.eu/theme/au')
+        witnesskey = widgetsdict.root.search_from_path(DCT.identifier)
+        self.assertIsNone(widgetsdict[witnesskey]['value help text'])
+        formatkey = widgetsdict.root.search_from_path(DCAT.distribution / DCAT.packageFormat)
+        self.assertEqual(widgetsdict[formatkey]['value help text'], 'http://publications.europa.eu/resource/authority/file-type/ZIP')
+        urlkey = widgetsdict.root.search_from_path(DCAT.distribution / DCAT.accessURL)
+        self.assertEqual(
+            widgetsdict[urlkey]['value help text'],
+            'https://atom.geo-ide.developpement-durable.gouv.fr/atomArchive/GetResource?id=fr-120066022-orphan-5ac5fa30-1ce8-479f-9c67-f5960e69bcb5&dataType=datasetAggregate'
+        )
+        # ... mais pas en mode édition
+        widgetsdict = WidgetsDict(metagraph=metagraph, mode='edit')
+        themekey = widgetsdict.root.search_from_path(DCAT.theme)
+        self.assertIsNone(widgetsdict[themekey]['value help text'])
+
 if __name__ == '__main__':
     unittest.main()
 

@@ -634,6 +634,7 @@ class WidgetsDict(dict):
             internaldict['type validator'] = self.type_validator(widgetkey)
             internaldict['read only'] = widgetkey.is_read_only
             internaldict['value'] = self.str_value(widgetkey)
+            internaldict['value help text'] = self.help_text_value(widgetkey)
             internaldict['language value'] = widgetkey.value_language
             if widgetkey.has_language_button:
                 internaldict['authorized languages'] = widgetkey.available_languages.copy()
@@ -1483,6 +1484,27 @@ class WidgetsDict(dict):
                 str_value = text_with_link(str_value, value)
         return str_value
     
+    def help_text_value(self, widgetkey):
+        """S'il y a lieu, crée le texte à afficher en infobulle sur la valeur d'un widget.
+
+        Cette information a vocation à être stockée dans la clé
+        ``value help text`` du dictionnaire interne associé à l'objet
+        :py:class:`plume.rdf.widgetkey.ValueKey`.
+        
+        Parameters
+        ----------
+        widgetkey : plume.rdf.widgetkey.ValueKey
+            Une clé-valeur de dictionnaire de widgets.
+        
+        Returns
+        -------
+        str
+
+        """
+        if widgetkey.is_read_only:
+            if isinstance(widgetkey.value, URIRef):
+                return str(widgetkey.value)
+
     def build_metagraph(self, preserve_metadata_date=False):
         """Construit un graphe de métadonnées à partir du contenu du dictionnaire.
         

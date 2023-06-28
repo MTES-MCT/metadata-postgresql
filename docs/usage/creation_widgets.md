@@ -238,28 +238,38 @@ widgetsdict[widgetkey]['text help']
 
 - Lorsqu'elle existe (car préalablement renseignée dans la fiche de métadonnées), la **valeur à afficher** dans le widget est fournie par la clé `'value'` du dictionnaire.
 
-```python
+    ```python
 
-widgetsdict[widgetkey]['value']
+    widgetsdict[widgetkey]['value']
 
-```
+    ```
 
 - Si la clé `'read only'` vaut `True`, le widget doit être visible mais désactivé, pour empêcher les modifications manuelles par l'utilisateur.
 
-```python
+    ```python
 
-widgetsdict[widgetkey]['read only']
+    widgetsdict[widgetkey]['read only']
 
-```
+    ```
 
 - La clé `'is mandatory'` contient un booléen indiquant s'il est obligatoire (valeur `True`) ou non (valeur `False` ou `None`) de saisir une valeur pour la catégorie.
 
-```python
+    ```python
 
-widgetsdict[widgetkey]['is mandatory']
+    widgetsdict[widgetkey]['is mandatory']
 
-```
- 
+    ```
+
+- Si la clé `'value help text'` contient une valeur, elle devra être affichée en infobulle sur la valeur.
+
+    ```python
+
+    widgetsdict[widgetkey]['value help text']
+
+    ```
+
+    `'value help text'` est toujours prioritaire sur `'help text'` lorsqu'elle est renseignée, mais elle ne s'applique qu'au widget principal qui contient la valeur, pas à ses widgets annexes. 
+
 
 ### Paramètres spécifiques aux widgets QLineEdit et QTextEdit
 

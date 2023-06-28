@@ -91,6 +91,9 @@ class InternalDict(dict):
       de la catégorie de métadonnée. Il devra alors être référencé dans ``label widget``.
     * ``help text`` : le cas échéant, texte explicatif à afficher en infobulle.
     * ``value`` : pour un widget de saisie, l'éventuelle valeur à afficher.
+    * ``value help text`` : le cas échéant, une explicitation de la valeur à afficher en 
+      infobulle sur la valeur d'une métadonnée non éditable. Cette clé fournit par exemple
+      les URL de destination des hyperliens.
     * ``placeholder text`` : le cas échéant, valeur du paramètre ``placeholder`` (texte de
       substitution, qui apparaît tant qu'aucune valeur n'est renseignée) pour le widget principal.
     * ``input mask`` : le cas échéant, valeur du paramètre ``inputMask`` (masque de saisie)
@@ -161,8 +164,8 @@ class InternalDict(dict):
             'switch source menu', 'switch source actions', 'language menu',
             'language actions', 'unit menu', 'unit actions', 'geo menu', 'geo actions',
             # paramétrage des widgets :
-            'hidden', 'label', 'has label', 'help text', 'value', 'placeholder text',
-            'input mask', 'is mandatory', 'read only', 'has minus button',
+            'hidden', 'label', 'has label', 'help text', 'value', 'value help text',
+            'placeholder text', 'input mask', 'is mandatory', 'read only', 'has minus button',
             'hide minus button', 'regex validator pattern', 'regex validator flags',
             'type validator', 'multiple sources', 'sources', 'current source',
             'thesaurus values', 'authorized languages', 'language value', 'units',
