@@ -1,11 +1,11 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: plume_pg
+Upstream-Name: plume-pg
 Upstream-Contact: <drc.uni.dnum.sg@developpement-durable.gouv.fr>
 Source: https://github.com/MTES-MCT/metadata-postgresql
 
 Files: *
 Copyright: 2020-2023, République Française, Secrétariat général du Ministère de la Transition écologique et de la Cohésion des territoires, du Ministère de la Transition énergétique et du Secrétariat d'Etat à la Mer, Direction du numérique
-License:  	AGPL-3.0-or-later
+License: AGPL-3.0-or-later
  GNU AFFERO GENERAL PUBLIC LICENSE
  Version 3, 19 November 2007
  .
