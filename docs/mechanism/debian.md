@@ -37,14 +37,18 @@ Cf. [Documentation de Debian](https://www.debian.org/doc/debian-policy/ch-contro
 
 ## Génération du paquet
 
-L'action permettant de construit le paquet peut être déclenchée depuis l'interface web de GitHub, onglet *Actions*. Elle se nomme *PlumePg Debian packaging*. 
+L'action permettant de construit le paquet peut être déclenchée depuis l'interface web de GitHub, onglet *Actions*. Elle se nomme *PlumePg Debian packaging*.
 
-Lorsque l'action est sélectionnée, GitHub affiche dans un bandeau bleu un bouton *Run workflow* qui permet de l'exécuter.
+![Select action](./img/debian_packaging_select_action.png)
+
+Lorsque l'action est sélectionnée, et sous réserve de disposer des droits nécessaires, GitHub affiche dans un bandeau bleu un bouton *Run workflow* qui permet de l'exécuter.
 
 ![Run workflow](./img/debian_packaging_workflow_dispatch.png)
 
 Il sera demandé de préciser manuellement le numéro de version. Il s'agit de la version de PlumePg et non de Plume, sans le "v". Par exemple `'0.3.0'` pour la version v0.3.0 de PlumePg qui accompagnait Plume v1.0.0.
 
+![Workflow parameter](./img/debian_packaging_run_parameter.png)
+
 ## Téléchargement du paquet
 
-Pour télécharger manuellement le paquet, il faut cliquer sur le "run" après la fin de son exécution. Le fichier `.deb` se trouve dans l'archive ZIP `plume_pg-deb` qui apparaît dans le cadre *Artifacts*. Il suffit de cliquer sur son nom pour la télécharger.
+Pour télécharger manuellement le paquet, il faut cliquer sur le "run" après la fin de son exécution. Le fichier `.deb` se trouve dans l'archive ZIP `plume-pg-deb` qui apparaît dans le cadre *Artifacts*. Il suffit de cliquer sur son nom pour la télécharger.
