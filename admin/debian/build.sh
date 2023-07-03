@@ -7,7 +7,7 @@ set -e
 #-------------------------------------------------------------------------
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-PROJECT_DIR=$( cd "$SCRIPT_DIR" && cd .. && pwd )
+PROJECT_DIR=$( cd "$SCRIPT_DIR" && cd ../.. && pwd )
 
 # Usage
 usage() {
