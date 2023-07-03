@@ -40,8 +40,6 @@ DEB_DOC_DIR=$DEB_FULLNAME/usr/share/doc/$PKG_NAME
 mkdir -p $DEB_DOC_DIR
 cp -r $PROJECT_DIR/admin/debian/doc/* $DEB_DOC_DIR
 gzip -n --best $DEB_DOC_DIR/changelog
-cp $PROJECT_DIR/README.md $DEB_DOC_DIR
-gzip -n --best $DEB_DOC_DIR/README.md
 
 # Les fichiers Postgresql
 # y compris les scripts de mise à jour des versions antérieures
