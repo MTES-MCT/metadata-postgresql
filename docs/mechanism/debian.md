@@ -51,4 +51,10 @@ Il sera demandé de préciser manuellement le numéro de version. Il s'agit de l
 
 ## Téléchargement du paquet
 
-Pour télécharger manuellement le paquet, il faut cliquer sur le "run" après la fin de son exécution. Le fichier `.deb` se trouve dans l'archive ZIP `plume-pg-deb` qui apparaît dans le cadre *Artifacts*. Il suffit de cliquer sur son nom pour la télécharger.
+Pour télécharger manuellement le paquet, il faut cliquer sur le compte rendu d'exécution de l'action une fois qu'elle apparaît comme achevée. 
+
+![View workflow run](./img/debian_packaging_view_workflow_run.png)
+
+Le fichier `.deb` se trouve dans l'archive ZIP `plume-pg-deb` qui apparaît dans le cadre *Artifacts*. Il suffit de cliquer sur son nom pour la télécharger.
+
+![Workflow run result](./img/debian_packaging_workflow_run_result.png)
