@@ -1,0 +1,16 @@
+Package: #PKG_NAME#
+Source: #PKG_NAME#
+Version: #PKG_VERSION#
+Section: libs
+Priority: optional
+Architecture: all
+Depends: postgresql-10|postgresql-11|postgresql-12|postgresql-13|postgresql-14|postgresql-15
+Installed-Size: 500
+Maintainer: Leslie Lemaire (MTECT-MTE-SEMer/SG/DNUM/UNI/DRC) <drc.uni.dnum.sg@developpement-durable.gouv.fr>
+Description: Extension PostgreSQL PlumePg
+ PlumePg complète le plugin QGIS Plume, outil de consultation et saisie des métadonnées
+ du patrimoine en base PostgreSQL. Elle permet notamment à l'administrateur du serveur
+ PostgreSQL de créer des modèles de fiches de métadonnées adaptés à son organisation et
+ de bénéficier des fonctionnalités d'enregistrement automatisé des dates de création et
+ dernière modification des tables.
+Homepage: https://github.com/MTES-MCT/metadata-postgresql

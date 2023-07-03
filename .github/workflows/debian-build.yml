@@ -1,0 +1,28 @@
+name: PlumePg Debian packaging
+run-name: Construction d'un paquet pour PlumePg v${{ inputs.plume_pg_version }} par @${{ github.actor }}
+on:
+  workflow_dispatch:
+    inputs:
+      plume_pg_version:
+        description: Numéro de version de PlumePg (ex 0.3.0)
+        required: true
+        type: string
+env:
+  PKG_NAME: plume_pg
+  DEB_REV: 0
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v3    
+      - name: Deb building
+        run: |
+          DEB_FILE=$(bash ./admin/debian/build.sh $PKG_NAME ${{ inputs.plume_pg_version }} $DEB_REV)
+          echo "Paquet construit : $DEB_FILE"
+      - name: Artifact upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: plume_pg-deb
+          path: "*.deb"

@@ -119,7 +119,7 @@ La commande suivante permet de générer la commande `INSERT` qui ajoute toutes 
 
 ```
 
-Le résultat doit être copié dans le script de création de l'extension, soit un fichier `plume_pg--x.x.x.sql` du répertoire {py:file}`/postgresql` portant le numéro de la version à venir de l'extension.
+Le résultat doit être copié dans le script de création de l'extension, soit un fichier `plume_pg--x.x.x.sql` du répertoire {file}`/postgresql` portant le numéro de la version à venir de l'extension.
 
 Pour le script de mise à jour depuis la version précédente, il sera généralement préférable de limiter les commandes aux catégories effectivement modifiées.
 
@@ -130,11 +130,11 @@ Par précaution, on veillera également à actualiser les fichiers JSON qui cont
 
 ## Ajouter une option de configuration des catégories de métadonnées
 
-Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui définit les fonctionnalités d'aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l'option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier {py:file}`/plume/rdf/data/shape.ttl`), désérialisation du schéma métadonnées communes (module {py:mod}`plume.rdf.properties`), modèles de formulaires (extension [*PlumePg*], dont le code se trouve dans le répertoire {py:file}`/postgresql`), import des modèles de formulaire (module {py:mod}`plume.pg.queries`), désérialisation des modèles de formulaire (module {py:mod}`plume.pg.template`), arbre des clés (module {py:widgetkey}`plume.rdf.widgetkey`), dictionnaire interne (module {py:mod}`plume.rdf.internaldict`), dictionnaire de widgets (module {py:mod}`plume.rdf.widgetsdict`), construction du formulaire (description des modalités dans [`creation_widgets.md`](../usage/creation_widgets.md)).
+Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui définit les fonctionnalités d'aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l'option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier {file}`/plume/rdf/data/shape.ttl`), désérialisation du schéma métadonnées communes (module {py:mod}`plume.rdf.properties`), modèles de formulaires (extension [*PlumePg*], dont le code se trouve dans le répertoire {file}`/postgresql`), import des modèles de formulaire (module {py:mod}`plume.pg.queries`), désérialisation des modèles de formulaire (module {py:mod}`plume.pg.template`), arbre des clés (module {py:widgetkey}`plume.rdf.widgetkey`), dictionnaire interne (module {py:mod}`plume.rdf.internaldict`), dictionnaire de widgets (module {py:mod}`plume.rdf.widgetsdict`), construction du formulaire (description des modalités dans [`creation_widgets.md`](../usage/creation_widgets.md)).
 
 ### Schéma des métadonnées communes
 
-Sauf à ce que l'option considérée ait vocation à être exclusivement gérée via les modèles de formulaire, on voudra généralement l'associer à certaines catégories définies par le schéma des métadonnées communes. Ceci suppose de compléter manuellement le fichier {py:file}`/plume/rdf/data/shape.ttl`.
+Sauf à ce que l'option considérée ait vocation à être exclusivement gérée via les modèles de formulaire, on voudra généralement l'associer à certaines catégories définies par le schéma des métadonnées communes. Ceci suppose de compléter manuellement le fichier {file}`/plume/rdf/data/shape.ttl`.
 
 Si elle n'est pas nativement prévue par le language [SHACL](https://www.w3.org/TR/shacl/), on utilisera l'espace de nommage `http://registre.data.developpement-durable.gouv.fr/plume/`, dont le préfixe est `plume`. Par convention, le nom de l'option devra être écrit en CamlCase, avec une minuscule sur le premier caractère puisqu'il s'agit d'une propriété et non d'une classe.
 
@@ -168,7 +168,7 @@ L'option peut avoir plusieurs valeurs, il faudra juste penser à le déclarer da
 
 ### Désérialisation du schéma des métadonnées communes
 
-C'est la fonction {py:func}`~plume.rdf.properties.read_shape_property` du module {py:mod}`plume.rdf.properties` qui a la charge de lire et d'interpréter le contenu du fichier {py:file}`/plume/rdf/data/shape.ttl`. Elle a besoin de connaître à l'avance les options à rechercher.
+C'est la fonction {py:func}`~plume.rdf.properties.read_shape_property` du module {py:mod}`plume.rdf.properties` qui a la charge de lire et d'interpréter le contenu du fichier {file}`/plume/rdf/data/shape.ttl`. Elle a besoin de connaître à l'avance les options à rechercher.
 
 On ajoutera donc à son dictionnaire `prop_map` la nouvelle option : 
 

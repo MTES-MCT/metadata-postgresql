@@ -5,3 +5,4 @@ Mécanique interne
    :maxdepth: 4
 
    memo
+   debian

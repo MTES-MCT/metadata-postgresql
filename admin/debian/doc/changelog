@@ -1,0 +1,11 @@
+plume_pg (0.3.0) stable; urgency=high
+
+  * Compatibilité avec Plume v1.0.0 et son schéma de métadonnées communes.
+
+  * Nouveau modèle pré-configuré "INSPIRE" et amélioration des modèles existants.
+
+  * Ajout d'une fonction z_plume.stamp_create_triggers pour activer massivement l'enregistrement des dates de modification des tables d'un ou plusieurs schémas.
+  
+  Pour plus de détails : <https://mtes-mct.github.io/metadata-postgresql/changelog/v1_0_0.html>
+
+ -- Leslie Lemaire (MTECT-MTE-SEMer/SG/DNUM/UNI/DRC) <drc.uni.dnum.sg@developpement-durable.gouv.fr>  Mon, 19 Jun 2023 08:10:00 +0200
