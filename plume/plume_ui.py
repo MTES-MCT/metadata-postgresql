@@ -138,6 +138,8 @@ class Ui_Dialog_plume(object):
         self.geomPointEpaisseur = self.mDic_LH["geomPointEpaisseur"]       
         self.geomZoom        = True if self.mDic_LH["geomZoom"] == "true" else False
         self.geomPrecision   = int(self.mDic_LH["geomPrecision"])       
+        #for active manage Template or No
+        self.ifActivateRightsToManageModelsFlag = True if mDic_LH["ifActivateRightsToManageModelsFlag"] == "true" else False
         #-
         #tooltip         
         self.activeTooltip          = True if mDic_LH["activeTooltip"]          == "true" else False
@@ -247,7 +249,7 @@ class Ui_Dialog_plume(object):
         #First Open 
         if self.firstOpen :
            afficheNoConnections(self, "first")
-           self.listeResizeIhm = [] # For resizeIhm
+           self.listeResizeIhm = []                   # For resizeIhm
         #First Open 
         #==========================
 
@@ -554,7 +556,7 @@ class Ui_Dialog_plume(object):
 
     #**********************
     def actionFonctionQGroupBox(self,_keyObjet, mAction):
-        print(str(_keyObjet))
+        #print(str(_keyObjet))
         if mAction == "copierQGroupBox" :
            print("copierQGroupBox")
         elif mAction == "collerQGroupBox" :
@@ -1083,7 +1085,7 @@ class Ui_Dialog_plume(object):
         if hasattr(self, "dlg") : self.dlg.setWindowTitle(self.messWindowTitleVerrou if self.verrouLayer else self.messWindowTitle)   
 
         #Permet d'afficher si ifActivateRightsToManageModels = True
-        # Test avant sur l'existence de l'extension avant de chercher les drotis
+        # Test avant sur l'existence de l'extension avant de chercher les droits
         self.mIfActivateRightsToManageModels = False if not self.instalMetadata  else ifActivateRightsToManageModels(self) 
         self.paramColor.setVisible(False if self.mIfActivateRightsToManageModels else True)
         self.paramColorModele.setVisible(True if self.mIfActivateRightsToManageModels else False)

@@ -113,7 +113,8 @@ class MainPlugin(object):
          self.navigateurasgardMenuDock = None  
          pass   
 
-      #
+      #for active manage Template or No
+      self.ifActivateRightsToManageModelsFlag = True if mDic_LH["ifActivateRightsToManageModelsFlag"] == "true" else False
       #==========================
       #Active Tooltip   
       self.activeTooltip          = True if mDic_LH["activeTooltip"]          == "true" else False

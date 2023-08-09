@@ -322,6 +322,20 @@ class Ui_Dialog_ImportCSW(object):
     def functionImport(self):
        zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "You must enter a URL of a CSW service and a metadata record identifier.", None) 
+       """
+       #For test
+       url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr","fr-120066022-jdd-1c02c1c1-cd81-4cd5-902e-acbd3d4e5527"
+       #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable","fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab"
+       #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-9618cc78-9b28-4562-8bbe-bede9bee2e9f"
+       #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef"
+       #
+       raw_xml, old_metagraph = self.returnXml( url_csw, file_identifier ), self.Dialog.metagraph
+       print(type(raw_xml))
+       print( "DEBUT\n", raw_xml, "\nFIN")
+       #For test
+       #return
+       """ 
+
        if self.mZoneUrl.text() == "" or self.mZoneUrlId.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :
@@ -337,27 +351,25 @@ class Ui_Dialog_ImportCSW(object):
           #Retoune l'XML de l'appel URL + ID
           raw_xml, old_metagraph = self.returnXml( self.mZoneUrl.text(), self.mZoneUrlId.text() ), self.Dialog.metagraph                                            
 
-          #For test
-          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr","fr-120066022-jdd-1c02c1c1-cd81-4cd5-902e-acbd3d4e5527"
-          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/dataset-harvestable","fr-120066022-jdd-23d6b4cd-5a3b-4e10-83ae-d8fdad9b04ab"
-          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-9618cc78-9b28-4562-8bbe-bede9bee2e9f"
-          #url_csw, file_identifier = "http://ogc.geo-ide.developpement-durable.gouv.fr/csw/all-dataset","fr-120066022-jdd-a307d028-d9d2-4605-a1e5-8d31bc573bef"
-          #
-          #raw_xml, old_metagraph = self.returnXml( url_csw, file_identifier ), self.Dialog.metagraph
-          #For test
-           
-          #NEW metagraph and OlD Metagraph
-          metagraph = metagraph_from_iso(raw_xml, old_metagraph, mOptions)                                           
-          
-          #Sauvegarde l'URL et l'ID si case cochée
-          if self.caseSave.isChecked() :
-             metagraph.linked_record = self.mZoneUrl.text(), self.mZoneUrlId.text()
+          #- Cas ou le serveur CSW ne renvoie rien https://github.com/MTES-MCT/metadata-postgresql/issues/146 
+          if raw_xml[0] == None : 
+             zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
+             zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "the server returned an error.", None) 
+             displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + '\n\nRéponse du serveur : « ' + raw_xml[2] + ' ».', Qgis.Warning, self.Dialog.durationBarInfo)
+          else : 
+             #NEW metagraph and OlD Metagraph
+             metagraph = metagraph_from_iso(raw_xml[0], old_metagraph, mOptions)                                           
+             
+             #Sauvegarde l'URL et l'ID si case cochée
+             if self.caseSave.isChecked() :
+                metagraph.linked_record = self.mZoneUrl.text(), self.mZoneUrlId.text()
 
-          self.Dialog.metagraph = metagraph
+             self.Dialog.metagraph = metagraph
 
-          #Regénère l'IHM
-          saveObjetTranslation(self.Dialog.translation)
-          self.Dialog.generationALaVolee(returnObjetsMeta(self.Dialog))
+             #Regénère l'IHM
+             saveObjetTranslation(self.Dialog.translation)
+             self.Dialog.generationALaVolee(returnObjetsMeta(self.Dialog))
+             
           self.close()
        return
 
@@ -373,7 +385,11 @@ class Ui_Dialog_ImportCSW(object):
         evloop.exec_(QEventLoop.ExcludeUserInputEvents)
         fetcher.finished.disconnect(evloop.quit)
         #-
-        raw_xml = fetcher.contentAsString()
+        raw_xml = [ fetcher.contentAsString() ]
+        #- Cas ou le serveur CSW ne renvoie rien https://github.com/MTES-MCT/metadata-postgresql/issues/146 
+        if raw_xml[0] == "" :
+           ret = fetcher.reply()
+           raw_xml = [ None, str(ret.error()), str(ret.errorString()) ]
         #-
         return raw_xml
 

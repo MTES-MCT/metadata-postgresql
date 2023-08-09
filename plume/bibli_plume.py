@@ -98,7 +98,7 @@ class GenereButtonsWithDictWithEvent( ) :
 def ifActivateRightsToManageModels(_self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
     mKeySql = queries.query_is_template_admin()
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(_self, _self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-    r = False # for Test A supprimer
+    if not _self.ifActivateRightsToManageModelsFlag : r = False # Permet de chinter le controle des droits et dans tous les cas = False
     return r
 
 #==========================
@@ -889,7 +889,7 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
           self.mMenuBarDialogLine2.setGeometry(QtCore.QRect(10, 24, self.Dialog.width() - 20, 23))
     except :
         pass 
-    #----
+
     #----
     #Réinit les dimensions de l'IHM
     returnAndSaveDialogParam(self, "Save")
@@ -1023,6 +1023,7 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        mDicAutre["layerBeforeClickedWho"]     = valueDefautLayerBeforeClickedWho
        mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
        mDicAutre["versionPlumeBibli"]     = valueDefautVersion
+       mDicAutre["ifActivateRightsToManageModelsFlag"] = "false"
        #---- for Tooltip
        mDicAutre["activeZoneNonSaisie"]          = "false"
        mDicAutre["activeTooltip"]                = "true"

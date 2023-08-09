@@ -973,7 +973,7 @@ class Ui_Dialog_CreateTemplate(object):
        return
 
     #===============================              
-    def functionUpdateCategorie(self):
+    def functionUpdateCategorie_enCours(self):
         pass
 
     #===============================              
@@ -989,10 +989,10 @@ class Ui_Dialog_CreateTemplate(object):
        return
 
     #===============================              
-    def functionAddCategorie(self):
+    def functionUpdateCategorie(self):
        zTitre = QtWidgets.QApplication.translate("CreateTemplate_ui", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("CreateTemplate_ui", "You must enter a label.", None)
-       mTestExisteCategorie = returnListObjAttributsId(self, self.groupBoxAttributsCategories, self.mapping_categories)[0]
+       mTestExisteCategorie = returnListObjAttributsId(self, self.groupBoxAttributsCategorie, self.mapping_categories)[0]
        if mTestExisteCategorie.text() == "" :
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
        else :   
@@ -1046,7 +1046,6 @@ def afficheLabelAndLibelle(_selfCreateTemplate, etat_labelDiskSaveAndReinit, eta
 #==========================         
 def returnListRessourceCategorie(self, mListCategories) : 
     _listCategorieIn = []
-
     i = 0
     while i < len(self.mListCategories) : 
        _lib_Categories     = self.mListCategories[i]["path"] 
@@ -2212,17 +2211,17 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self.groupBoxAttributsCategorie           = _selfCreateTemplate.groupBoxAttributsCategorie
         self.mapping_categories                   = _selfCreateTemplate.mapping_categories
         self.mListCategories                      = _selfCreateTemplate.mListCategories   
-        self.listeRessourceCategorie              = _selfCreateTemplate.listeRessourceCategorie
         self._selfCreateTemplate                  = _selfCreateTemplate
         self.sepLeftTemplate                      = _selfCreateTemplate.sepLeftTemplate
         self.sepRightTemplate                     = _selfCreateTemplate.sepRightTemplate
         self.fontCategorieInVersOut               = _selfCreateTemplate.fontCategorieInVersOut
         self.groupBoxdisplayHelpFocusAttributsCategorie = _selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie
-        self.zoneDisplayHelpFocusAttributsCategorie     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie
+        self.zoneDisplayHelpFocusAttributsCategorie = _selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie
+        _selfCreateTemplate.listeRessourceCategorie = listeRessourceCategorie 
+        self.listeRessourceCategorie                = _selfCreateTemplate.listeRessourceCategorie
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
-
         # ======================================
         # ======================================
         dictNoeudsArboIn  , rowNodeIn  = {}, 0 
@@ -2289,6 +2288,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self.itemClicked.connect( self.ihmsPlumeCATEGORIE ) 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelPlumeCATEGORIE)
+        self.listeRessourceCategorie              = listeRessourceCategorie
         return
         
     #===============================              
@@ -2372,7 +2372,11 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         mKeySql = queries.query_read_meta_categorie()
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
         self.mListCategories = [row[0] for row in r]
-        listeRessourceCategorie = returnListRessourceCategorie( self, self.mListCategories )
+
+        if len(self.mListCategories)  > 0 : 
+           listeRessourceCategorie = returnListRessourceCategorie( self, self.mListCategories )
+        else :   
+           listeRessourceCategorie = []
         self.clear()
         self.afficheCATEGORIE(self._selfCreateTemplate, listeRessourceCategorie)
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)

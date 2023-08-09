@@ -3,17 +3,18 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (QAction, QMenu, QCompleter, QCheckBox, QWidget, QGraphicsOpacityEffect) 
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import ( QIcon )
 from PyQt5.QtCore import ( Qt )
-from qgis.gui import QgsDateTimeEdit   
+from qgis.gui import ( QgsDateTimeEdit )   
 import os
-import qgis  
+import qgis
 from plume import bibli_plume
 from plume.bibli_plume import ( executeSql )
 from qgis.core import (Qgis, QgsApplication, QgsWkbTypes, QgsWkbTypes, QgsGeometry )
 from plume.bibli_plume_tools_map import ( GeometryMapTool, GeometryMapToolShow, majVisuButton, eraseRubberBand )
 from plume.pg import queries
 from plume.rdf.utils import wkt_with_srid                  
+import re  
 
 #==================================================
 def generationObjets(self, _keyObjet, _valueObjet) :
@@ -79,7 +80,7 @@ def generationObjets(self, _keyObjet, _valueObjet) :
     # couleur d'opacité
     _labelBackGroundOpacity = self.mDic_LH["opacity"]
     #----Opacité
-
+    
     #---------------------------
     #Pour Gestion et Génération à la volée des onglets 
     self.mFirst = _valueObjet['object'] == 'tab'
@@ -232,17 +233,17 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        if valueExiste('is mandatory', _valueObjet) : _mObjetQSaisie.setProperty("mandatoryField", True if _valueObjet['is mandatory'] else False)
        #QRegularExpression                        
        if _valueObjet['regex validator pattern'] != None :
-          re = QtCore.QRegularExpression(_valueObjet['regex validator pattern'])
+          reg = QtCore.QRegularExpression(_valueObjet['regex validator pattern'])
           if _valueObjet['regex validator flags']:
               if "i" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QtCore.QRegularExpression.CaseInsensitiveOption)
+                 reg.setPatternOptions(QtCore.QRegularExpression.CaseInsensitiveOption)
               if "s" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QtCore.QRegularExpression.DotMatchesEverythingOption)
+                 reg.setPatternOptions(QtCore.QRegularExpression.DotMatchesEverythingOption)
               if "m" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QtCore.QRegularExpression.MultilineOption)
+                 reg.setPatternOptions(QtCore.QRegularExpression.MultilineOption)
               if "x" in _valueObjet['regex validator flags']:
-                 re.setPatternOptions(QtCore.QRegularExpression.ExtendedPatternSyntaxOption)
-          _mObjetQSaisie.setValidator(QtGui.QRegularExpressionValidator(re, _mObjetQSaisie))
+                 reg.setPatternOptions(QtCore.QRegularExpression.ExtendedPatternSyntaxOption)
+          _mObjetQSaisie.setValidator(QtGui.QRegularExpressionValidator(reg, _mObjetQSaisie))
        
        #========== 
        #QCOMBOBOX 
@@ -286,14 +287,15 @@ def generationObjets(self, _keyObjet, _valueObjet) :
        #Valeur                        
        bibli_plume.updateObjetWithValue(_mObjetQLabel, _valueObjet)  #Mets à jour la valeur de l'objet en fonction de son type                       
        #Tooltip                        
-       if valueExiste('help text', _valueObjet) : _mObjetQLabel.setToolTip(_valueObjet['help text'])
+       if valueExiste('value help text', _valueObjet) : 
+          _mObjetQLabel.setToolTip(_valueObjet['value help text'] if _valueObjet['value help text'] !=  "" else _valueObjet['help text'])
        #--                        
        _mObjetQLabel.setWordWrap(True)
        _mObjetQLabel.setOpenExternalLinks(True)
-
        #Dict des objets instanciés
        self.mDicObjetsInstancies[_keyObjet].update({'main widget' : _mObjetQLabel})
     # == QLABEL
+
     #---------------------------
     #---------------------------
     # == QDATEEDIT
@@ -1267,7 +1269,7 @@ def gestionOnglets(self, _key, _value):
                 border-style: outset;    \
                 border-width: 0px;       \
                 border-radius: 10px;     \
-                border-color: green;      \
+                border-color: yellow;      \
                 font-weight : bold;     \
                 padding-top: 6px;        \
                 }")
@@ -1292,8 +1294,9 @@ def gestionOnglets(self, _key, _value):
     scroll_bar = QtWidgets.QScrollArea(tab_widget_Onglet) 
     scroll_bar.setStyleSheet("QScrollArea { border: 0px solid red;}")
     scroll_bar.setWidgetResizable(True)
+    #scroll_bar.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
     scroll_bar.setGeometry(QtCore.QRect(x, y, larg, haut))
-    scroll_bar.setMinimumWidth(50)
+    scroll_bar.setMinimumWidth(50)                                                  
     scroll_bar.setWidget(zoneWidgetsGroupBox)
     #--  
     #For resizeIhm 

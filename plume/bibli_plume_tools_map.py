@@ -335,7 +335,15 @@ class GeometryMapToolShow(QgsMapTool ):
                 map_crs = QgsCoordinateReferenceSystem()
                 map_crs.createFromUserInput(self.mAuthid)
                 transform = QgsCoordinateTransform(self.crs, map_crs, QgsProject.instance())
-                self.canvas.setExtent(transform.transformBoundingBox(self.geom.boundingBox()))
+                # New Dl 19/06/2023
+                try: 
+                   self.canvas.setExtent(transform.transformBoundingBox(self.geom.boundingBox()))
+                except: 
+                   zTitre = QtWidgets.QApplication.translate("bibli_plume_tools_map", "PLUME : Warning", None)
+                   zMess  = QtWidgets.QApplication.translate("bibli_plume_tools_map", "Invalid geometry or unsupported type.", None)  
+                   displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+                   return
+                # New Dl 19/06/2023
              self.canvas.redrawAllLayers()
       return 
 
