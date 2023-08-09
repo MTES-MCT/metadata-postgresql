@@ -134,7 +134,7 @@ Pour ce faire, `WidgetsDict.computing_update` renvoie, comme toutes les méthode
 
 Le calcul automatique est la première étape de la matérialisation d'un formulaire, juste avant la [génération des widgets](./creation_widgets.md).
 
-Il s'agit là aussi de boucler sur les clés du dictionnaire de widgets pour exécuter les calculs, mais on utilisera pour ce faire un générateur spécifique, `plume.rdf.widgetsdict.WidgetsDict.items_to_compute` au lieu de `dict.items`. Ce générateur ne considère que les clés nécessitant un calcul (la clé `'auto compute'` de leur dictionnaire interne vaut `True`) et utilise une copie du dictionnaire de widgets, afin d'autoriser l'ajout ou la suppression de clés dans le dictionnaire d'origine au cours du traitement.
+Il s'agit là aussi de boucler sur les clés du dictionnaire de widgets pour exécuter les calculs, mais on utilisera pour ce faire un générateur spécifique, {py:meth}`plume.rdf.widgetsdict.WidgetsDict.items_to_compute` au lieu de {py:meth}`dict.items`. Ce générateur ne considère que les clés nécessitant un calcul (la clé `'auto compute'` de leur dictionnaire interne vaut `True`) et utilise une copie du dictionnaire de widgets, afin d'autoriser l'ajout ou la suppression de clés dans le dictionnaire d'origine au cours du traitement.
 
 ```python
 
@@ -145,7 +145,9 @@ for widgetkey, internaldict in widgetsdict.items_to_compute():
 
 *`internaldict` est le dictionnaire interne de la clé `widgetkey`, soit `widgetsdict[widgetkey]`.*
 
-À chaque itération, on suivra toutes les étapes du [processus de calcul](#processus-de-calcul) **à l'exception de [la dernière](#modification-des-widgets-en-conséquence)**. Le dictionnaire renvoyé par la méthode `plume.rdf.widgetsdict.WidgetsDict.computing_update` est inutile ici puisque le formulaire n'a pas encore été matérialisé.
+À chaque itération, on suivra toutes les étapes du [processus de calcul](#processus-de-calcul) **à l'exception de [la dernière](#modification-des-widgets-en-conséquence)**. Le dictionnaire renvoyé par la méthode {py:meth}`plume.rdf.widgetsdict.WidgetsDict.computing_update` est inutile ici puisque le formulaire n'a pas encore été matérialisé.
+
+Afin d'éviter que les valeurs calculées automatiquement réapparaissent dans le dictionnaire alors que l'utilisateur vient de sciemment les supprimer ou modifier, aucune clé ne sera marquée comme à calculer si le graphe de métadonnées à partir duquel a été généré le dictionnaire (le cas échéant) n'est pas considéré comme "neuf", c'est à dire si son attribut {py:attr}`plume.rdf.metagraph.Metagraph.fresh` vaut `True`. En pratique, un graphe n'est "neuf" que s'il vient d'être initialisé à partir d'un descriptif PostgreSQL ou s'il est issu d'une [réinitialisation](./actions_generales.md#réinitialisation). Un graphe produit lors d'une sauvegarde ou d'un import n'est pas "neuf".
 
 ## Implémentation du calcul à déclenchement manuel
 
