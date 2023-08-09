@@ -187,7 +187,7 @@ class PgDescription:
                     self.ante = title + str(t)
                 else:
                     self.ante = str(t)
-            else:
+            elif not self.copy_dct_title:
                 self.ante = ''
     
     @property
