@@ -2906,7 +2906,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute(r'''
                     UPDATE z_plume.meta_categorie
                         SET compute = ARRAY['manual'],
-                            compute_params = '{"pattern": "^[[]([^]]+)[]]"}'::jsonb
+                            compute_params = '{"pattern": "\\s*([^.]+)\\s*[.]", "flags": "g"}'::jsonb
                         WHERE path = 'dct:title' ;
                     ''')
                 cur.execute(
@@ -2945,7 +2945,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 # création d'une table de test
                 cur.execute('''
                     CREATE TABLE z_plume.table_test () ;
-                    COMMENT ON TABLE z_plume.table_test IS '[Autre titre] Blobliblu <METADATA> blabla </METADATA> Blubliblo' ;
+                    COMMENT ON TABLE z_plume.table_test IS 'Autre titre. Blobliblu. <METADATA> blabla </METADATA> Blubliblo' ;
                     ''')
                 query = widgetsdict.computing_query(c, 'z_plume', 'table_test')
                 cur.execute(*query)
@@ -2953,7 +2953,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                 cur.execute('DROP TABLE z_plume.table_test')
                 # suppression de la table de test
         conn.close()
-        self.assertListEqual(result, [('Autre titre',)])
+        self.assertListEqual(result, [('Autre titre',), ('Blobliblu',)])
         
         widgetsdict[c]['grid widget'] = '<c QGridLayout dct:description>'
         widgetsdict[c]['compute widget'] = '<c-compute QToolButton dct:description>'
