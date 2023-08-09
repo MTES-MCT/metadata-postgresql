@@ -4,92 +4,110 @@
 <http://id.insee.fr/geo/region/01> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/598b3ed6-a7ea-44f8-a130-7a42e3630a8a> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Guadeloupe"@fr .
+    skos:prefLabel "Guadeloupe"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/01> .
 
 <http://id.insee.fr/geo/region/02> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/d2727c95-277b-4345-af7d-9bc1b9a83cfc> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Martinique"@fr .
+    skos:prefLabel "Martinique"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/02> .
 
 <http://id.insee.fr/geo/region/03> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/465f8cf0-4b80-49b3-ba79-2ab47f4895e9> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Guyane"@fr .
+    skos:prefLabel "Guyane"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/03> .
 
 <http://id.insee.fr/geo/region/04> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/5bc4db56-216e-41be-90a1-6b84c0607184> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "La Réunion"@fr .
+    skos:prefLabel "La Réunion"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/04> .
 
 <http://id.insee.fr/geo/region/06> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/0e9f9adc-742d-4ab7-90bd-30e5aaf7b2ab> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Mayotte"@fr .
+    skos:prefLabel "Mayotte"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/06> .
 
 <http://id.insee.fr/geo/region/11> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/cf113ac9-0c4f-4db1-9be3-e99e4a336385> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Île-de-France"@fr .
+    skos:prefLabel "Île-de-France"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/11> .
 
 <http://id.insee.fr/geo/region/24> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/29f4d870-b70d-4df4-8e70-0313d051c338> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Centre-Val de Loire"@fr .
+    skos:prefLabel "Centre-Val de Loire"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/24> .
 
 <http://id.insee.fr/geo/region/27> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/c1c47bc9-6676-41e7-bdef-7136469f95f4> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Bourgogne-Franche-Comté"@fr .
+    skos:prefLabel "Bourgogne-Franche-Comté"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/27> .
 
 <http://id.insee.fr/geo/region/28> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/a7ac0f8e-d4d4-4ff2-9135-f0e0b6371aed> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Normandie"@fr .
+    skos:prefLabel "Normandie"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/28> .
 
 <http://id.insee.fr/geo/region/32> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/70086d81-9af2-4aeb-8734-502658d6a93f> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Hauts-de-France"@fr .
+    skos:prefLabel "Hauts-de-France"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/32> .
 
 <http://id.insee.fr/geo/region/44> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/7d897c17-a0ab-4da2-944b-a438e9798860> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Grand Est"@fr .
+    skos:prefLabel "Grand Est"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/44> .
 
 <http://id.insee.fr/geo/region/52> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/87777ef5-309b-47f5-9dc6-98893ff79698> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Pays de la Loire"@fr .
+    skos:prefLabel "Pays de la Loire"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/52> .
 
 <http://id.insee.fr/geo/region/53> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/6c83500c-454c-4d69-aec5-b988fb6f6f1c> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Bretagne"@fr .
+    skos:prefLabel "Bretagne"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/53> .
 
 <http://id.insee.fr/geo/region/75> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/8f758225-b0a6-4c83-a748-d8951cffebf6> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Nouvelle-Aquitaine"@fr .
+    skos:prefLabel "Nouvelle-Aquitaine"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/75> .
 
 <http://id.insee.fr/geo/region/76> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/862793ee-891d-4831-b9c9-a94cfe2e6f7b> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Occitanie"@fr .
+    skos:prefLabel "Occitanie"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/76> .
 
 <http://id.insee.fr/geo/region/84> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/c12b23e7-d2e7-4443-ac4b-de8de5ce22f2> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Auvergne-Rhône-Alpes"@fr .
+    skos:prefLabel "Auvergne-Rhône-Alpes"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/84> .
 
 <http://id.insee.fr/geo/region/93> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/0c5aa4f7-6d45-48a1-95d8-8ee7c33fdf88> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Provence-Alpes-Côte d'Azur"@fr .
+    skos:prefLabel "Provence-Alpes-Côte d'Azur"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/93> .
 
 <http://id.insee.fr/geo/region/94> a skos:Concept ;
     skos:exactMatch <http://id.insee.fr/geo/region/5697b378-8f6b-4c33-91fc-896d6eea08dd> ;
     skos:inScheme <http://id.insee.fr/geo/region> ;
-    skos:prefLabel "Corse"@fr .
+    skos:prefLabel "Corse"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/region/94> .
 
 <http://id.insee.fr/geo/region> a skos:ConceptScheme ;
     skos:prefLabel "French region (INSEE)"@en,

@@ -4,16 +4,19 @@
 <http://id.insee.fr/geo/pays/france> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
     skos:prefLabel "France"@fr ;
-    foaf:page <https://fr.wikipedia.org/wiki/France> .
+    foaf:page <https://fr.wikipedia.org/wiki/France>,
+        <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/pays/france> .
 
 <http://id.insee.fr/geo/territoireFrancais/franceMetropolitaine> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
     skos:prefLabel "France métropolitaine"@fr ;
-    foaf:page <https://fr.wikipedia.org/wiki/France_métropolitaine> .
+    foaf:page <https://fr.wikipedia.org/wiki/France_métropolitaine>,
+        <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/territoireFrancais/franceMetropolitaine> .
 
 <http://id.insee.fr/geo/territoireFrancais/territoireDeLaRepubliqueFrancaise> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
-    skos:prefLabel "Territoire de la République française"@fr .
+    skos:prefLabel "Territoire de la République française"@fr ;
+    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/territoireFrancais/territoireDeLaRepubliqueFrancaise> .
 
 <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> a skos:ConceptScheme ;
     skos:prefLabel "Singular Territory (INSEE)"@en,
