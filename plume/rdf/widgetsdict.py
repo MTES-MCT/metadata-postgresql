@@ -1277,7 +1277,7 @@ class WidgetsDict(dict):
         # après chaque opération, grâce aux paramètres append_book
         # des méthodes d'actions sur les clés.
         if result and isinstance(widgetkey, (ValueKey, TranslationGroupKey)):
-            result=result[:1]
+            result = result[:1]
             # pour une clé-valeur ou un groupe de traduction,
             # on ne garde que la première valeur calculée, même
             # s'il y en avait davantage
@@ -1294,6 +1294,7 @@ class WidgetsDict(dict):
         else:
             keys = [widgetkey]
             widgetkey.value = None
+        e_list = e_list[:len(keys)]
         # puis on saisit les valeurs dans les clés
         done = []
         for i in range(len(e_list)):
