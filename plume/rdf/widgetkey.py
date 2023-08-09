@@ -3522,12 +3522,21 @@ class GroupOfValuesKey(GroupKey):
         
         Notes
         -----
-        Cette méthode renvoie une liste vide si elle est appliquée à un
-        groupe de valeurs sans bouton.
+        Cette méthode renvoie une liste vide si elle est appliquée à
+        un groupe de valeurs sans bouton, sauf si celui-ci avait au moins
+        une clé-fille (ce qui est normalement toujours le cas, de tels groupes
+        sont toujours créés parce qu'il y a plusieurs valeurs). Dans ce cas, la 
+        méthode se comporte comme avec un groupe de traduction, et permet l'insertion
+        d'une et une seule valeur.
         
         """
-        if self.is_hidden or not self.button:
+        if self.is_hidden:
             return []
+        if not self.button:
+            if not self.children:
+                return []
+            else:
+                length = 1
         if not length or length < 1:
             length = 1
         old_children = self.children.copy()
