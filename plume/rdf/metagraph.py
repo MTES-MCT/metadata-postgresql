@@ -13,7 +13,7 @@ from plume.rdf.namespaces import (
 from plume.rdf.utils import (
     abspath, DatasetId, graph_from_file, get_datasetid,
     export_extension_from_format, export_format_from_extension,
-    export_formats, forbidden_char, data_from_file
+    export_formats, forbidden_char, data_from_file, import_formats
 )
 from plume.iso.map import IsoToDcat
 
@@ -514,6 +514,32 @@ def metagraph_from_file(filepath, format=None, old_metagraph=None):
     """
     g = graph_from_file(filepath, format=format)
     return clean_metagraph(g, old_metagraph=old_metagraph)
+
+def metagraph_from_rdf_data(data, format, old_metagraph=None):
+    """Crée un graphe à partir de données textuelles, résultant par exemple d'une requête internet.
+
+    Parameters
+    ----------
+    data : str
+        Données RDF brutes.
+    format : str
+        Le format d'encodage des données. Pour connaître la liste des valeurs
+        acceptées, on exécutera :py:func:`plume.rdf.utils.import_formats`.
+    old_metagraph : Metagraph, optional
+        Le graphe contenant les métadonnées actuelles de l'objet
+        PostgreSQL considéré, dont on récupèrera l'identifiant (et
+        lui seul, tout le reste est perdu).
+    
+    Returns
+    -------
+    Metagraph
+
+    """
+    raw_graph = Graph()
+    if not format in import_formats():
+        raise ValueError(f"Format '{format}' is not supported.")
+    raw_graph.parse(data=data, format=format)
+    return clean_metagraph(raw_graph, old_metagraph=old_metagraph)
 
 def clean_metagraph(raw_graph, old_metagraph=None):
     """Crée un graphe propre à partir d'un graphe issu d'une source externe.

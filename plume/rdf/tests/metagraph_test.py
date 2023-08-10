@@ -5,7 +5,8 @@ from plume.rdf.rdflib import isomorphic, URIRef, Literal
 from plume.rdf.utils import abspath, data_from_file, DatasetId
 from plume.rdf.metagraph import (
     Metagraph, metagraph_from_file, copy_metagraph, metagraph_from_iso,
-    clean_metagraph, metagraph_from_iso_file, graph_from_file
+    clean_metagraph, metagraph_from_iso_file, graph_from_file,
+    metagraph_from_rdf_data
 )
 from plume.rdf.namespaces import (
     DCT, DCAT, XSD, VCARD, GEODCAT, FOAF, OWL, XSD, RDF, ADMS
@@ -576,6 +577,18 @@ class MetagraphTestCase(unittest.TestCase):
         widgetsdict = WidgetsDict(metagraph=new_metagraph)
         new_metagraph = widgetsdict.build_metagraph()
         self.assertFalse(new_metagraph.rewritten)
+
+    def test_metagraph_from_rdf_data(self):
+        """Génération d'un graphe à partir de données RDF."""
+        data = data_from_file(abspath('rdf/tests/samples/dcat_eurostat_bilan_nutritif_brut_terre_agricole.ttl'))
+        metagraph = metagraph_from_rdf_data(data, format='turtle')
+        self.assertTrue((None, DCT.title, None) in metagraph)
+        datasetid = DatasetId()
+        old_metagraph = Metagraph()
+        old_metagraph.datasetid = datasetid
+        data = data_from_file(abspath('rdf/tests/samples/dcat_eurostat_bilan_nutritif_brut_terre_agricole.jsonld'))
+        metagraph = metagraph_from_rdf_data(data, format='json-ld', old_metagraph=old_metagraph)
+        self.assertTrue((datasetid, DCT.title, None) in metagraph)
 
 if __name__ == '__main__':
     unittest.main()
