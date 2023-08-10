@@ -130,7 +130,7 @@ Par précaution, on veillera également à actualiser les fichiers JSON qui cont
 
 ## Ajouter une option de configuration des catégories de métadonnées
 
-Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui définit les fonctionnalités d'aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l'option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier {file}`/plume/rdf/data/shape.ttl`), désérialisation du schéma métadonnées communes (module {py:mod}`plume.rdf.properties`), modèles de formulaires (extension [*PlumePg*], dont le code se trouve dans le répertoire {file}`/postgresql`), import des modèles de formulaire (module {py:mod}`plume.pg.queries`), désérialisation des modèles de formulaire (module {py:mod}`plume.pg.template`), arbre des clés (module {py:widgetkey}`plume.rdf.widgetkey`), dictionnaire interne (module {py:mod}`plume.rdf.internaldict`), dictionnaire de widgets (module {py:mod}`plume.rdf.widgetsdict`), construction du formulaire (description des modalités dans [`creation_widgets.md`](../usage/creation_widgets.md)).
+Les explications qui suivent prennent l'exemple de l'option `geo_tools`, qui définit les fonctionnalités d'aide à la saisie des géométries à proposer pour la catégorie. Chaque cas nécessitera évidemment des adaptations selon les mécanismes associés à l'option, mais le principe restera le même. Toute nouvelle option doit être implémentée à chaque niveau de Plume : schéma des métadonnées communes (fichier {file}`/plume/rdf/data/shape.ttl`), désérialisation du schéma métadonnées communes (module {py:mod}`plume.rdf.properties`), modèles de formulaires (extension [*PlumePg*], dont le code se trouve dans le répertoire {file}`/postgresql`), arbre des clés (module {py:widgetkey}`plume.rdf.widgetkey`), dictionnaire interne (module {py:mod}`plume.rdf.internaldict`), dictionnaire de widgets (module {py:mod}`plume.rdf.widgetsdict`), construction du formulaire (description des modalités dans [`creation_widgets.md`](../usage/creation_widgets.md)).
 
 ### Schéma des métadonnées communes
 
@@ -189,7 +189,24 @@ La valeur est un tuple dont le premier élément est le nom qui sera systématiq
 
 Le plus souvent, une nouvelle option de configuration se manifestera dans *PlumePg* par un champ supplémentaire dans les tables `z_plume.meta_categorie` (ainsi que ses partitions `z_plume.meta_shared_categorie` et `z_plume.meta_local_categorie`) et `z_plume.meta_template_categories`, ainsi que la vue `z_plume.meta_template_categories_full`. Autant que possible, le nom du champ sera identique au nom python de l'option de configuration correspondante (le premier élément du tuple de `prop_map` évoqué dans le paragraphe précédent), soit `geo_tools` pour l'exemple considéré.
 
-Si le champ n'admet que des valeurs pré-déterminées, on pourra définir un type énuméré semblable à `z_plume.meta_datatype`.
+Si le champ n'admet que des valeurs pré-déterminées, on pourra définir un type énuméré semblable à `z_plume.meta_datatype`. Si le champ admet un tableau de valeurs pré-déterminées, alors il importe de définir non seulement le type énuméré, mais aussi de créer un cast implicite permettant de convertir un tableau de valeur textuel en tableau de ce type :
+
+Exemple du type `z_plume.meta_geo_tool` : 
+
+```sql
+
+CREATE TYPE z_plume.meta_geo_tool AS ENUM (
+    'show', 'point', 'linestring', 'rectangle', 'polygon',
+    'bbox', 'centroid', 'circle'
+    ) ;
+    
+COMMENT ON TYPE z_plume.meta_geo_tool IS 'Types de fonctionnalités d''aide à la saisie des géométries supportées par Plume.' ;
+
+CREATE CAST (text[] AS z_plume.meta_geo_tool[])
+    WITH INOUT
+    AS IMPLICIT ;
+
+```
 
 Pour l'actualisation des informations relatives aux métadonnées communes incluses dans *PlumePg*, on se reportera à [Mise à jour des catégories communes dans les scripts de *PlumePg*](#mise-à-jour-des-catégories-communes-dans-les-scripts-de-plumepg). Il faudra néanmoins commencer par modifier les fonctions {py:func}`admin.plume_pg._table_from_shape` et {py:func}`admin.plume_pg.query_from_shape` pour qu'elles prennent en compte le nouveau champ.
 
@@ -211,53 +228,11 @@ Dans {py:func}`admin.plume_pg._table_from_shape`, il s'agira d'ajouter le champ 
 
 Dans {py:func}`admin.plume_pg.query_from_shape` on ajoute le champ supplémentaire à ceux qui apparaissent dans la commande `INSERT`, en prenant soin de respecter l'ordre du tuple `category` de {py:func}`admin.plume_pg._table_from_shape`.
 
-### Import des modèles de formulaires
+### Import et désérialisation des modèles de formulaires
 
-Pour que le nouveau champ des tables et vues de *PlumePg* soit exploité, encore faut-il que son contenu soit importé par Plume.
+L'import du modèle est réalisé par la requête définie par la fonction {py:func}`~plume.pg.queries.query_get_categories` du module {py:mod}`plume.pg.queries`, sa désérialisation par la fonction d'initialisation de la classe {py:class}`plume.pg.template.TemplateDict`.
 
-Ceci suppose de l'ajouter dans la requête définie par la fonction {py:func}`~plume.pg.queries.query_get_categories` du module {py:mod}`plume.pg.queries` :
-
-```sql
-
-SELECT 
-    ...
-    geo_tools::text[],
-    ...
-    FROM z_plume.meta_template_categories_full
-    WHERE tpl_label = %s
-
-```
-
-Psycopg ne reconnaissant pas les types personnalisés, il est préférable de caster toutes les valeurs dont le type n'est pas standard en `text`, `text[]` ou autre type standard adapté.
-
-### Désérialisation des modèles de formulaire
-
-C'est maintenant la fonction d'initialisation de la classe {py:class}`plume.pg.template.TemplateDict` qu'il s'agit d'ajuster.
-
-La boucle `for` nomme les colonnes du résultat de la requête {py:func}`~plume.pg.queries.query_get_categories` susmentionnée. Il faut donc y ajouter le nouveau champ, en s'assurant de respecter l'ordre de {py:func}`~plume.pg.queries.query_get_categories`.
-
-```python
-
-        for path, origin, ..., geo_tools, ... \
-            in sorted(categories, reverse=True):
-
-```
-
-Puis le déclarer dans le dictionnaire `config` :
-
-```python
-
-            config = {
-                ...
-                'geo_tools': geo_tools,
-                ...
-                }
-
-```
-
-La clé de `config` doit impérativement porter le nom [déclaré dans `read_shape_property`](#désérialisation-du-schéma-des-métadonnées-communes) (premier élément du tuple de `prop_map`).
-
-*NB. D'une manière générale, la validation et les conversions sont plutôt du ressort du module {py:mod}`plume.rdf.widgetkey`, le constructeur de {py:class}`plume.pg.template.TemplateDict` tend donc à reprendre telles quelles les informations issues du modèle. Il peut cependant être nécessaire de retraiter les valeurs à ce niveau dans le cas particulier d'une option pour laquelle les valeurs issues du modèle ne remplacent pas simplement les valeurs du schéma des métadonnées communes, mais nécessitent d'être comparées (cf. paragraphe suivant), ce qui supposent que les formats soient comparables.*
+D'une manière générale, il n'y aura pas de modification à réaliser à ce niveau. Ces fonctions ont été conçues pour que l'ajout de nouvelles options de configuration soit transparent, elles ne contiennent pas de liste des options qu'il serait nécessaire de compléter. La validation et les conversions sont pour leur part plutôt du ressort du module {py:mod}`plume.rdf.widgetkey`, le constructeur de {py:class}`plume.pg.template.TemplateDict` tend à reprendre telles quelles les informations issues du modèle. Il peut cependant être nécessaire de retraiter les valeurs à ce niveau dans le cas particulier d'une option pour laquelle les valeurs issues du modèle ne remplacent pas simplement les valeurs du schéma des métadonnées communes, mais nécessitent d'être comparées avec celles-ci (cf. paragraphe suivant), ce qui suppose que les formats soient comparables.
 
 ### Croisement du schéma et du modèle
 

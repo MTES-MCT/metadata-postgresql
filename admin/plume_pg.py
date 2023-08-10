@@ -154,20 +154,23 @@ def store_sample_templates():
             labels = cur.fetchone()[0]
             for label in labels:
                 cur.execute('''
-                    SELECT tpl_label, sql_filter, md_conditions, priority, comment
-                        FROM z_plume.meta_template WHERE tpl_label = %s
+                    SELECT to_json(meta_template.*)
+                        FROM z_plume.meta_template
+                        WHERE tpl_label = %s
                     ''',
                     (label,))
-                conditions = cur.fetchone()
+                configuration = cur.fetchone()[0]
                 cur.execute(
                     *query_get_categories(label)
                     )
                 categories = cur.fetchall()
+                categories = [categorie_dict for categorie_dict, in categories]
                 cur.execute(
                     *query_template_tabs(label)
                     )
                 tabs = cur.fetchall()
-                data[label] = {'categories': categories, 'tabs': tabs, 'conditions': conditions}
+                tabs = [tab for tab, in tabs]
+                data[label] = {'categories': categories, 'tabs': tabs, 'configuration': configuration}
             cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
     conn.close()
     with open(abspath('pg/data/templates.json'), 'w',

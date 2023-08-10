@@ -523,23 +523,26 @@ def query_evaluate_local_templates(templates_collection, schema_name, table_name
     """
     return PgQueryWithArgs(
         query=sql.SQL('''
-            WITH meta_template (tpl_label, check_sql_filter, md_conditions, priority, comment) AS (VALUES {})
+            WITH meta_template (tpl_label, check_sql_filter, md_conditions, priority, enabled) AS (VALUES {})
             SELECT
                 tpl_label,
                 check_sql_filter,
                 md_conditions::jsonb,
                 priority
                 FROM meta_template
+                WHERE enabled
                 ORDER BY tpl_label
             ''').format(
                 sql.SQL(', ').join(
                     sql.SQL('({})').format(sql.SQL(', ').join((
-                        sql.Literal(tpl_label),
-                        sql.SQL(sql_filter.replace('$1', '%(schema_name)s').replace('$2', '%(table_name)s')) if sql_filter else sql.Literal(None),
-                        sql.Literal(Json(md_conditions)),
-                        sql.Literal(priority),
-                        sql.Literal(comment)
-                        ))) for tpl_label, sql_filter, md_conditions, priority, comment in templates_collection.conditions
+                        sql.Literal(configuration['tpl_label']),
+                        sql.SQL(
+                            configuration['sql_filter'].replace('$1', '%(schema_name)s').replace('$2', '%(table_name)s')
+                        ) if configuration.get('sql_filter') else sql.Literal(None),
+                        sql.Literal(Json(configuration.get('md_conditions'))),
+                        sql.Literal(configuration.get('priority')),
+                        sql.Literal(configuration.get('enable', True))
+                        ))) for configuration in templates_collection.conditions
                     )),
         args={'schema_name': schema_name, 'table_name' : table_name},
         expecting='some rows',
@@ -554,6 +557,15 @@ def query_get_categories(tpl_label):
         >>> query = query_get_categories('nom du modèle')
         >>> cur.execute(*query)
         >>> categories = cur.fetchall()
+    
+    ``categories`` est une liste de tuples contenant chacun un dictionnaire.
+    À chaque tuple correspond une catégorie de métadonnées associée au modèle.
+    Les clés des dictionnaires correspondent aux noms des champs de la vue
+    ``z_plume.meta_template_categories_full`` et les valeurs sont les valeurs
+    contenues dans ces champs pour l'association modèle/catégorie considérée.
+
+    Ce résultat peut être fourni en argument au constructeur de la classe
+    :py:class:`TemplateDict`.
     
     Parameters
     ----------
@@ -574,28 +586,7 @@ def query_get_categories(tpl_label):
     """
     return PgQueryWithArgs(
         query=sql.SQL("""
-            SELECT 
-                path,
-                origin,
-                label,
-                description,
-                special::text,
-                is_node,
-                datatype::text,
-                is_long_text,
-                rowspan,
-                placeholder,
-                input_mask,
-                is_multiple,
-                unilang,
-                is_mandatory,
-                sources,
-                geo_tools::text[],
-                compute::text[],
-                template_order,
-                is_read_only,
-                tab,
-                compute_params
+            SELECT to_json(meta_template_categories_full.*)
                 FROM z_plume.meta_template_categories_full
                 WHERE tpl_label = %s
             """),

@@ -16,13 +16,20 @@ class TemplateDict:
     
     Parameters
     ----------
-    categories : list of tuples
+    categories : list(dict) or list(tuple(dict))
         Liste des catégories de métadonnées prévues par le modèle
         avec leur paramétrage, résultant de l'exécution de la
-        requête :py:func:`plume.pg.queries.query_get_categories`.
-    tabs : list(str), optional
-        Liste ordonnée des onglets du modèle, résultant de l'exécution
-        de la requête :py:func:`plume.pg.queries.query_template_tabs`.
+        requête :py:func:`plume.pg.queries.query_get_categories`
+        ou importée d'un modèle local. Si la liste est constituée
+        de tuples, leur premier élément doit être le dictionnaire
+        qui décrit la catégorie, et tout autre élément ne sera pas
+        considéré.
+    tabs : list(str) or list(tuple(str)), optional
+        Liste ordonnée des libellés des onglets du modèle, résultant de
+        l'exécution de la requête :py:func:`plume.pg.queries.query_template_tabs`,
+        ou importée d'un modèle local. Si la liste est constituée
+        de tuples, leur premier élément doit être le libellé de l'onglet,
+        et tout autre élément ne sera pas considéré.
     
     Attributes
     ----------
@@ -44,54 +51,46 @@ class TemplateDict:
     
     def __init__(self, categories, tabs=None):
     
-        self.tabs = [tab for tab, in tabs or []]
         self.shared = {}
         self.local = {}
-        
-        for path, origin, label, description, special, \
-            is_node, datatype, is_long_text, rowspan, \
-            placeholder, input_mask, is_multiple, unilang, \
-            is_mandatory, sources, geo_tools, compute, \
-            template_order, is_read_only, tab, compute_params \
-            in sorted(categories, reverse=True):
+
+        if tabs and isinstance(tabs[0], tuple):
+            self.tabs = [tab for tab, in tabs or []]
+        else:
+            self.tabs = tabs or []
+
+        if categories and isinstance(categories[0], tuple):
+            categories = [categorie_dict for categorie_dict, in categories]
+
+        for config in sorted(categories, key=lambda x: x['path'], reverse=True):
+
+            path = config['path']
+
+            if config['datatype']:
+                config['datatype'] = from_n3(config['datatype'], nsm=nsm)
+
+            config['sources'] = [
+                URIRef(s)
+                for s in config['sources'] or []
+                if not forbidden_char(s)
+            ]      
             
-            config = {
-                'label': label,
-                'description': description,
-                'datatype': from_n3(datatype, nsm=nsm),
-                'is_long_text': is_long_text,
-                'rowspan': rowspan,
-                'placeholder': placeholder,
-                'input_mask': input_mask,
-                'is_multiple': is_multiple,
-                'unilang': unilang,
-                'is_mandatory': is_mandatory,
-                'sources': [URIRef(s) for s in sources or []
-                    if not forbidden_char(s)],
-                'geo_tools': geo_tools,
-                'compute': compute,
-                'template_order': template_order,
-                'is_read_only': is_read_only,
-                'tab': tab,
-                'compute_params': compute_params
-                }
-            
-            if template_order is not None:
-                config['order_idx'] = (template_order,)
+            if config['template_order'] is not None:
+                config['order_idx'] = (config['template_order'],)
                 
-            if special:
+            if config['special']:
                 config['kind'] = SH.IRI
                 config['rdfclass'] = RDFS.Resource
                 # NB: rdfs:Resource est un choix arbitraire et sans
                 # incidence. L'essentiel est qu'il y ait une valeur
                 # au moment de la construction de la clé.
-                config['transform'] = special
+                config['transform'] = config['special']
                 
-            if origin == 'shared':
+            if config['origin'] == 'shared':
             
                 # cas d'une branche vide qui n'a pas
                 # de raison d'être :
-                if is_node and not path in self.shared:
+                if config['is_node'] and not path in self.shared:
                     continue
                     # si le noeud avait eu un prolongement, le tri
                     # inversé sur categories fait qu'il aurait été
@@ -114,8 +113,10 @@ class TemplateDict:
                 # avec espacement propre, à toute fin utile
                 
                 if len(path_elements) > 1:
-                    paths = [ ' / '.join(path_elements[:i + 1] ) \
-                            for i in range(len(path_elements) - 1) ]
+                    paths = [ 
+                        ' / '.join(path_elements[:i + 1] )
+                        for i in range(len(path_elements) - 1)
+                    ]
                     for p in paths:
                         # insertion des chemins des catégories
                         # ancêtres. S'ils étaient dans la table PG,
@@ -128,7 +129,7 @@ class TemplateDict:
             
                 self.shared[path] = config
             
-            elif origin == 'local':
+            elif config['origin'] == 'local':
                 del config['sources']
                 self.local[path] = config
 
@@ -148,12 +149,13 @@ class LocalTemplatesCollection(dict):
     ----------
     labels : list(str)
         Liste des noms des modèles locaux.
-    conditions : list(tuple)
-        Liste des modèles avec leurs conditions
-        d'application automatique. Concrètement, il s'agit
+    conditions : list(dict)
+        Liste des modèles avec leur configuration, notamment leurs
+        conditions d'application automatique. Concrètement, il s'agit
         des informations qu'on aurait trouvées dans la table
         ``z_plume.meta_template`` si PlumePg avait été
-        active sur la base.
+        active sur la base (a minima le champ ``tpl_label`` contenant
+        le nom du modèle).
     
     """
     def __init__(self):
@@ -167,7 +169,12 @@ class LocalTemplatesCollection(dict):
                     continue
                 self[label] = TemplateDict(v.get('categories', []), v.get('tabs'))
                 self.labels.append(label)
-                self.conditions.append(v['conditions'])
+                if not 'configuration' in v:
+                    v['configuration'] = {}
+                v['configuration']['tpl_label'] = label
+                # le label utilisé comme clé prévaut sur celui qui aurait pu être
+                # renseigné dans la configuration du modèle
+                self.conditions.append(v['configuration'])
 
 def search_template(templates, metagraph=None):
     """Déduit d'un graphe de métadonnées le modèle de formulaire à utiliser.
