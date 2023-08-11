@@ -363,7 +363,7 @@ def dump_template_data(
             tabs = [elem for elem, in tabs]
         if tpl_id: 
             for tab in tabs.copy():
-                if not tab['path'] in tab_ids:
+                if not tab['tab_id'] in tab_ids:
                     tabs.remove(tab)
         if tabs:
             data['tabs'] = tabs
