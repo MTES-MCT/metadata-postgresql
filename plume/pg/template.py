@@ -3,7 +3,8 @@
 """
 
 import re
-from json import load
+from json import load, dump
+from pathlib import Path
 
 from plume.rdf.rdflib import URIRef, from_n3
 from plume.rdf.utils import path_from_n3, forbidden_char, abspath
@@ -256,4 +257,117 @@ def search_template(templates, metagraph=None):
                         break
     
     return r
+
+def dump_template_data(
+    filepath, templates=None, categories=None, tabs=None,
+    template_categories=None, tpl_id=None
+    ):
+    """Encode en JSON dans un fichier des données de définition des modèles.
+
+    Cette fonction permet d'exporter en JSON les données des
+    modèles stockées en base, éventuellement restreintes à un ou 
+    plusieurs modèles spécifiés en argument.
+
+    Parameters
+    ----------
+    filepath : str
+        Chemin absolu du fichier cible.
+    templates : list(tuple(dict))) or list(dict), optional
+        Le contenu de la table des modèles (au moins les enregistrements
+        correspondant au(x) modèle(s) à exporter, le cas échéant).
+        Il peut s'agir du résultat brut renvoyé par la requête générée par 
+        :py:func:`plume.pg.queries.query_read_meta_template`, ou plus
+        généralement d'une liste de dictionnaires dont les clés sont
+        les noms des champs de la table et les valeurs sont les valeurs
+        prises par ces champs.
+    categories : list(tuple(dict))) or list(dict), optional
+        Le contenu de la table des catégories (au moins les enregistrements
+        correspondant aux catégories utilisées par le(s) modèle(s) à
+        exporter, le cas échéant).
+        Il peut s'agir du résultat brut renvoyé par la requête générée par 
+        :py:func:`plume.pg.queries.query_read_meta_categorie`, ou plus
+        généralement d'une liste de dictionnaires dont les clés sont
+        les noms des champs de la table et les valeurs sont les valeurs
+        prises par ces champs.
+    tabs : list(tuple(dict))) or list(dict), optional
+        Le contenu de la table des onglets (au moins les enregistrements
+        correspondant aux onglets utilisés par le(s) modèle(s) à
+        exporter, le cas échéant).
+        Il peut s'agir du résultat brut renvoyé par la requête générée par 
+        :py:func:`plume.pg.queries.query_read_meta_tab`, ou plus
+        généralement d'une liste de dictionnaires dont les clés sont
+        les noms des champs de la table et les valeurs sont les valeurs
+        prises par ces champs.
+    template_categories : list(tuple(dict))) or list(dict), optional
+        Le contenu de la table d'association des catégories aux modèles
+        (au moins les enregistrements correspondant aux catégories utilisées
+        par le(s) modèle(s) à exporter, le cas échéant).).
+        Il peut s'agir du résultat brut renvoyé par la requête générée par 
+        :py:func:`plume.pg.queries.query_read_meta_template_categories`,
+        ou plus généralement d'une liste de dictionnaires dont les clés sont
+        les noms des champs de la table et les valeurs sont les valeurs
+        prises par ces champs.
+    tpl_id : int or list(int), optional
+        L'identifiant unique du modèle de formulaire à exporter, ou une
+        liste d'identifiants. Si cet argument n'est pas fourni, toutes les
+        données seront incluses.
+        
+    """
+    pfile = Path(filepath)
+    data = {}
+    category_paths = []
+    tab_ids = []
+
+    if isinstance(tpl_id, int):
+        tpl_id = [tpl_id]
+    
+    if templates:
+        if isinstance(templates[0], tuple):
+            templates = [elem for elem, in templates]
+        if tpl_id:
+            for template in templates.copy():
+                if not template['tpl_id'] in tpl_id:
+                    templates.remove(template)
+        if templates:
+            data['templates'] = templates
+
+    if template_categories:
+        if isinstance(template_categories[0], tuple):
+            template_categories = [elem for elem, in template_categories]
+        if tpl_id:
+            for template_category in template_categories.copy():
+                if not template_category['tpl_id'] in tpl_id:
+                    template_categories.remove(template_category)
+                else:
+                    path = template_category['shrcat_path'] or template_category['loccat_path']
+                    if path and not path in category_paths:
+                        category_paths.append(path)
+                    tab_id = template_category['tab_id']
+                    if tab_id and not tab_id in tab_ids:
+                        tab_ids.append(tab_id)
+        if template_categories:
+            data['template_categories'] = template_categories
+
+    if categories:
+        if isinstance(categories[0], tuple):
+            categories = [elem for elem, in categories]
+        if tpl_id: 
+            for category in categories.copy():
+                if not category['path'] in category_paths:
+                    categories.remove(category)
+        if categories:
+            data['categories'] = categories
+    
+    if tabs:
+        if isinstance(tabs[0], tuple):
+            tabs = [elem for elem, in tabs]
+        if tpl_id: 
+            for tab in tabs.copy():
+                if not tab['path'] in tab_ids:
+                    tabs.remove(tab)
+        if tabs:
+            data['tabs'] = tabs
+    
+    with open(pfile, 'w', encoding='utf-8') as dest:
+        dump(data, dest, ensure_ascii=False, indent=4)
 

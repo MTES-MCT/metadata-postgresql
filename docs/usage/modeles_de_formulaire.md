@@ -738,7 +738,7 @@ Les champs qui suivent requièrent des ajustements spécifiques pour assurer le 
 | `label` | Catégories | Validateur `QRegularExpressionValidator` avec l'expression régulière `QRegularExpression('.')` pour la non nullité. |
 | `rowspan` | Catégories et Associations modèle-catégorie | Le `QIntValidator` doit aussi fixer la valeur minimum à 1 et maximum à 99. |
 
-### Import des modèles pré-configurés
+### Chargement des modèles pré-configurés
 
 Pour continuer à bénéficier des modèles pré-configurés après l'activation de *PlumePg* sur la base et pouvoir ensuite les éditer, l'administrateur doit commencer par charger ces modèles dans les tables de stockage.
 
@@ -771,3 +771,61 @@ conn.close()
 À noter que la fonction permet aussi l'import d'un unique modèle ou d'une liste de modèles, dont le ou les noms sont alors à fournir en argument.
 
 Il pourra être pertinent de recharger depuis le serveur la liste des modèles disponibles (utilisée pour le bouton de choix du modèle dans la barre d'outils de Plume) après l'exécution de cette requête - cf. [Récupération de la liste des modèles](#récupération-de-la-liste-des-modèles).
+
+
+### Export et import de modèles
+
+Le gestionnaire des modèles accessible via le menu *Configuration* de la barre d'outils ![configuration.svg](../../plume/icons/general/configuration.svg) permet à l'administrateur d'exporter un ou plusieurs modèles en JSON et d'importer des données en base à partir d'un JSON de même format.
+
+L'export est réalisé par la fonction {py:func}`plume.pg.template.dump_template_data`. Outre le chemin du fichier cible, celle-ci prend en argument le résultat brut des requêtes générées avec les functions {py:func}`~plume.pg.queries.query_read_meta_template`, {py:func}`~plume.pg.queries.query_read_meta_categorie`, {py:func}`~plume.pg.queries.query_read_meta_tab`, {py:func}`~plume.pg.queries.query_read_meta_template_categories`. Il est possible de spécifier un identifiant de modèle ou une liste d'identifiant de modèles via l'argument `tpl_id`, ce qui permet de n'exporter que les données relatives à ces modèles.
+
+```python
+
+import psycopg2
+from plume.pg import queries
+from plume.pg.template import dump_template_data
+
+conn = psycopg2.connect(connection_string)
+
+with conn:
+	with conn.cursor() as cur:
+	
+        cur.execute(
+			*queries.query_read_meta_template()
+		)
+		templates = cur.fetchall()
+
+        cur.execute(
+			*queries.query_read_meta_categorie()
+		)
+		categories = cur.fetchall()
+
+		cur.execute(
+			*queries.query_read_meta_tab()
+		)
+		tabs = cur.fetchall()
+
+        cur.execute(
+			*queries.query_read_meta_template_categories()
+		)
+		template_categories = cur.fetchall()
+
+conn.close()
+
+try:
+    dump_template_data(
+        filepath,
+        templates=templates,
+        categories=categories,
+        tabs=tabs,
+        template_categories=template_categories,
+        tpl_id
+    )
+except:
+    ...
+
+```
+
+*`connection_string` est la chaîne de connexion à la base de données. `filepath` est le chemin absolu du fichier de destination. S'il existait déjà, il est écrasé. `tpl_id` est l'identifiant du modèle considéré, ou une liste de modèles considérés. S'il est omis, vaut `None` ou une liste vide, toutes les données seront exportées.*
+
+Le contrôle d'erreur devrait essentiellement permettre de capturer des erreurs découlant de chemins inaccessibles. Le processus de sérialisation en lui-même n'est pas susceptible d'échouer, sauf à ce que les données fournies ne contiennent pas les champs de clé primaire et clés étrangères des tables.

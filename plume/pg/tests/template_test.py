@@ -9,19 +9,23 @@ un super-utilisateur.
 
 import unittest
 import psycopg2
+import json
 
 from plume.rdf.utils import data_from_file, abspath
 from plume.rdf.rdflib import URIRef
 from plume.rdf.namespaces import RDF, DCAT
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.pg.template import (
-    TemplateDict, search_template, LocalTemplatesCollection
+    TemplateDict, search_template, LocalTemplatesCollection,
+    dump_template_data
 )
 from plume.pg.description import PgDescription
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import (
     query_list_templates, query_get_categories,
-    query_template_tabs, query_evaluate_local_templates
+    query_template_tabs, query_evaluate_local_templates,
+    query_read_meta_categorie, query_read_meta_tab,
+    query_read_meta_template, query_read_meta_template_categories
 )
 
 class TemplateTestCase(unittest.TestCase):
@@ -141,7 +145,7 @@ class TemplateTestCase(unittest.TestCase):
                     *query_list_templates('c_amgt_urb_zon_amgt', 'l_zac_075')
                     )
                 templates_c = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         self.assertIsNone(
             search_template(templates_a)
@@ -177,7 +181,7 @@ class TemplateTestCase(unittest.TestCase):
                     *query_template_tabs('Classique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         self.assertEqual(len(template.shared), 41)
@@ -324,6 +328,160 @@ class TemplateTestCase(unittest.TestCase):
         self.assertEqual(widgetdict[c1]['value'], 'Unités administratives')
         self.assertEqual(widgetdict[c1]['value'], 'Unités administratives')
         self.assertTrue(widgetdict[c1]['multiple sources'])
+
+    def test_dump_template_data_all(self):
+        """Export en JSON de toutes les données des modèles.
+
+        """
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                # sans modèle, juste les catégories communes
+                cur.execute(
+                    *query_read_meta_template()
+                )
+                templates = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_categorie()
+                )
+                categories = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_tab()
+                )
+                tabs = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_template_categories()
+                )
+                template_categories = cur.fetchall()
+
+                # avec les modèles pré-configurés
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    *query_read_meta_template()
+                )
+                templates_2 = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_categorie()
+                )
+                categories_2 = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_tab()
+                )
+                tabs_2 = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_template_categories()
+                )
+                template_categories_2 = cur.fetchall()
+
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        dump_template_data(
+            abspath('pg/tests/export/all_template_data.json'),
+            templates=templates,
+            categories=categories,
+            tabs=tabs,
+            template_categories=template_categories
+        )
+
+        raw_data = data_from_file(abspath('pg/tests/export/all_template_data.json'))
+        self.assertTrue(raw_data)
+
+        data = json.loads(raw_data)
+        self.assertTrue('categories' in data)
+        self.assertTrue(data['categories'])
+        self.assertFalse('tabs' in data)
+        self.assertFalse('templates' in data)
+        self.assertFalse('template_categories' in data)
+
+        dump_template_data(
+            abspath('pg/tests/export/all_template_data.json'),
+            templates=templates_2,
+            categories=categories_2,
+            tabs=tabs_2,
+            template_categories=template_categories_2
+        )
+
+        raw_data = data_from_file(abspath('pg/tests/export/all_template_data.json'))
+        self.assertTrue(raw_data)
+
+        data = json.loads(raw_data)
+        self.assertTrue('categories' in data)
+        self.assertTrue(data['categories'])
+        self.assertTrue('tabs' in data)
+        self.assertTrue(data['tabs'])
+        self.assertTrue('templates' in data)
+        self.assertTrue(data['templates'])
+        self.assertTrue('template_categories' in data)
+        self.assertTrue(data['template_categories'])
+
+def test_dump_template_data_inspire(self):
+        """Export en JSON du modèle pré-configuré INSPIRE.
+
+        """
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    *query_read_meta_template()
+                )
+                templates = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_categorie()
+                )
+                categories = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_tab()
+                )
+                tabs = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_template_categories()
+                )
+                template_categories = cur.fetchall()
+
+                cur.execute(
+                    'SELECT tpl_id FROM z_plume.meta_template WHERE tpl_label = ''INSPIRE'''
+                )
+                tpl_id = cur.fetchone[0]
+
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        dump_template_data(
+            abspath('pg/tests/export/all_template_data.json'),
+            templates=templates,
+            categories=categories,
+            tabs=tabs,
+            template_categories=template_categories,
+
+        )
+
+        raw_data = data_from_file(abspath('pg/tests/export/all_template_data.json'))
+        self.assertTrue(raw_data)
+
+        data = json.loads(raw_data)
+        self.assertTrue('categories' in data)
+        self.assertTrue(data['categories'])
+        self.assertTrue('tabs' in data)
+        self.assertTrue(data['tabs'])
+        self.assertTrue('templates' in data)
+        self.assertEqual(len(data['templates']), 1)
+        self.assertEqual(data['templates'][0]['tpl_label'], 'INSPIRE')
+        self.assertTrue('template_categories' in data)
+        self.assertTrue(data['template_categories'])
+        self.assertTrue(
+            all(
+                data['template_categories'][n]['tpl_id'] == tpl_id
+                for n in range(len(data['template_categories']))
+            )
+        )
 
 if __name__ == '__main__':
     unittest.main()
