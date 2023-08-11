@@ -401,7 +401,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         
@@ -541,7 +541,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         
@@ -746,7 +746,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
@@ -859,7 +859,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
@@ -1147,7 +1147,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Classique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
@@ -1343,7 +1343,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('TRUNCATE z_plume.meta_template CASCADE')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
 
@@ -1437,7 +1437,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
@@ -1646,7 +1646,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_template_tabs('Basique')
                     )
                 tabs = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories, tabs)
         widgetsdict = WidgetsDict(metagraph=metagraph, template=template,
@@ -3012,10 +3012,7 @@ class WidgetsDictTestCase(unittest.TestCase):
                     *query_get_categories('Classique')
                     )
                 categories = cur.fetchall()
-                cur.execute('''
-                    DROP EXTENSION plume_pg ;
-                    CREATE EXTENSION plume_pg ;
-                    ''')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
         conn.close()
         template = TemplateDict(categories)
         widgetsdict = WidgetsDict(template=template)
