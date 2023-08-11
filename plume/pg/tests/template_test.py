@@ -10,6 +10,7 @@ un super-utilisateur.
 import unittest
 import psycopg2
 import json
+from pathlib import Path
 
 from plume.rdf.utils import data_from_file, abspath
 from plume.rdf.rdflib import URIRef
@@ -333,6 +334,7 @@ class TemplateTestCase(unittest.TestCase):
         """Export en JSON de toutes les données des modèles.
 
         """
+        pfile = Path(abspath('pg/tests/export/template_data.json'))
         conn = psycopg2.connect(TemplateTestCase.connection_string)
 
         with conn:
@@ -380,14 +382,14 @@ class TemplateTestCase(unittest.TestCase):
         conn.close()
 
         dump_template_data(
-            abspath('pg/tests/export/all_template_data.json'),
+            pfile,
             templates=templates,
             categories=categories,
             tabs=tabs,
             template_categories=template_categories
         )
 
-        raw_data = data_from_file(abspath('pg/tests/export/all_template_data.json'))
+        raw_data = data_from_file(pfile)
         self.assertTrue(raw_data)
 
         data = json.loads(raw_data)
@@ -398,14 +400,14 @@ class TemplateTestCase(unittest.TestCase):
         self.assertFalse('template_categories' in data)
 
         dump_template_data(
-            abspath('pg/tests/export/all_template_data.json'),
+            pfile,
             templates=templates_2,
             categories=categories_2,
             tabs=tabs_2,
             template_categories=template_categories_2
         )
 
-        raw_data = data_from_file(abspath('pg/tests/export/all_template_data.json'))
+        raw_data = data_from_file(pfile)
         self.assertTrue(raw_data)
 
         data = json.loads(raw_data)
@@ -418,10 +420,14 @@ class TemplateTestCase(unittest.TestCase):
         self.assertTrue('template_categories' in data)
         self.assertTrue(data['template_categories'])
 
-def test_dump_template_data_inspire(self):
+        pfile.unlink()
+
+    def test_dump_template_data_inspire(self):
         """Export en JSON du modèle pré-configuré INSPIRE.
 
         """
+        pfile = Path(abspath('pg/tests/export/template_data.json'))
+
         conn = psycopg2.connect(TemplateTestCase.connection_string)
 
         with conn:
@@ -446,24 +452,24 @@ def test_dump_template_data_inspire(self):
                 template_categories = cur.fetchall()
 
                 cur.execute(
-                    'SELECT tpl_id FROM z_plume.meta_template WHERE tpl_label = ''INSPIRE'''
+                    "SELECT tpl_id FROM z_plume.meta_template WHERE tpl_label = 'INSPIRE'"
                 )
-                tpl_id = cur.fetchone[0]
+                tpl_id = cur.fetchone()[0]
 
                 cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
 
         conn.close()
 
         dump_template_data(
-            abspath('pg/tests/export/all_template_data.json'),
+            pfile,
             templates=templates,
             categories=categories,
             tabs=tabs,
             template_categories=template_categories,
-
+            tpl_id=tpl_id
         )
 
-        raw_data = data_from_file(abspath('pg/tests/export/all_template_data.json'))
+        raw_data = data_from_file(pfile)
         self.assertTrue(raw_data)
 
         data = json.loads(raw_data)
@@ -482,6 +488,106 @@ def test_dump_template_data_inspire(self):
                 for n in range(len(data['template_categories']))
             )
         )
+        categories
+
+        catpaths = [
+            data['template_categories'][n]['shrcat_path'] 
+            for n in range(len(data['template_categories']))
+        ]
+        self.assertTrue(
+            all(
+                data['categories'][n]['path'] in catpaths
+                for n in range(len(data['categories']))
+            )
+        )
+
+        pfile.unlink()
+
+    def test_dump_template_data_two_templates(self):
+        """Export en JSON des modèles pré-configurés INSPIRE et Basique.
+
+        """
+        pfile = Path(abspath('pg/tests/export/template_data.json'))
+
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    *query_read_meta_template()
+                )
+                templates = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_categorie()
+                )
+                categories = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_tab()
+                )
+                tabs = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_template_categories()
+                )
+                template_categories = cur.fetchall()
+
+                cur.execute(
+                    "SELECT tpl_id FROM z_plume.meta_template WHERE tpl_label = 'INSPIRE'"
+                )
+                tpl_id_inspire = cur.fetchone()[0]
+                cur.execute(
+                    "SELECT tpl_id FROM z_plume.meta_template WHERE tpl_label = 'Basique'"
+                )
+                tpl_id_basique = cur.fetchone()[0]
+
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        dump_template_data(
+            pfile,
+            templates=templates,
+            categories=categories,
+            tabs=tabs,
+            template_categories=template_categories,
+            tpl_id=[tpl_id_inspire, tpl_id_basique]
+        )
+
+        raw_data = data_from_file(pfile)
+        self.assertTrue(raw_data)
+
+        data = json.loads(raw_data)
+        self.assertTrue('categories' in data)
+        self.assertTrue(data['categories'])
+        self.assertTrue('tabs' in data)
+        self.assertTrue(data['tabs'])
+        self.assertTrue('templates' in data)
+        self.assertEqual(len(data['templates']), 2)
+        self.assertTrue(data['templates'][0]['tpl_label'] in ('INSPIRE', 'Basique'))
+        self.assertTrue(data['templates'][1]['tpl_label'] in ('INSPIRE', 'Basique'))
+        self.assertTrue('template_categories' in data)
+        self.assertTrue(data['template_categories'])
+        self.assertTrue(
+            all(
+                data['template_categories'][n]['tpl_id'] in [tpl_id_inspire, tpl_id_basique]
+                for n in range(len(data['template_categories']))
+            )
+        )
+        categories
+
+        catpaths = [
+            data['template_categories'][n]['shrcat_path'] 
+            for n in range(len(data['template_categories']))
+        ]
+        self.assertTrue(
+            all(
+                data['categories'][n]['path'] in catpaths
+                for n in range(len(data['categories']))
+            )
+        )
+
+        pfile.unlink()
 
 if __name__ == '__main__':
     unittest.main()
