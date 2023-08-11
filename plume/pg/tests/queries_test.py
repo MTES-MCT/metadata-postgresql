@@ -300,7 +300,7 @@ class QueriesTestCase(unittest.TestCase):
                     *query_list_templates('r_schema', 'table')
                     )
                 templates = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
                 # suppression des modèles pré-configurés
         conn.close()
         self.assertEqual(len(templates), 4)
@@ -344,7 +344,7 @@ class QueriesTestCase(unittest.TestCase):
                     *query_get_categories('Basique')
                     )
                 categories = cur.fetchall()
-                cur.execute('DELETE FROM z_plume.meta_template')
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
                 # suppression des modèles pré-configurés
         conn.close()
         self.assertTrue(len(categories) > 2)
