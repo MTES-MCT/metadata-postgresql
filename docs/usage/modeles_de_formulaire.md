@@ -777,7 +777,7 @@ Il pourra être pertinent de recharger depuis le serveur la liste des modèles d
 
 Le gestionnaire des modèles accessible via le menu *Configuration* de la barre d'outils ![configuration.svg](../../plume/icons/general/configuration.svg) permet à l'administrateur d'exporter un ou plusieurs modèles en JSON et d'importer des données en base à partir d'un JSON de même format.
 
-L'export est réalisé par la fonction {py:func}`plume.pg.template.dump_template_data`. Outre le chemin du fichier cible, celle-ci prend en argument le résultat brut des requêtes générées avec les functions {py:func}`~plume.pg.queries.query_read_meta_template`, {py:func}`~plume.pg.queries.query_read_meta_categorie`, {py:func}`~plume.pg.queries.query_read_meta_tab`, {py:func}`~plume.pg.queries.query_read_meta_template_categories`. Il est possible de spécifier un identifiant de modèle ou une liste d'identifiant de modèles via l'argument `tpl_id`, ce qui permet de n'exporter que les données relatives à ces modèles.
+L'export est réalisé par la fonction {py:func}`plume.pg.template.dump_template_data`. Outre le chemin du fichier cible, celle-ci prend en argument le résultat brut des requêtes générées avec les functions {py:func}`~plume.pg.queries.query_read_meta_template`, {py:func}`~plume.pg.queries.query_read_meta_categorie`, {py:func}`~plume.pg.queries.query_read_meta_tab`, {py:func}`~plume.pg.queries.query_read_meta_template_categories`. Il est possible de spécifier un identifiant de modèle ou une liste d'identifiants de modèles via l'argument `tpl_id`, ce qui permet de n'exporter que les données relatives à ces modèles.
 
 ```python
 
@@ -787,6 +787,7 @@ from plume.pg.template import dump_template_data
 
 conn = psycopg2.connect(connection_string)
 
+# récupération des données en base
 with conn:
 	with conn.cursor() as cur:
 	
@@ -812,6 +813,7 @@ with conn:
 
 conn.close()
 
+# export
 try:
     dump_template_data(
         filepath,
@@ -819,7 +821,7 @@ try:
         categories=categories,
         tabs=tabs,
         template_categories=template_categories,
-        tpl_id
+        tpl_id=tpl_id
     )
 except:
     ...
@@ -828,4 +830,33 @@ except:
 
 *`connection_string` est la chaîne de connexion à la base de données. `filepath` est le chemin absolu du fichier de destination. S'il existait déjà, il est écrasé. `tpl_id` est l'identifiant du modèle considéré, ou une liste de modèles considérés. S'il est omis, vaut `None` ou une liste vide, toutes les données seront exportées.*
 
-Le contrôle d'erreur devrait essentiellement permettre de capturer des erreurs découlant de chemins inaccessibles. Le processus de sérialisation en lui-même n'est pas susceptible d'échouer, sauf à ce que les données fournies ne contiennent pas les champs de clé primaire et clés étrangères des tables.
+Le contrôle d'erreur devrait essentiellement permettre de capturer des erreurs découlant de chemins inaccessibles. Le processus de sérialisation en lui-même n'est pas susceptible d'échouer lorsque les données ont été extraites de la base avec les requêtes prévues à cet effet.
+
+Pour importer en base des données des modèles préalablement exportées en JSON, on utilise la classe {py:class}`plume.pg.template.TemplateQueryBuilder`. Son générateur {py:meth}`plume.pg.template.TemplateQueryBuilder.queries` produit des requêtes à exécuter sur la base. Si l'attribut {py:attr}`plume.pg.template.TemplateQueryBuilder.waiting` vaut ``True``, le résultat doit être récupéré et fournit en argument de la méthode {py:meth}`plume.pg.template.TemplateQueryBuilder.feedback`. Ces informations sont utilisées pour établir - grâce aux noms des modèles et onglets - la correspondance entre les identifiants numériques présents dans le fichier source et ceux de la base cible.
+
+```python
+
+import psycopg2
+from plume.pg import queries
+from plume.pg.template import TemplateQueryBuilder
+
+try:
+    builder = TemplateQueryBuilder(filepath, no_update=no_update)
+    conn = psycopg2.connect(connection_string)
+    with conn:
+        with conn.cursor() as cur:
+            for query in builder.queries():
+                cur.execute(*query)
+                if builder.waiting:
+                    result = cur.fetchone()
+                    builder.feedback(result)
+    conn.close()
+except:
+    ...
+
+```
+
+*`connection_string` est la chaîne de connexion à la base de données. `filepath` est le chemin absolu du fichier source. `no_update` est un booléen qui détermine si les données des tables des catégories et des onglets sont mises à jour en fonction des données du fichier source (`False`, valeur par défaut) ou si les informations en base sont préservées (`True`).*
+
+
+

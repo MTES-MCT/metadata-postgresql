@@ -1,0 +1,9 @@
+{
+    "categories": [
+        {
+            "path": "plume:forbidden",
+            "origin": "shared",
+            "label": "Interdit"
+        }
+    ]
+}

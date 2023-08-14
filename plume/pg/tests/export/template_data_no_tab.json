@@ -1,0 +1,43 @@
+{
+    "template_categories": [
+        {
+            "shrcat_path": "dct:title",
+            "label": "old 111 template",
+            "tpl_id": 111,
+            "tab_id": 131
+        }
+    ],
+    "templates": [
+        {
+            "tpl_id": 111,
+            "tpl_label": "Modèle 111"
+        },
+        {
+            "tpl_id": 112,
+            "tpl_label": "Modèle 112"
+        }
+    ],
+    "categories": [
+        {
+            "path": "dct:title",
+            "origin": "shared",
+            "label": "Libellé",
+            "description": "Nom explicite du jeu de données.",
+            "special": null,
+            "is_node": false,
+            "datatype": "rdf:langString",
+            "is_long_text": false,
+            "rowspan": null,
+            "placeholder": null,
+            "input_mask": null,
+            "is_multiple": true,
+            "unilang": true,
+            "is_mandatory": true,
+            "sources": null,
+            "geo_tools": null,
+            "compute": null,
+            "template_order": 0,
+            "compute_params": null
+        }
+    ]
+}

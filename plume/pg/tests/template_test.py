@@ -18,7 +18,7 @@ from plume.rdf.namespaces import RDF, DCAT
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.pg.template import (
     TemplateDict, search_template, LocalTemplatesCollection,
-    dump_template_data
+    dump_template_data, TemplateQueryBuilder
 )
 from plume.pg.description import PgDescription
 from plume.pg.tests.connection import ConnectionString
@@ -334,7 +334,7 @@ class TemplateTestCase(unittest.TestCase):
         """Export en JSON de toutes les données des modèles.
 
         """
-        pfile = Path(abspath('pg/tests/export/template_data.json'))
+        pfile = Path(abspath('pg/tests/export/template_data_temp.json'))
         conn = psycopg2.connect(TemplateTestCase.connection_string)
 
         with conn:
@@ -426,7 +426,7 @@ class TemplateTestCase(unittest.TestCase):
         """Export en JSON du modèle pré-configuré INSPIRE.
 
         """
-        pfile = Path(abspath('pg/tests/export/template_data.json'))
+        pfile = Path(abspath('pg/tests/export/template_data_temp.json'))
 
         conn = psycopg2.connect(TemplateTestCase.connection_string)
 
@@ -507,7 +507,7 @@ class TemplateTestCase(unittest.TestCase):
         """Export en JSON des modèles pré-configurés INSPIRE et Basique.
 
         """
-        pfile = Path(abspath('pg/tests/export/template_data.json'))
+        pfile = Path(abspath('pg/tests/export/template_data_temp.json'))
 
         conn = psycopg2.connect(TemplateTestCase.connection_string)
 
@@ -588,6 +588,384 @@ class TemplateTestCase(unittest.TestCase):
         )
 
         pfile.unlink()
+
+    def test_load_template_inspire(self):
+        """Test d'import du modèle INSPIRE depuis un export JSON."""
+        builder = TemplateQueryBuilder(abspath('pg/tests/export/template_data_inspire.json'))
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                for query in builder.queries():
+                    cur.execute(*query)
+                    if builder.waiting:
+                        result = cur.fetchone()[0]
+                        builder.feedback(result)
+                
+                cur.execute(
+                    *query_read_meta_template()
+                )
+                templates = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_categorie()
+                )
+                categories = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_tab()
+                )
+                tabs = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_template_categories()
+                )
+                template_categories = cur.fetchall()
+
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        self.assertEqual(len(templates), 1)
+        self.assertTrue(categories)
+        self.assertTrue(tabs)
+        self.assertTrue(template_categories)
+
+    def test_load_template_inspire_update(self):
+        """Test de mise à jour du modèle INSPIRE depuis un export JSON."""
+        builder = TemplateQueryBuilder(abspath('pg/tests/export/template_data_inspire.json'))
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    '''
+                    UPDATE z_plume.meta_template
+                        SET comment = 'Bricolage'
+                        WHERE tpl_label = 'INSPIRE'
+                        RETURNING tpl_id
+                    '''
+                )
+                tpl_id_inspire = cur.fetchone()[0]
+                cur.execute(
+                    '''
+                    INSERT INTO z_plume.meta_template_categories
+                        (shrcat_path, tpl_id) VALUES ('adms:versionNotes', %s)
+                    ''',
+                    (tpl_id_inspire,)
+                )
+                cur.execute(
+                    '''
+                    DELETE FROM z_plume.meta_template_categories
+                        WHERE shrcat_path = 'dct:title'
+                            AND tpl_id = %s
+                    ''',
+                    (tpl_id_inspire,)
+                )
+                cur.execute(
+                    '''
+                    UPDATE z_plume.meta_categorie
+                        SET label = 'Truc'
+                        WHERE path = 'dct:description'
+                    '''
+                )
+                cur.execute(
+                    '''
+                    SELECT count(*) FROM z_plume.meta_template
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_template_categories
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_tab
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_categorie
+                    '''
+                )
+                ref_count = cur.fetchall()
+
+                for query in builder.queries():
+                    cur.execute(*query)
+                    if builder.waiting:
+                        result = cur.fetchone()
+                        builder.feedback(result)
+
+                cur.execute(
+                    '''
+                    SELECT count(*) FROM z_plume.meta_template
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_template_categories
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_tab
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_categorie
+                    '''
+                )
+                new_count = cur.fetchall()
+
+                cur.execute(
+                    '''
+                    SELECT
+                        'adms:versionNotes' IN (
+                            SELECT shrcat_path
+                                FROM z_plume.meta_template_categories
+                                WHERE tpl_id = %s
+                        )
+                    ''',
+                    (tpl_id_inspire,)
+                )
+                version_note_check = cur.fetchone()[0]
+
+                cur.execute(
+                    '''
+                    SELECT
+                        'dct:title' IN (
+                            SELECT shrcat_path
+                                FROM z_plume.meta_template_categories
+                                WHERE tpl_id = %s
+                        )
+                    ''',
+                    (tpl_id_inspire,)
+                )
+                title_check = cur.fetchone()[0]
+
+                cur.execute(
+                    '''
+                    SELECT
+                        comment
+                        FROM z_plume.meta_template
+                        WHERE tpl_id = %s
+                    ''',
+                    (tpl_id_inspire,)
+                )
+                comment_check = cur.fetchone()[0]
+
+                cur.execute(
+                    '''
+                    SELECT
+                        label
+                        FROM z_plume.meta_categorie
+                        WHERE path = 'dct:description'
+                    '''
+                )
+                label_check = cur.fetchone()[0]
+                
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        self.assertEqual(label_check, 'Description')
+        self.assertEqual(comment_check, 'Métadonnées obligatoires INSPIRE prises en charge par Plume.')
+        self.assertTrue(title_check)
+        self.assertFalse(version_note_check)
+        self.assertEqual(ref_count, new_count)
+    
+    def test_load_template_inspire_no_update(self):
+        """Test de mise à jour du modèle INSPIRE depuis un export JSON, sans mise à jour des onglets et catégories."""
+        builder = TemplateQueryBuilder(
+            abspath('pg/tests/export/template_data_inspire.json'),
+            no_update=True
+        )
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(
+                    '''
+                    UPDATE z_plume.meta_tab
+                        SET tab_num = 111
+                        WHERE tab_label = 'Général'
+                        RETURNING tab_id
+                    '''
+                )
+                general_tab_id = cur.fetchone()[0]
+                cur.execute(
+                    '''
+                    UPDATE z_plume.meta_categorie
+                        SET label = 'Truc'
+                        WHERE path = 'dct:description'
+                    '''
+                )
+                cur.execute(
+                    '''
+                    SELECT count(*) FROM z_plume.meta_template
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_template_categories
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_tab
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_categorie
+                    '''
+                )
+                ref_count = cur.fetchall()
+
+                for query in builder.queries():
+                    cur.execute(*query)
+                    if builder.waiting:
+                        result = cur.fetchone()
+                        builder.feedback(result)
+
+                cur.execute(
+                    '''
+                    SELECT count(*) FROM z_plume.meta_template
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_template_categories
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_tab
+                    UNION
+                    SELECT count(*) FROM z_plume.meta_categorie
+                    '''
+                )
+                new_count = cur.fetchall()
+
+                cur.execute(
+                    '''
+                    SELECT tab_num FROM z_plume.meta_tab
+                        WHERE tab_id = %s
+                    ''',
+                    (general_tab_id,)
+                )
+                tab_check = cur.fetchone()[0]
+
+                cur.execute(
+                    '''
+                    SELECT
+                        label
+                        FROM z_plume.meta_categorie
+                        WHERE path = 'dct:description'
+                    '''
+                )
+                label_check = cur.fetchone()[0]
+                
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        self.assertEqual(label_check, 'Truc')
+        self.assertEqual(tab_check, 111)
+        self.assertEqual(ref_count, new_count)
+
+    def test_load_template_local_insert(self):
+        """Chargement d'un modèle avec nouvelle catégorie locale."""
+        builder = TemplateQueryBuilder(abspath('pg/tests/export/template_data_local_insert.json'))
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                for query in builder.queries():
+                    cur.execute(*query)
+                    if builder.waiting:
+                        result = cur.fetchone()[0]
+                        builder.feedback(result)
+
+                cur.execute(
+                    '''
+                    SELECT count(*) FROM z_plume.meta_categorie WHERE label = 'Autorisé'
+                    '''
+                )
+                row_count = cur.fetchone()[0]
+                
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        self.assertEqual(row_count, 1)
+
+    def test_load_template_shared_insert(self):
+        """Chargement d'un modèle avec nouvelle catégorie commune (sans effet)."""
+        builder = TemplateQueryBuilder(abspath('pg/tests/export/template_data_shared_insert.json'))
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+
+                for query in builder.queries():
+                    cur.execute(*query)
+                    if builder.waiting:
+                        result = cur.fetchone()[0]
+                        builder.feedback(result)
+
+                cur.execute(
+                    '''
+                    SELECT count(*) FROM z_plume.meta_categorie WHERE label = 'Interdit'
+                    '''
+                )
+                row_count = cur.fetchone()[0]
+                
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        self.assertEqual(row_count, 0)
+
+    def test_load_template_no_categorie(self):
+        """Chargement d'associations modèle-catégorie avec une catégorie non explicitement définie."""
+        builder = TemplateQueryBuilder(abspath('pg/tests/export/template_data_no_categorie.json'))
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+
+                for query in builder.queries():
+                    cur.execute(*query)
+                    if builder.waiting:
+                        result = cur.fetchone()[0]
+                        builder.feedback(result)
+
+                cur.execute(
+                    '''
+                    SELECT count(*) FROM z_plume.meta_template_categories
+                        WHERE label = 'old 111 template'
+                    '''
+                )
+                row_count = cur.fetchone()[0]
+                
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        self.assertEqual(row_count, 1)
+    
+    def test_load_template_no_template(self):
+        """Chargement d'associations modèle-catégorie avec un modèle non explicitement défini (interdit)."""
+        builder = TemplateQueryBuilder(abspath('pg/tests/export/template_data_no_template.json'))
+        try:
+            conn = psycopg2.connect(TemplateTestCase.connection_string)
+            with conn:
+                with conn.cursor() as cur:
+
+                    for query in builder.queries():
+                        cur.execute(*query)
+                        if builder.waiting:
+                            result = cur.fetchone()[0]
+                            builder.feedback(result)
+                   
+                    cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+            conn.close()
+            self.assertTrue(False, 'An error should have occurred')
+        except Exception as e:
+            self.assertTrue(isinstance(e, ValueError))
+            self.assertTrue('111' in str(e))
+
+    def test_load_template_no_tab(self):
+        """Chargement d'associations modèle-catégorie avec un onglet non explicitement défini (interdit)."""
+        builder = TemplateQueryBuilder(abspath('pg/tests/export/template_data_no_tab.json'))
+        try:
+            conn = psycopg2.connect(TemplateTestCase.connection_string)
+            with conn:
+                with conn.cursor() as cur:
+
+                    for query in builder.queries():
+                        cur.execute(*query)
+                        if builder.waiting:
+                            result = cur.fetchone()[0]
+                            builder.feedback(result)
+                   
+                    cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+            conn.close()
+            self.assertTrue(False, 'An error should have occurred')
+        except Exception as e:
+            self.assertTrue(isinstance(e, ValueError))
+            self.assertTrue('131' in str(e))
 
 if __name__ == '__main__':
     unittest.main()

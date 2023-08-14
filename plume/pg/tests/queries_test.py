@@ -34,7 +34,8 @@ from plume.pg.queries import (
     query_delete_meta_template, query_delete_meta_template_categories,
     query_plume_pg_import_sample_template, query_plume_pg_create, query_plume_pg_drop,
     query_plume_pg_update, query_plume_pg_status, query_stamp_recording_disable,
-    query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable
+    query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable,
+    query_read_any_row
 )
 from plume.pg.template import LocalTemplatesCollection, TemplateDict
 from plume.rdf.widgetsdict import WidgetsDict
@@ -1697,6 +1698,181 @@ class QueriesTestCase(unittest.TestCase):
         self.assertTrue('STAMP TO METADATA DISABLE' in status1[0])
         self.assertTrue('STAMP TO METADATA ENABLE' in status2[0])
         self.assertFalse('STAMP TO METADATA DISABLE' in status2[0])
+
+    def test_query_read_any_row(self):
+        """Test de la fonction qui permet de récupérer une ligne d'une table quelconque."""
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_read_any_row('z_plume', 'meta_categorie', 'path', {'path': 'dct:title'})
+                cur.execute(*query)
+                row_1 = cur.fetchone()
+                query = query_read_any_row(
+                    'z_plume', 'meta_categorie', 'path', ['dct:title', 'Titre'], ['path', 'label']
+                )
+                cur.execute(*query)
+                row_2 = cur.fetchone()
+                query = query_read_any_row(
+                    'z_plume', 'meta_categorie', 'path', {'path': 'truc'}
+                )
+                cur.execute(*query)
+                row_3 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
+                ''')
+        conn.close()
+        self.assertIsNotNone(row_1)
+        self.assertEqual(row_1[0]['path'], 'dct:title')
+        self.assertIsNotNone(row_2)
+        self.assertEqual(row_2[0]['path'], 'dct:title')
+        self.assertIsNone(row_3)
+    
+    def test_query_insert_or_update_meta_categorie_no_update(self):
+        """Requête d'insertion sur la table des catégories qui ne met pas à jour."""
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                # catégorie locale (non-mise à jour)
+                query = query_insert_or_update_meta_categorie(
+                    {'path': 'dct:title', 'label': 'Truc', 'origin': 'shared'},
+                    no_update=True
+                )
+                cur.execute(*query)
+                res_1 = cur.fetchone()
+
+                # catégorie locale (création)
+                query = query_insert_or_update_meta_categorie(
+                    {'label': 'Bidule'},
+                    no_update=True
+                )
+                cur.execute(*query)
+                res_2 = cur.fetchone()
+
+                # catégorie locale (non-mise à jour)
+                data = res_2[0].copy()
+                data['label'] = 'Machin'
+                query = query_insert_or_update_meta_categorie(
+                    data, no_update=True
+                )
+                cur.execute(*query)
+                res_3 = cur.fetchone()
+                query = query_read_any_row('z_plume', 'meta_categorie', 'path', {'path': data['path']})
+                cur.execute(*query)
+                res_4 = cur.fetchone()
+
+                cur.execute('''
+                    DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
+                ''')
+        conn.close()
+
+        self.assertIsNotNone(res_1)
+        self.assertNotEqual(res_1[0]['label'], 'Truc')
+        self.assertIsNotNone(res_2)
+        self.assertEqual(res_2[0]['label'], 'Bidule')
+        self.assertIsNone(res_3)
+        self.assertIsNotNone(res_4)
+        self.assertEqual(res_4[0]['label'], 'Bidule')
+
+    def test_query_insert_or_update_meta_tab_no_update(self):
+        """Requête d'insertion sur la table des onglets qui ne met pas à jour."""
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_insert_or_update_meta_tab(
+                    {'tab_label': 'Nouvel onglet'}, no_update=True
+                )
+                cur.execute(*query)
+                res_1 = cur.fetchone()
+                data = res_1[0].copy()
+                data['tab_label'] = 'Onglet plus trop nouveau'
+                query = query_insert_or_update_meta_tab(
+                    data, no_update=True
+                )
+                cur.execute(*query)
+                res_2 = cur.fetchone()
+                query = query_read_any_row('z_plume', 'meta_tab', 'tab_id', data)
+                cur.execute(*query)
+                res_3 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
+                ''')
+        conn.close()
+
+        self.assertIsNotNone(res_1)
+        self.assertEqual(res_1[0]['tab_label'], 'Nouvel onglet')
+        self.assertIsNone(res_2)
+        self.assertIsNotNone(res_3)
+        self.assertEqual(res_3[0]['tab_label'], 'Nouvel onglet')
+
+    def test_query_insert_or_update_meta_template_no_update(self):
+        """Requête d'insertion sur la table des modèles qui ne met pas à jour."""
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = query_insert_or_update_meta_template(
+                    {'tpl_label': 'Nouveau modèle'}, no_update=True
+                )
+                cur.execute(*query)
+                res_1 = cur.fetchone()
+                data = res_1[0].copy()
+                data['tpl_label'] = 'Modèle plus trop nouveau'
+                query = query_insert_or_update_meta_template(
+                    data, no_update=True
+                )
+                cur.execute(*query)
+                res_2 = cur.fetchone()
+                query = query_read_any_row('z_plume', 'meta_template', 'tpl_id', data)
+                cur.execute(*query)
+                res_3 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
+                ''')
+        conn.close()
+
+        self.assertIsNotNone(res_1)
+        self.assertEqual(res_1[0]['tpl_label'], 'Nouveau modèle')
+        self.assertIsNone(res_2)
+        self.assertIsNotNone(res_3)
+        self.assertEqual(res_3[0]['tpl_label'], 'Nouveau modèle')
+    
+    def test_query_insert_or_update_meta_template_categories_no_update(self):
+        """Requête d'insertion sur la table d'association modèle-catégorie qui ne met pas à jour."""
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(*query_plume_pg_import_sample_template('INSPIRE'))
+                cur.execute(
+                    '''
+                    SELECT tplcat_id, tpl_id FROM z_plume.meta_template_categories
+                        WHERE shrcat_path = 'dct:title'
+                    '''
+                )
+                tplcat_id, tpl_id = cur.fetchone()
+                query = query_insert_or_update_meta_template_categories(
+                    {
+                        'tplcat_id': tplcat_id,
+                        'label': 'Mauvais label',
+                        'tpl_id': tpl_id,
+                        'shrcat_path': 'dct:title'
+                    },
+                    no_update=True
+                )
+                cur.execute(*query)
+                res_1 = cur.fetchone()
+                query = query_read_any_row(
+                    'z_plume', 'meta_template_categories', 'tplcat_id',
+                    {'tplcat_id': tplcat_id}
+                )
+                cur.execute(*query)
+                res_2 = cur.fetchone()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
+                ''')
+        conn.close()
+
+        self.assertIsNone(res_1)
+        self.assertIsNotNone(res_2)
+        self.assertIsNone(res_2[0]['label'])
 
 if __name__ == '__main__':
     unittest.main()

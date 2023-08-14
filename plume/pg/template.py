@@ -3,12 +3,21 @@
 """
 
 import re
-from json import load, dump
+from json import load, loads, dump
 from pathlib import Path
 
 from plume.rdf.rdflib import URIRef, from_n3
-from plume.rdf.utils import path_from_n3, forbidden_char, abspath
+from plume.rdf.utils import (
+    path_from_n3, forbidden_char, abspath, data_from_file
+)
 from plume.rdf.namespaces import RDFS, SH, PlumeNamespaceManager
+from plume.pg.queries import (
+    query_insert_or_update_meta_categorie,
+    query_insert_or_update_any_table,
+    query_insert_or_update_meta_template_categories,
+    query_delete_any_table,
+    query_read_any_row
+)
 
 nsm = PlumeNamespaceManager()
 
@@ -270,7 +279,7 @@ def dump_template_data(
 
     Parameters
     ----------
-    filepath : str
+    filepath : str or pathlib.Path
         Chemin absolu du fichier cible.
     templates : list(tuple(dict))) or list(dict), optional
         Le contenu de la table des modèles (au moins les enregistrements
@@ -370,4 +379,284 @@ def dump_template_data(
     
     with open(pfile, 'w', encoding='utf-8') as dest:
         dump(data, dest, ensure_ascii=False, indent=4)
+
+class TemplateQueryBuilder:
+    """Constructeur des requêtes qui permettent l'import des modèles en base.
+    
+    La principal difficulté lors de l'import d'un modèle est le fait que
+    les valeurs des clés primaires numériques des tables des modèles
+    et des onglets, qui servent également de clés étrangères dans la table
+    d'association des catégories aux modèles, ne sont a priori pas les mêmes
+    dans la base d'origine du modèle et dans la base cible.
+
+    La classe :py:class:`TemplateQueryBuilder` propose un processus d'intégration
+    progressive des modèles qui répond à ce problème. Les enregistrements
+    des différentes tables sont ajoutés ou mis à jour un par un, ce qui permet
+    d'assurer la correspondance entre les anciennes et nouvelles clés.
+
+    Le générateur :py:meth:`TemplateQueryBuilder.queries` fournit les
+    requêtes, à exécuter au fur et à mesure. Après l'exécution de chaque requête,
+    si et seulement si l'attribut :py:attr:`TemplateQueryBuilder.waiting` vaut
+    ``True``, le résultat doit être ré-intégré avec la méthode 
+    :py:meth:`TemplateQueryBuilder.feedback`:
+
+        >>> builder = TemplateQueryBuilder(filepath)
+        >>> conn = psycopg2.connect(connection_string)
+        >>> with conn:
+        ...     with conn.cursor() as cur:
+        ...         for query in builder.queries():
+        ...              cur.execute(*query)
+        ...              if builder.waiting:
+        ...                  result = cur.fetchone()
+        ...                  builder.feedback(result)
+        >>> conn.close()
+    
+    Le fichier source est un dictionnaire encodé en JSON, comptant au plus
+    de quatre clés : ``templates``, ``categories``, ``tabs``, ``template_categories``.
+    Chaque clé prend en valeur une liste de dictionnaires dont les clés sont les
+    noms des champs des tables ``meta_template``, ``meta_categorie``, ``meta_tab``
+    et ``meta_template_categories``.
+
+    À noter que:
+
+    * Les modèles et onglets sont reconnus par leur nom. Si un modèle/onglet de
+      même nom qu'un modèle/onglet défini dans le fichier source existe dans
+      la base cible, il sera mis à jour, sinon un nouveau modèle/onglet est ajouté.
+    * Le processus échouera si les associations modèle-catégorie font référence
+      à des modèles ou onglets non définies dans le fichier source, ou à des
+      catégories qui ne sont définies ni en base ni dans le fichier source.
+    * Il n'est pas possible d'utiliser cette méthode pour ajouter des catégories
+      communes qui ne seraient pas présentes en base. Celles-ci seront ignorées si
+      elles n'étaient pas utilisées pour des associations modèle-catégorie, et 
+      une erreur se produira dans le cas contraire.
+    * Si le fichier source contient des enregistrements de la table des modèles,
+      toutes les associations modèle-catégorie correspondantes seront supprimées
+      avant import des associations modèle-catégories du fichier source. La
+      suppression peut être évitée en modifiant la valeur du paramètre `preserve`.
+
+    Parameters
+    ----------
+    filepath : str or pathlib.Path
+        Chemin absolu du fichier source. Le contenu du fichier est récupéré
+        à l'initialisation, et stocké dans les attributs de la classe.
+    no_update : bool, default False
+        Si ``True``, les données des catégories et onglets ne sont
+        pas mises à jour lorsque les enregistrements existent déjà en
+        base (les enregistrements manquants sont créés dans tous les cas).
+    preserve : bool, default False
+        Si ``True``, les associations modèle-catégorie des modèles ne sont
+        pas supprimées avant recréation. Les associations qui ne sont pas
+        présentes dans le fichier source seront donc préservées.
+    
+    Attributes
+    ----------
+    templates : list(dict)
+        Données décrivant des modèles, équivalant à des enregistrements
+        de la table ``meta_template``.
+    categories : list(dict)
+        Données décrivant des catégories de métadonnées, équivalant à des
+        enregistrements de la table ``meta_categorie``.
+    tabs : list(dict)
+        Données décrivant des onglets, équivalant à des enregistrements de
+        la table ``meta_tab``.
+    template_categories : list(dict)
+        Données décrivant l'association d'une catégorie à un modèle, 
+        équivalant à des enregistrements de la table ``meta_template_categories``.
+    map_tpl_id : dict
+        Correspondance entre les identifiants numériques des modèles dans les
+        données sources et leurs équivalents dans la base de données cible.
+        Ce dictionnaire est complété au fur et à mesure de l'exécution et
+        la ré-intégration du résultat des requêtes.
+    map_tab_id : dict
+        Correspondance entre les identifiants numériques des onglets dans les
+        données sources et leurs équivalents dans la base de données cible.
+        Ce dictionnaire est complété au fur et à mesure de l'exécution et
+        la ré-intégration du résultat des requêtes.
+    last_type : {None, 'templates', 'categories', 'tabs', 'template_categories'}
+        Nature du dernier enregistrement créé ou mis à jour en base.
+        Cet attribut vaut ``None`` tant que le générateur :py:meth:`TemplateQueryBuilder.queries`
+        n'a pas été lancé.
+    last_id : int or None
+        Identifiant numérique du dernier enregistrement créé ou mis à jour en base
+        dans les données sources.
+        Cet attribut vaut ``None`` tant que le générateur :py:meth:`TemplateQueryBuilder.queries`
+        n'a pas été lancé, ou si le dernier enregistrement traité n'était pas un modèle
+        ou un onglet.
+    waiting : bool
+        ``True`` si le résultat de la requête courante doit être ré-intégré
+        grâce à la méthode :py:meth:`TemplateQueryBuilder.feedback`, `False`
+        sinon. Cet attribut vaut également `False` pour les requêtes qui n'ont
+        pas de résultat, telles les commandes de suppression, il est donc important
+        de tester sa valeur avant de tenter de récupérer le résultat de la
+        requête.
+        
+    """
+
+    def __init__(self, filepath, no_update=False, preserve=False):
+
+        data = data_from_file(filepath)
+        data_dict = loads(data)
+
+        self.templates = data_dict.get('templates', [])
+        self.categories = data_dict.get('categories', [])
+        self.tabs = data_dict.get('tabs', [])
+        self.template_categories = data_dict.get('template_categories', [])
+
+        self.map_tpl_id = {}
+        self.map_tab_id = {}
+        self.last_type = None
+        self.last_id = None
+        self.waiting = False
+        self._retry_query = None
+        self._retry_queries = []
+
+        self._preserve = bool(preserve)
+        self._no_update = bool(no_update)
+
+    def feedback(self, result):
+        """À utiliser pour fournir au générateur les résultats de ses requêtes.
+
+        Concrètement, cette méthode construit des
+        dictionnaires de mapping, qui permettent
+        ensuite au générateur de remplacer les anciens
+        identifiants numériques de modèles (ceux de la base sur
+        laquelle a été réalisé l'export) et d'onglets par
+        les nouveaux (ceux de la base sur laquelle est réalisé
+        l'import).
+
+        Parameters
+        ----------
+        result : list(tuple(dict)) or tuple(dict) or dict
+            Le résultat de la dernière requête produite
+            par le générateur :py:meth:`TemplateQueryBuilder.queries`.
+
+        """
+        if not self.waiting:
+            return
+        
+        if not result:
+            if self._retry_query:
+                self._retry_queries.append(self._retry_query)
+                self._retry_query = None
+                return
+                # avec l'option no_update, les requêtes
+                # INSERT ... ON CONFLICT DO NOTHING
+                # ne renvoient rien sur les enregistrements
+                # pré-existants, ce qui ne permet donc pas de
+                # récupérer les nouvelles valeurs des clés
+                # primaires numériques. Dans ce cas, feedback
+                # mémorise la requête query_read_any_row
+                # qui permettra d'obtenir cette information
+                # avant de passer à la suite.
+            raise ValueError('"result" ne peut être vide')
+        self._retry_query = None
+
+        if isinstance(result, list):
+            result = result[0]
+        if isinstance(result, tuple):
+            result = result[0]
+        if not isinstance(result, dict):
+            raise TypeError('"result" devrait contenir un dictionnaire')
+        if self.last_type == 'tabs':
+            self.map_tab_id[self.last_id] = result['tab_id']
+        if self.last_type == 'templates':
+            self.map_tpl_id[self.last_id] = result['tpl_id']
+    
+    def queries(self):
+        """Générateur de requêtes.
+
+        Yields
+        ------
+        PgQueryWithArgs
+            Une requête prête à être envoyée au serveur PostgreSQL.
+        
+        """
+        # modèles
+        tpl_ids = []
+        for data in self.templates:
+            if data.get('tpl_id'):
+                self.waiting = True
+                self.last_type = 'templates'
+                self.last_id = data['tpl_id']
+                tpl_ids.append(data['tpl_id'])
+                del data['tpl_id']
+            yield query_insert_or_update_any_table(
+                'z_plume', 'meta_template', 'tpl_label', data
+            )
+        
+        # onglets
+        for data in self.tabs:
+            if data.get('tab_id'):
+                self.waiting = True
+                self.last_type = 'tabs'
+                self.last_id = data['tab_id']
+                if self._no_update:
+                    self._retry_query = (
+                        query_read_any_row(
+                            'z_plume', 'meta_tab', 'tab_label', data
+                        ),
+                        'tabs',
+                        data['tab_id']
+                    )
+                del data['tab_id']
+            yield query_insert_or_update_any_table(
+                'z_plume', 'meta_tab', 'tab_label', data,
+                no_update=self._no_update
+            )
+        for query, last_type, last_id in self._retry_queries:
+            self.last_type = last_type
+            self.last_id = last_id
+            yield query
+            # cf. méthode feedboack - récupération des
+            # identifiants numériques qui n'ont pas pu l'être
+            # car leurs enregistrements (pré-existants) n'ont
+            # pas été modifiés à cause de l'option no_update
+
+        # catégories de métadonnées
+        for data in self.categories:
+            self.waiting = False
+            self.last_type = 'categories'
+            self.last_id = None
+            yield query_insert_or_update_meta_categorie(
+                data, no_update=self._no_update
+            )
+        
+        # associations modèle-catégorie
+        if not self._preserve:
+            for tpl_id in tpl_ids:
+                # pour tous les modèles inclus dans les données,
+                # les associations modèle-catégorie sont supprimées
+                # puis re-crées, afin que de ne pas conserver d'enregistrements
+                # obsolètes.
+                self.waiting = False
+                self.last_type = 'template_categories'
+                self.last_id = None
+                yield query_delete_any_table(
+                    'z_plume', 'meta_template_categories', 'tpl_id', {'tpl_id': tpl_id}
+                )
+        for data in self.template_categories:
+            self.waiting = False
+            self.last_type = 'template_categories'
+            self.last_id = None
+            if not data.get('tpl_id'):
+                raise ValueError(
+                    "Identifiant de modèle (tpl_id) manquant pour l'association "
+                    f'modèle-catégorie "{data}"'
+                )
+            if not data['tpl_id'] in self.map_tpl_id:
+                raise ValueError(
+                        f"Le modèle {data['tpl_id']} n'est pas défini dans les données source"
+                    )
+            data['tpl_id'] = self.map_tpl_id[data['tpl_id']]
+            if data.get('tab_id'):
+                if data['tab_id'] in self.map_tab_id:
+                    data['tab_id'] = self.map_tab_id[data['tab_id']]
+                else:
+                    raise ValueError(
+                        f"L'onglet {data['tab_id']} n'est pas défini dans les données source"
+                    )
+            if 'tplcat_id' in data:
+                del data['tplcat_id']
+            yield query_insert_or_update_meta_template_categories(data)
+        
 

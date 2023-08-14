@@ -1,0 +1,19 @@
+{
+    "template_categories": [
+        {
+            "shrcat_path": "dct:title",
+            "label": "old 111 template",
+            "tpl_id": 111
+        }
+    ],
+    "templates": [
+        {
+            "tpl_id": 111,
+            "tpl_label": "Modèle 111"
+        },
+        {
+            "tpl_id": 112,
+            "tpl_label": "Modèle 112"
+        }
+    ]
+}

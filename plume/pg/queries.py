@@ -1428,7 +1428,87 @@ def query_read_meta_tab():
         allow_none=True
     )
 
-def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, columns=None):
+def query_read_any_row(
+    schema_name, table_name, pk_name, data, columns=None
+):
+    """Requête qui renvoie une ligne de données d'une table quelconque.
+    
+    À utiliser comme suit :
+    
+        >>> query = query_read_any_row(
+        ...    'nom du schéma', 'nom de la table', 'nom du champ de clé primaire',
+        ...    ['valeur champ 1', 'valeur de la clé primaire', 'valeur champ 3'],
+        ...    ['nom champ 1', 'nom du champ de clé primaire', 'nom champ 3']
+        ...    )
+        >>> cur.execute(*query)
+        >>> row = cur.fetchone()
+
+    La fonction renvoie une erreur si `data` et `columns`
+    ne contiennent pas de valeur pour le champ de clé primaire.
+    Il ne pose aucun problème de fournir des valeurs pour d'autres
+    champs, même si la fonction n'en fera rien.
+
+    Si l'identifiant spécifié avait bien une correspondance, ``row[0]``
+    sera un dictionnaire contenant les noms et valeurs des champs de 
+    l'enregistrement.
+
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la table.
+    pk_name : str
+        Nom du champ de clé primaire. La fonction ne prend pas en
+        charge les tables avec des clés primaires multi-champs.
+        Il est admissible d'utiliser un champ non nul prenant des valeurs
+        uniques qui ne serait pas formellement la clé primaire de la relation.
+    data : list or dict
+        `data` représente un enregistrement de la table. Il peut
+        s'agir de :
+
+        * La liste des valeurs des champs, dans l'ordre de `columns`,
+          qui doit alors être renseigné.
+        * Un dictionnaire dont les clés sont les noms des champs.
+          `columns` est ignoré dans ce cas.
+    columns : list
+        Liste des noms des champs de la table des onglets pour lesquels
+        `data` fournit des valeurs, exactement dans le même ordre. Il est
+        possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+        Ce paramètre est obligatoire si `data` est une liste de valeur.
+
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL.
+    
+    """
+    if isinstance(data, list):
+        if not columns:
+            raise MissingParameter('columns')
+        pk_value = data[columns.index(pk_name)] if pk_name in columns else None
+    elif isinstance(data, dict):
+        pk_value = data.get(pk_name)
+    else:
+        raise TypeError("'data' devrait être un dictionnaire ou une liste")
+    if not pk_value:
+        raise ValueError('Enregistrement à importer non identifié')
+    return PgQueryWithArgs(
+        query = sql.SQL("""
+            SELECT to_json({relation}.*) FROM {relation}
+                WHERE {pk_name} = {pk_value}
+            """).format(
+                relation=sql.Identifier(schema_name, table_name),
+                pk_name=sql.Identifier(pk_name),
+                pk_value=sql.Literal(pk_value)
+            ),
+        expecting='one row',
+        allow_none=True
+    )
+
+def query_insert_or_update_any_table(
+    schema_name, table_name, pk_name, data, columns=None, no_update=False
+):
     """Requête qui crée ou met à jour un enregistrement d'une table quelconque.
 
     À utiliser comme suit :
@@ -1453,6 +1533,8 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
     pk_name : str
         Nom du champ de clé primaire. La fonction ne prend pas en
         charge les tables avec des clés primaires multi-champs.
+        Il est admissible d'utiliser un champ non nul prenant des valeurs
+        uniques qui ne serait pas formellement la clé primaire de la relation.
     data : list or dict
         `data` représente un enregistrement de la table. Il peut
         s'agir de :
@@ -1465,6 +1547,9 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
         Liste des noms des champs de la table des onglets pour lesquels
         `data` fournit des valeurs, exactement dans le même ordre. Il est
         possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+    no_update : bool, default False
+        Si ``True``, la requête n'aura pas d'effet sur les enregistrements
+        pré-existants.
 
     Returns
     -------
@@ -1485,13 +1570,22 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
         raise TypeError("'data' devrait être un dictionnaire ou une liste")
 
     return PgQueryWithArgs(
-        query = sql.SQL("""
+        query = sql.SQL(
+            """
+            INSERT INTO {relation} ({columns})
+                VALUES ({values})
+                ON CONFLICT ({pk_name}) DO NOTHING
+                RETURNING to_json({relation}.*)
+            """
+            if no_update else
+            """
             INSERT INTO {relation} ({columns})
                 VALUES ({values})
                 ON CONFLICT ({pk_name}) DO UPDATE
                     SET ({columns}) = ROW ({values})
                 RETURNING to_json({relation}.*)
-        """).format(
+            """
+        ).format(
             relation=sql.Identifier(schema_name, table_name),
             columns=sql.SQL(', ').join(sql.Identifier(c) for c in columns),
             values=sql.SQL(', ').join(
@@ -1503,8 +1597,8 @@ def query_insert_or_update_any_table(schema_name, table_name, pk_name, data, col
             pk_name=sql.Identifier(pk_name)
         ),
         expecting='one row',
-        allow_none=False,
-        missing_mssg="Echec de la modification des données"
+        allow_none=True if no_update else False,
+        missing_mssg=None if no_update else "Echec de la modification des données"
     )
 
 def query_update_any_table(schema_name, table_name, pk_name, data, columns=None):
@@ -1534,6 +1628,8 @@ def query_update_any_table(schema_name, table_name, pk_name, data, columns=None)
     pk_name : str
         Nom du champ de clé primaire. La fonction ne prend pas en
         charge les tables avec des clés primaires multi-champs.
+        Il est admissible d'utiliser un champ non nul prenant des valeurs
+        uniques qui ne serait pas formellement la clé primaire de la relation.
     data : list or dict
         `data` représente un enregistrement de la table. Il peut
         s'agir de :
@@ -1594,7 +1690,7 @@ def query_update_any_table(schema_name, table_name, pk_name, data, columns=None)
         missing_mssg="Echec de la modification des données"
     )
 
-def query_insert_or_update_meta_tab(data, columns=None):
+def query_insert_or_update_meta_tab(data, columns=None, no_update=False):
     """Requête qui crée ou met à jour un onglet dans la table meta_tab de PlumePg.
 
     À utiliser comme suit :
@@ -1620,6 +1716,9 @@ def query_insert_or_update_meta_tab(data, columns=None):
         Liste des noms des champs de la table des onglets pour lesquels
         `data` fournit des valeurs, exactement dans le même ordre. Il est
         possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+    no_update : bool, default False
+        Si ``True``, la requête n'aura pas d'effet sur les enregistrements
+        pré-existants. Dans ce cas, la requête ne renvoie rien.
 
     Returns
     -------
@@ -1628,10 +1727,11 @@ def query_insert_or_update_meta_tab(data, columns=None):
     
     """
     return query_insert_or_update_any_table(
-        'z_plume', 'meta_tab', 'tab_id', data, columns=columns
+        'z_plume', 'meta_tab', 'tab_id', data, columns=columns,
+        no_update=no_update
     )
 
-def query_insert_or_update_meta_categorie(data, columns=None):
+def query_insert_or_update_meta_categorie(data, columns=None, no_update=False):
     """Requête qui crée ou met à jour une catégorie de métadonnées dans la table meta_categorie de PlumePg.
 
     À utiliser comme suit :
@@ -1666,6 +1766,11 @@ def query_insert_or_update_meta_categorie(data, columns=None):
         Liste des noms des champs de la table des onglets pour lesquels
         `data` fournit des valeurs, exactement dans le même ordre. Il est
         possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+    no_update : bool, default False
+        Si ``True``, la requête n'aura pas d'effet sur les enregistrements
+        pré-existants. Dans ce cas, pour une métadonnée locale, la requête
+        ne renvoie rien. Pour une métadonnée commune, elle renvoie
+        l'enregistrement d'origine.
 
     Returns
     -------
@@ -1687,16 +1792,24 @@ def query_insert_or_update_meta_categorie(data, columns=None):
     if origin == 'shared':
         if not path:
             raise ValueError('Métadonnée commune non identifiée')
-        return query_update_any_table(
-            'z_plume', 'meta_shared_categorie', 'path', data, columns=columns
-        )
+        if no_update:
+            # on récupère juste l'enregistrement correspondant s'il
+            # existe, sans le modifier
+            return query_read_any_row(
+                'z_plume', 'meta_shared_categorie', 'path', data, columns=columns
+            )
+        else:
+            return query_update_any_table(
+                'z_plume', 'meta_shared_categorie', 'path', data, columns=columns
+            )
         # NB: on envoie des UPDATE et pas des INSERT ON CONFLICT DO UPDATE sur
         # meta_shared_categorie, parce qu'il y a un trigger sur cette table qui
         # supprime les enregistrements existants qui sont sur le point d'être
         # réinsérés, entraînant la perte de toutes les données liées...
     elif origin in (None, 'local'):
         return query_insert_or_update_any_table(
-            'z_plume', 'meta_local_categorie', 'path', data, columns=columns
+            'z_plume', 'meta_local_categorie', 'path', data, columns=columns,
+            no_update=no_update
         )
     else:
         raise ValueError(
@@ -1704,7 +1817,7 @@ def query_insert_or_update_meta_categorie(data, columns=None):
             f' locale ("local"), pas "{origin}"'
         )
 
-def query_insert_or_update_meta_template(data, columns=None):
+def query_insert_or_update_meta_template(data, columns=None, no_update=False):
     """Requête qui crée ou met à jour un modèle de fiches de métadonnées dans la table meta_template de PlumePg.
 
     À utiliser comme suit :
@@ -1730,6 +1843,9 @@ def query_insert_or_update_meta_template(data, columns=None):
         Liste des noms des champs de la table des onglets pour lesquels
         `data` fournit des valeurs, exactement dans le même ordre. Il est
         possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+    no_update : bool, default False
+        Si ``True``, la requête n'aura pas d'effet sur les enregistrements
+        pré-existants. Dans ce cas, la requête ne renvoie rien.
 
     Returns
     -------
@@ -1738,10 +1854,11 @@ def query_insert_or_update_meta_template(data, columns=None):
     
     """
     return query_insert_or_update_any_table(
-        'z_plume', 'meta_template', 'tpl_id', data, columns=columns
+        'z_plume', 'meta_template', 'tpl_id', data, columns=columns,
+        no_update=no_update
     )
 
-def query_insert_or_update_meta_template_categories(data, columns=None):
+def query_insert_or_update_meta_template_categories(data, columns=None, no_update=False):
     """Requête qui crée ou met à jour une association modèle-catégorie dans la table meta_template_categories de PlumePg.
 
     À utiliser comme suit :
@@ -1763,10 +1880,14 @@ def query_insert_or_update_meta_template_categories(data, columns=None):
           qui doit alors être renseigné.
         * Un dictionnaire dont les clés sont les noms des champs.
           `columns` est ignoré dans ce cas.
-    columns : list
+    columns : list, optional
         Liste des noms des champs de la table des onglets pour lesquels
         `data` fournit des valeurs, exactement dans le même ordre. Il est
         possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+        Ce paramètre est obligatoire si `data` est une liste de valeur.
+    no_update : bool, default False
+        Si ``True``, la requête n'aura pas d'effet sur les enregistrements
+        pré-existants. Dans ce cas, la requête ne renvoie rien.
 
     Returns
     -------
@@ -1775,10 +1896,11 @@ def query_insert_or_update_meta_template_categories(data, columns=None):
     
     """
     return query_insert_or_update_any_table(
-        'z_plume', 'meta_template_categories', 'tplcat_id', data, columns=columns
+        'z_plume', 'meta_template_categories', 'tplcat_id', data,
+        columns=columns, no_update=no_update
     )
 
-def query_delete_any_table(schema_name, table_name, pk_name, data, columns):
+def query_delete_any_table(schema_name, table_name, pk_name, data, columns=None):
     """Requête qui supprime un enregistrement d'une table quelconque.
 
     À utiliser comme suit :
@@ -1804,6 +1926,8 @@ def query_delete_any_table(schema_name, table_name, pk_name, data, columns):
     pk_name : str
         Nom du champ de clé primaire. La fonction ne prend pas en
         charge les tables avec des clés primaires multi-champs.
+        Il est admissible d'utiliser un champ non nul prenant des valeurs
+        uniques qui ne serait pas formellement la clé primaire de la relation.
     data : list or dict
         `data` représente un enregistrement de la table. Il peut
         s'agir de :
@@ -1816,6 +1940,7 @@ def query_delete_any_table(schema_name, table_name, pk_name, data, columns):
         Liste des noms des champs de la table des onglets pour lesquels
         `data` fournit des valeurs, exactement dans le même ordre. Il est
         possible d'obtenir la liste complète avec :py:func:`query_get_columns`.
+        Ce paramètre est obligatoire si `data` est une liste de valeur.
 
     Returns
     -------
