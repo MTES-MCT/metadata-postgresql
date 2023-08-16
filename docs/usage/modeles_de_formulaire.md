@@ -97,7 +97,7 @@ On pourra ainsi initier la création d'un nouveau modèle avec une requête de c
 ```sql
 
 INSERT INTO z_plume.meta_template (tpl_label, enabled)
-	VALUES ('Mon nouveau modèle', False) ;
+    VALUES ('Mon nouveau modèle', False) ;
 
 ```
 
@@ -107,7 +107,7 @@ Puis, une fois finalisée l'association des catégories au modèle (cf. ci-aprè
 
 UPDATE z_plume.meta_template
     SET enabled = True
-	WHERE tpl_label = 'Mon nouveau modèle' ;
+    WHERE tpl_label = 'Mon nouveau modèle' ;
 
 ``` 
 
@@ -493,12 +493,12 @@ from plume.pg import queries
 conn = psycopg2.connect(connection_string)
 
 with conn:
-	with conn.cursor() as cur:
-	
-		cur.execute(
-			*queries.query_is_template_admin()
-			)
-		res = cur.fetchone()
+    with conn.cursor() as cur:
+    
+        cur.execute(
+            *queries.query_is_template_admin()
+            )
+        res = cur.fetchone()
         is_template_admin = res[0]
 
 conn.close()
@@ -558,12 +558,12 @@ from plume.pg import queries
 conn = psycopg2.connect(connection_string)
 
 with conn:
-	with conn.cursor() as cur:
-	
-		cur.execute(
-			*queries.query_read_meta_tab()
-		)
-		tabs = cur.fetchall()
+    with conn.cursor() as cur:
+    
+        cur.execute(
+            *queries.query_read_meta_tab()
+        )
+        tabs = cur.fetchall()
 
 conn.close()
 
@@ -607,11 +607,11 @@ from plume.pg import queries
 conn = psycopg2.connect(connection_string)
 
 with conn:
-	with conn.cursor() as cur:
-	
-		cur.execute(
-			*queries.query_insert_or_update_meta_template(data)
-		)
+    with conn.cursor() as cur:
+    
+        cur.execute(
+            *queries.query_insert_or_update_meta_template(data)
+        )
         new_data = cur.fetchone()[0]
 
 conn.close()
@@ -637,13 +637,13 @@ from plume.pg import queries
 conn = psycopg2.connect(connection_string)
 
 with conn:
-	with conn.cursor() as cur:
-	
-		cur.execute(
-			*queries.query_insert_or_update_meta_template(
+    with conn.cursor() as cur:
+    
+        cur.execute(
+            *queries.query_insert_or_update_meta_template(
                 data, columns=columns
             )
-		)
+        )
         new_data = cur.fetchone()[0]
 
 conn.close()
@@ -654,15 +654,15 @@ Avec l'exemple précédent, `data` serait ici la liste `['Mon nouveau modèle', 
 
 ### Champs obligatoires
 
-Les champs qui suivent doivent impérativement apparaître dans l'argument `data` fourni au constructeur de requêtes avec une valeur non nulle. Les champs précédés d'un astérisque peuvent être omis, mais ne doivent pas être vides s'ils sont présents.
+Les champs qui suivent doivent impérativement apparaître dans l'argument `data` fourni au constructeur de requêtes avec une valeur non nulle. Les champs précédés d’un astérisque peuvent être omis, mais ne doivent pas être vides s’ils sont présents.
 
-| | Insertion | Modification | Suppression |
+| Objet | Insertion | Modification | Suppression |
 | --- | --- | --- | --- |
-| Modèle | `tpl_label` | `tpl_id`, *`tpl_label` | `tpl_id` |
-| Catégorie de métadonnée (locale) | `label` | `path`, *`label` | `path` |
-| Catégorie de métadonnée (commune) | INTERDIT | `path`, `origin` (valant `'shared'`), *`label` | `path` |
-| Onglet | `tab_label`, *`enabled` | `tab_id`, *`tab_label`, *`enabled` | `tab_id` |
-| Association modèle-catégorie | `tpl_id`, `shrcat_path` ou `loccat_path` | `tplcat_id` | `tplcat_id` |
+| Modèle | `tpl_label`, *`enabled` | `tpl_id`, `tpl_label`, *`enabled` | `tpl_id` |
+| Catégorie de métadonnée (locale) | `label`, *`origin` (valant `'local'`), *`is_node` | `path`, `label`, *`origin` (valant `'local'`), *`is_node` | `path` |
+| Catégorie de métadonnée (commune) | INTERDIT | `path`, `origin` (valant `'shared'`), `label`, *`is_node` | `path` |
+| Onglet | `tab_label` | `tab_id`, `tab_label` | `tab_id` |
+| Association modèle-catégorie | `tpl_id`, `shrcat_path` ou `loccat_path` | `tplcat_id`, `tpl_id` | `tplcat_id` |
 
 Les catégories de métadonnées communes sont distinguées des catégories locales par le fait que l'attribut `origin` est présent et vaut `shared`. Il n'est pas permis d'ajouter de métadonnée commune : si `origin` vaut `shared`, la clé primaire `path` devra impérativement être renseignée et correspondre à l'identifiant d'une catégorie pré-existante que l'utilisateur souhaite mettre à jour.
 
@@ -699,11 +699,11 @@ from plume.pg import queries
 conn = psycopg2.connect(connection_string)
 
 with conn:
-	with conn.cursor() as cur:
-	
-		cur.execute(
-			*queries.query_read_enum_meta_datatype()
-		)
+    with conn.cursor() as cur:
+    
+        cur.execute(
+            *queries.query_read_enum_meta_datatype()
+        )
         enum_values = cur.fetchone()[0]
 
 conn.close()
@@ -758,11 +758,11 @@ from plume.pg import queries
 conn = psycopg2.connect(connection_string)
 
 with conn:
-	with conn.cursor() as cur:
-	
-		cur.execute(
-			*queries.query_plume_pg_import_sample_template()
-		)
+    with conn.cursor() as cur:
+    
+        cur.execute(
+            *queries.query_plume_pg_import_sample_template()
+        )
 
 conn.close()
 
@@ -789,27 +789,27 @@ conn = psycopg2.connect(connection_string)
 
 # récupération des données en base
 with conn:
-	with conn.cursor() as cur:
-	
+    with conn.cursor() as cur:
+    
         cur.execute(
-			*queries.query_read_meta_template()
-		)
-		templates = cur.fetchall()
+            *queries.query_read_meta_template()
+        )
+        templates = cur.fetchall()
 
         cur.execute(
-			*queries.query_read_meta_categorie()
-		)
-		categories = cur.fetchall()
-
-		cur.execute(
-			*queries.query_read_meta_tab()
-		)
-		tabs = cur.fetchall()
+            *queries.query_read_meta_categorie()
+        )
+        categories = cur.fetchall()
 
         cur.execute(
-			*queries.query_read_meta_template_categories()
-		)
-		template_categories = cur.fetchall()
+            *queries.query_read_meta_tab()
+        )
+        tabs = cur.fetchall()
+
+        cur.execute(
+            *queries.query_read_meta_template_categories()
+        )
+        template_categories = cur.fetchall()
 
 conn.close()
 
