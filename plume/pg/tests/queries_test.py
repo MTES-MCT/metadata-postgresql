@@ -1852,8 +1852,7 @@ class QueriesTestCase(unittest.TestCase):
                     {
                         'tplcat_id': tplcat_id,
                         'label': 'Mauvais label',
-                        'tpl_id': tpl_id,
-                        'shrcat_path': 'dct:title'
+                        'tpl_id': tpl_id
                     },
                     no_update=True
                 )
