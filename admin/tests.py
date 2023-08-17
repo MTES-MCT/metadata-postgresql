@@ -27,10 +27,13 @@ package :py:mod:`plume.pg`, ainsi que les tests du module
 
 from unittest import TestLoader, TestSuite, TextTestRunner
 
-from plume.pg.tests import description_test, queries_test, \
-    template_test, computer_test
-from plume.rdf.tests import actionsbook_test, metagraph_test, \
-    properties_test, utils_test, widgetkey_test, widgetsdict_test, thesaurus_test
+from plume.pg.tests import (
+    description_test, queries_test, template_test, computer_test
+)
+from plume.rdf.tests import (
+    actionsbook_test, metagraph_test, properties_test, utils_test, widgetkey_test,
+    widgetsdict_test, thesaurus_test, transliterations_test
+)
 from plume.iso.tests import map_test
 
 TESTS = {
@@ -45,7 +48,8 @@ TESTS = {
     utils_test: ['utils', 'rdf'],
     widgetkey_test: ['widgetkey', 'rdf'],
     widgetsdict_test: ['widgetsdict', 'rdf'],
-    map_test: ['map', 'iso']
+    map_test: ['map', 'iso'],
+    transliterations_test : ['transliterations', 'rdf']
     }
 
 def run(*names):

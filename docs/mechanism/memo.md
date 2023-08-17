@@ -127,6 +127,25 @@ Pour le script de mise à jour depuis la version précédente, il sera général
 
 Par précaution, on veillera également à actualiser les fichiers JSON qui contiennent une copie locale des modèles pré-configurés de *PlumePg*. Cf. [Modifier les modèles pré-configurés de *PlumePg*](#modifier-les-modèles-pré-configurés-de-plumepg).
 
+### Mécanisme de translitération
+
+Si la modification du schéma des métadonnées communes n'est pas un simple ajout, il est nécessaire de prévoir la mise à jour des fiches de métadonnées existantes selon le nouveau formalisme prévu par le schéma.
+
+Pour ce faire, on ajoutera au module {py:mod}`plume.rdf.transliterations` une fonction portant le décorateur {py:func}`plume.rdf.transliterations.transliteration`. Cette fonction doit prendre pour unique argument un graphe de métadonnées {py:class}`plume.rdf.metagraph.Metagraph` et ne renvoyer aucune valeur. Elle doit pouvoir être appliquée à n'importe quel graphe de métadonnées - graphe vierge, graphe présentant le formalisme obsolète ou non, etc. - et le modifier de manière à respecter le nouveau formalisme tout en préservant au maximum les informations saisies.
+
+Exemple d'une translitération (évidemment très discutable) qui remplacerait toutes les propriétés `dct:created` par des propriétés `dct:modified` : 
+
+```python
+
+from plume.rdf.namespaces import DCT
+
+@transliteration
+def translit_dct_created(metagraph):
+    for s, o in metagraph.subject_objects(DCT.created):
+        metagraph.remove((s, DCT.created, o))
+        metagraph.add((s, DCT.modified, o))
+
+```
 
 ## Ajouter une option de configuration des catégories de métadonnées
 

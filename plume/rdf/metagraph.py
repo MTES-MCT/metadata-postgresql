@@ -15,6 +15,8 @@ from plume.rdf.utils import (
     export_extension_from_format, export_format_from_extension,
     export_formats, forbidden_char, data_from_file, import_formats
 )
+from plume.rdf.transliterations import transliterate
+
 from plume.iso.map import IsoToDcat
 
 
@@ -577,6 +579,7 @@ def clean_metagraph(raw_graph, old_metagraph=None):
         # identifiant (ou potentiellement un nouveau
         # si l'ancien n'était pas un UUID valide)
         metagraph.add((datasetid, RDF.type, DCAT.Dataset))
+        transliterate(metagraph)
         return metagraph
 
     memory = Graph()
@@ -586,6 +589,8 @@ def clean_metagraph(raw_graph, old_metagraph=None):
     for p, o in raw_graph.predicate_objects(raw_datasetid):
         triple = (datasetid, PREDICATE_MAP.get(p, p), o)
         metagraph._clean_metagraph(raw_graph, o, triple, memory)
+    
+    transliterate(metagraph)
     return metagraph
 
 def copy_metagraph(src_metagraph=None, old_metagraph=None):

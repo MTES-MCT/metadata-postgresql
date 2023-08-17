@@ -37,6 +37,7 @@ import re
 from plume.rdf.metagraph import Metagraph
 from plume.rdf.namespaces import DCT
 from plume.rdf.utils import pick_translation
+from plume.rdf.transliterations import transliterate
 
 
 class PgDescription:
@@ -107,6 +108,7 @@ class PgDescription:
         self._post = ''
         self._jsonld = ''
         self._metagraph = Metagraph()
+
         if self.raw:
             r = re.split(r'\n{0,2}<METADATA>(.*)</METADATA>\n{0,1}', self.raw, flags=re.DOTALL)
             if len(r) != 3:
@@ -119,9 +121,12 @@ class PgDescription:
                         self._metagraph.parse(data=self._jsonld, format='json-ld')
                     except:
                         self._jsonld = ''
+        
         if self.clean == 'always' or self.clean == 'first' and self.metagraph.is_empty:
             self._ante = ''
             self._post = ''
+        
+        transliterate(self.metagraph)
     
     def __str__(self):
         jsonld = '\n\n<METADATA>\n{}\n</METADATA>\n'.format(self._jsonld) \
