@@ -676,7 +676,7 @@ Les champs listés ci-après ne doivent pas pouvoir faire l'objet d'une modifica
 | Catégorie de métadonnée (locale) | `path` (renseigné automatiquement à la création en base), `is_node`, `sources`, `origin` (vaut toujours `'local'`) |
 | Catégorie de métadonnée (commune) | `path` (pré-renseigné), `origin` (vaut toujours `'shared'`), `is_node` |
 | Onglet | `tab_id` (renseigné automatiquement à la création en base) |
-| Association modèle-catégorie | `tpl_label` + `shrcat_path` + `loccat_path` (définis une fois pour toute quand l'utilisateur déclare la catégorie comme utilisée par le modèle), `tplcat_id` (renseigné automatiquement à la création en base) |
+| Association modèle-catégorie | `tpl_id` + `shrcat_path` + `loccat_path` (définis une fois pour toute quand l'utilisateur déclare la catégorie comme utilisée par le modèle), `tplcat_id` (renseigné automatiquement à la création en base) |
 
 ### Champs avec des valeurs imposées
 
