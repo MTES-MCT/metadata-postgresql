@@ -773,7 +773,7 @@ Enfin, la fonction {py:func}`plume.rdf.thesaurus.source_examples` permet de réc
 
 from plume.rdf.thesaurus import source_examples
 
-url = source_examples(uri, langlist, start, limit, dots)
+examples = source_examples(uri, langlist, start, limit, dots)
 
 ```
 *`limit`, `start` et `dots` sont des paramètres optionnels. `limit` indique le nombre maximum de valeurs à renvoyer (10 par défaut). `start` est l'indice de la première valeur renvoyée (0 par défaut, soit la première de la liste). `dots` est un booléen. S'il vaut `True`, comme c'est le cas par défaut, la valeur `'...'` est ajoutée à la fin de la liste lorsqu'il reste des valeurs non affichées.*
