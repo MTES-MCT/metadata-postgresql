@@ -11,10 +11,11 @@ directement. La plus utile - et celle qui sert au module
 
 """
 
-from plume.rdf.namespaces import SH, PLUME, XSD
+from plume.rdf.namespaces import SH, PLUME, XSD, DCAT, PlumeNamespaceManager
 from plume.rdf.metagraph import SHAPE
 from plume.rdf.utils import path_n3, path_from_n3
-
+from plume.rdf.rdflib import from_n3, URIRef
+from plume.rdf.exceptions import MissingParameter
 
 DATATYPE_SUB = {
     XSD.date : (XSD.dateTime,),
@@ -311,4 +312,75 @@ def read_shape_property(shape_node):
         if sources:
             p['sources'] = sources
     return p
+
+def property_param_values(path, param):
+    """Récupère les valeurs d'un paramètre de configuration du schéma des métadonnées commune pour la catégorie de chemin donné.
+
+    Parameters
+    ----------
+    path : rdflib.term.URIRef or rdflib.paths.SequencePath or str
+        Un chemin d'IRI. Le chemin peut être fourni sous la forme d'une
+        chaîne de caractères en représentation N3.
+    param : rdflib.term.URIRef or str
+        L'IRI d'un paramètre de configuration. Peut être fourni sous la
+        forme d'une chaîne de caractères en représentation N3.
+
+    Returns
+    -------
+    list(rdflib.term.URIRef or rdflib.term.Literal)
+
+    """
+    nsm = PlumeNamespaceManager()
+    if isinstance(path, str) and not isinstance(path, URIRef):
+        path = path_from_n3(path, nsm=nsm)
+    if not path:
+        return []
+    if isinstance(path, URIRef):
+        path_elems = [path]
+    else:
+        path_elems = path.args
+    if isinstance(param, str) and not isinstance(param, URIRef):
+        param = from_n3(param, nsm=nsm)
+    if not param:
+        return []
+
+    class_iri = DCAT.Dataset
+    for i in range(len(path_elems)):
+        shape_nodes = list(SHAPE.subjects(SH.targetClass, class_iri))
+        if not shape_nodes:
+            return []
+        shape_node = shape_nodes[0]
+        for prop_node in SHAPE.objects(shape_node, SH.property):
+            prop_path = SHAPE.value(prop_node, SH.path)
+            if not prop_path == path_elems[i]:
+                continue
+            if i == len(path_elems) - 1:
+                return list(SHAPE.objects(prop_node, param))
+            class_iri = SHAPE.value(prop_node, SH['class'])
+            if not class_iri:
+                return []
+            break
+        else:
+            return []
+    return []
+            
+def property_sources(path):
+    """Renvoie la liste des sources disponibles pour une catégorie de métadonnées communes.
+
+    Parameters
+    ----------
+    path : rdflib.term.URIRef or rdflib.paths.SequencePath or str
+        Un chemin d'IRI. Le chemin peut être fourni sous la forme d'une
+        chaîne de caractères en représentation N3.
+
+    Returns
+    -------
+    list(str)
+
+    """
+    l = property_param_values(path, PLUME.ontology)
+    if l:
+        return [str(s) for s in l]
+    else:
+        return []
 
