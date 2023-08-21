@@ -15,7 +15,7 @@ from plume.rdf.exceptions import UnknownSource
 from plume.rdf.namespaces import FOAF, SKOS, PLUME, PlumeNamespaceManager
 from plume.rdf.utils import (
     abspath, pick_translation, graph_from_file, MetaCollection,
-    almost_included
+    almost_included, text_with_link
 )
 
 VOCABULARIES = {
@@ -469,5 +469,124 @@ class Thesaurus(metaclass=MetaCollection):
                     key=lambda x: strxfrm(x)
                     )
         self.values.insert(0, '')
-    
 
+def source_label(source, langlist=('fr', 'en'), linked=False):
+    """Renvoie le libellé d'une source de vocabulaire contrôlé.
+    
+    Parameters
+    ----------
+    source : rdflib.term.URIRef or str
+        L'IRI de la source, soit en tant qu'objet :py:class:`rdflib.term.URIRef`,
+        soit sous la forme d'une simple chaîne de caractères.
+    langlist : tuple(str) or list(str) or str, default ('fr', 'en')
+        Codes des langues à privilégier.
+    linked : bool, default False
+        Si ``True``, le libellé est renvoyé soit la forme d'un élément HTML A.
+    
+    Returns
+    -------
+    str
+
+    """
+    if isinstance(langlist, list):
+        langlist = tuple(langlist)
+    elif isinstance(langlist, str):
+        langlist = (langlist,)
+    
+    if not isinstance(source, URIRef):
+        source = URIRef(source)
+
+    thesaurus = (source, langlist)
+    label = Thesaurus.get_label(thesaurus)
+
+    if linked:
+        t = Thesaurus[thesaurus]
+        link = t.graph.value(source, FOAF.page) or source
+        return text_with_link(label, link)
+    return label
+
+def source_url(source, langlist=('fr', 'en')):
+    """Renvoie l'URL d'accès à une source.
+    
+    Parameters
+    ----------
+    source : rdflib.term.URIRef or str
+        L'IRI de la source, soit en tant qu'objet :py:class:`rdflib.term.URIRef`,
+        soit sous la forme d'une simple chaîne de caractères.
+    langlist : tuple(str) or list(str) or str
+        Codes des langues à privilégier. Ce paramètre n'est pas
+        nécessaire pour l'URL, mais il permet de charger le thésaurus
+        avec les langues pertinentes pour l'utilisateur, afin qu'il
+        puisse être réutilisé par la suite.
+
+    Returns
+    -------
+    str
+
+    """
+    if isinstance(langlist, list):
+        langlist = tuple(langlist)
+    elif isinstance(langlist, str):
+        langlist = (langlist,)
+    
+    if not isinstance(source, URIRef):
+        source = URIRef(source)
+
+    thesaurus = (source, langlist)
+    t = Thesaurus[thesaurus]
+    return str(t.graph.value(source, FOAF.page) or source)
+
+def source_examples(source, langlist=('fr', 'en'), limit=10, start=0, dots=True):
+    """Renvoie tout ou partie des valeurs d'une source de vocabulaire contrôlé.
+
+    Les valeurs sont triées par ordre alphabétique de leurs libellés.
+    
+    Parameters
+    ----------
+    source : rdflib.term.URIRef or str
+        L'IRI de la source, soit en tant qu'objet :py:class:`rdflib.term.URIRef`,
+        soit sous la forme d'une simple chaîne de caractères.
+    langlist : tuple(str) or list(str) or str, default ('fr', 'en')
+        Codes des langues à privilégier.
+    limit : int, default 10
+        Le nombre maximal de valeurs à renvoyer.
+    start : int, default 0
+        Indice de la première valeur à renvoyer. Combiné avec `limit`,
+        ce paramètre permet de paginer les résultats. Si `start` est
+        supérieur à l'indice du dernier élément de la liste, une liste
+        vide est renvoyée.
+    dots : bool, default True
+        Si ``True`` et que la fonction ne renvoie pas toutes les valeurs
+        disponibles, un élément supplémentaire ``'...'`` est ajouté à la
+        liste pour montrer qu'elle n'est pas complète. À noter que, lorsque
+        `start` ne vaut pas 0, les valeurs du début de la liste ne sont pas
+        considérées : les points de suspension ne sont ajoutés que s'il
+        reste des valeurs à la fin de la liste.
+
+    Returns
+    -------
+    list(str)
+
+    """
+    if isinstance(langlist, list):
+        langlist = tuple(langlist)
+    elif isinstance(langlist, str):
+        langlist = (langlist,)
+    
+    if not isinstance(source, URIRef):
+        source = URIRef(source)
+
+    thesaurus = (source, langlist)
+    values = Thesaurus.get_values(thesaurus)
+    if not values:
+        return []
+    values = values.copy()
+    if values[0] == '':
+        values = values[1:]
+    length = len(values)
+    if start >= length:
+        return []
+    values = values[start:min(start + limit, length)]
+    if dots and start + limit < length:
+        values.append('...')
+    return values
