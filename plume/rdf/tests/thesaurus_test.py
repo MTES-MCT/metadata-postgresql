@@ -10,7 +10,7 @@ from plume.rdf.metagraph import SHAPE
 from plume.rdf.namespaces import PLUME, RDF, SKOS
 from plume.rdf.thesaurus import (
     VOCABULARIES, VocabularyGraph, Thesaurus, source_label, source_url,
-    source_examples
+    source_examples, source_nb_values
 )
 
 class VocabulariesTestCase(unittest.TestCase):
@@ -311,6 +311,16 @@ class ThesaurusTestCase(unittest.TestCase):
                 limit=10
             ),
             ['en production', 'obsolète', 'retiré']
+        )
+
+    def test_source_nb_values(self):
+        """Récupération du nombre de valeurs d'une source."""
+        self.assertEqual(
+            source_nb_values(
+                'http://publications.europa.eu/resource/authority/dataset-status',
+                ['fr', 'en']
+            ),
+            5
         )
 
 if __name__ == '__main__':
