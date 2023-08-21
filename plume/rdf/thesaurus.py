@@ -536,6 +536,41 @@ def source_url(source, langlist=('fr', 'en')):
     t = Thesaurus[thesaurus]
     return str(t.graph.value(source, FOAF.page) or source)
 
+def source_nb_values(source, langlist=('fr', 'en')):
+    """Renvoie le nombre de valeurs d'une source de vocabulaire contrôlé.
+    
+    Parameters
+    ----------
+    source : rdflib.term.URIRef or str
+        L'IRI de la source, soit en tant qu'objet :py:class:`rdflib.term.URIRef`,
+        soit sous la forme d'une simple chaîne de caractères.
+    langlist : tuple(str) or list(str) or str
+        Codes des langues à privilégier. Ce paramètre n'est pas
+        nécessaire pour déterminer le nombre de valeurs, mais il permet de charger
+        le thésaurus avec les langues pertinentes pour l'utilisateur, afin qu'il
+        puisse être réutilisé par la suite.
+
+    Returns
+    -------
+    int
+
+    """
+    if isinstance(langlist, list):
+        langlist = tuple(langlist)
+    elif isinstance(langlist, str):
+        langlist = (langlist,)
+    
+    if not isinstance(source, URIRef):
+        source = URIRef(source)
+
+    thesaurus = (source, langlist)
+    values = Thesaurus.get_values(thesaurus)
+    if not values:
+        return 0
+    if values[0] == '':
+        return len(values) - 1
+    return len(values)
+
 def source_examples(source, langlist=('fr', 'en'), limit=10, start=0, dots=True):
     """Renvoie tout ou partie des valeurs d'une source de vocabulaire contrôlé.
 
