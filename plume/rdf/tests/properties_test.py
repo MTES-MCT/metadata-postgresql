@@ -11,8 +11,10 @@ import unittest
 import psycopg2
 
 from plume.rdf.rdflib import URIRef, Literal, from_n3
-from plume.rdf.properties import class_properties, PlumeProperty
-from plume.rdf.namespaces import XSD, RDF, DCAT, LOCAL, DCT, PlumeNamespaceManager
+from plume.rdf.properties import (
+    class_properties, PlumeProperty, property_param_values, property_sources
+)
+from plume.rdf.namespaces import XSD, RDF, DCAT, LOCAL, DCT, SH, PlumeNamespaceManager
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import query_get_categories, query_template_tabs
 from plume.pg.template import TemplateDict
@@ -222,7 +224,23 @@ class PlumePropertyTestCase(unittest.TestCase):
                     self.assertListEqual(p.prop_dict['geo_tools'],
                         ['point', 'rectangle'])
         self.assertEqual(t, 1)
-        
+
+    def test_property_param_values(self):
+        """Récupération des valeurs d'une option de configuration d'une catagéorie commune."""
+        self.assertListEqual(property_param_values('dct:title', 'sh:datatype'), [RDF.langString])
+        self.assertListEqual(property_param_values(DCT.title, SH.datatype), [RDF.langString])
+        self.assertListEqual(property_param_values('dct:temporal / dcat:endDate', 'sh:datatype'), [XSD.date])
+        self.assertListEqual(property_param_values(DCT.temporal / DCAT.endDate, 'sh:datatype'), [XSD.date])
+        self.assertEqual(property_param_values('plume:inconnu', 'sh:datatype'), [])
+        self.assertEqual(property_param_values(DCT.temporal / DCAT.endDate, 'plume:inconnu'), [])
+
+    def test_property_sources(self):
+        """Récupération des sources disponibles pour une catégories communes."""
+        self.assertIn('http://inspire.ec.europa.eu/theme', property_sources(DCAT.theme))
+        self.assertIn('http://inspire.ec.europa.eu/theme', property_sources('dcat:theme'))
+        self.assertIn('http://publications.europa.eu/resource/authority/licence', property_sources(DCAT.distribution / DCT.license))
+        self.assertIn('http://publications.europa.eu/resource/authority/licence', property_sources('dcat:distribution / dct:license'))
+        self.assertEqual([], property_sources('dct:title'))
 
 if __name__ == '__main__':
     unittest.main()
