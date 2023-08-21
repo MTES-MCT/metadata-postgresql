@@ -8,7 +8,10 @@ from plume.rdf.rdflib import URIRef
 from plume.rdf.utils import abspath, all_words_included
 from plume.rdf.metagraph import SHAPE
 from plume.rdf.namespaces import PLUME, RDF, SKOS
-from plume.rdf.thesaurus import VOCABULARIES, VocabularyGraph, Thesaurus
+from plume.rdf.thesaurus import (
+    VOCABULARIES, VocabularyGraph, Thesaurus, source_label, source_url,
+    source_examples
+)
 
 class VocabulariesTestCase(unittest.TestCase):
 
@@ -235,6 +238,80 @@ class ThesaurusTestCase(unittest.TestCase):
             comparator=all_words_included
         )
         self.assertIsNone(iri)
+
+    def test_source_label(self):
+        """Récupération du libellé d'une source."""
+        self.assertEqual(
+            source_label('http://inspire.ec.europa.eu/theme', 'fr'),
+            'Thème (INSPIRE)'
+        )
+        self.assertEqual(
+            source_label('http://inspire.ec.europa.eu/theme', ('fr', 'en')),
+            'Thème (INSPIRE)'
+        )
+        self.assertEqual(
+            source_label('http://inspire.ec.europa.eu/theme', ['fr', 'en']),
+            'Thème (INSPIRE)'
+        )
+        self.assertEqual(
+            source_label(URIRef('http://inspire.ec.europa.eu/theme'), ('fr', 'en')),
+            'Thème (INSPIRE)'
+        )
+        self.assertEqual(
+            source_label('http://inspire.ec.europa.eu/theme', 'fr', linked=True),
+            '<a href="http://inspire.ec.europa.eu/theme">Thème (INSPIRE)</a>'
+        )
+    
+    def test_source_url(self):
+        """Récupération de l'URL d'une source."""
+        self.assertEqual(
+            source_url('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense'),
+            'https://www.data.gouv.fr/fr/pages/legal/licences'
+        )
+        self.assertEqual(
+            source_url(
+                URIRef('http://registre.data.developpement-durable.gouv.fr/plume/CrpaAuthorizedLicense'),
+                ('it', 'en', 'fr')),
+            'https://www.data.gouv.fr/fr/pages/legal/licences'
+        )
+
+    def test_source_examples(self):
+        """Récupération de quelques valeurs d'une source."""
+        self.assertListEqual(
+            source_examples(
+                'http://publications.europa.eu/resource/authority/dataset-status',
+                start=0,
+                limit=10
+            ),
+            ['abandonné', 'achevé', 'en production', 'obsolète', 'retiré']
+        )
+        self.assertListEqual(
+            source_examples(
+                URIRef('http://publications.europa.eu/resource/authority/dataset-status'),
+                ('fr', 'en'),
+                start=0,
+                limit=3
+            ),
+            ['abandonné', 'achevé', 'en production', '...']
+        )
+        self.assertListEqual(
+            source_examples(
+                URIRef('http://publications.europa.eu/resource/authority/dataset-status'),
+                ('fr', 'en'),
+                start=0,
+                limit=3,
+                dots=False
+            ),
+            ['abandonné', 'achevé', 'en production']
+        )
+        self.assertListEqual(
+            source_examples(
+                'http://publications.europa.eu/resource/authority/dataset-status',
+                start=2,
+                limit=10
+            ),
+            ['en production', 'obsolète', 'retiré']
+        )
 
 if __name__ == '__main__':
     unittest.main()
