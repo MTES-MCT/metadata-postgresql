@@ -712,6 +712,73 @@ conn.close()
 
 `enum_values` est la liste des valeurs, triées par ordre alphabétique.
 
+### Champ `sources`
+
+Le champ `sources` correspond à la liste des sources de vocabulaire contrôlé utilisables pour la catégorie commune de métadonnée. L'ADL peut supprimer des sources dont il ne souhaite pas que ses utilisateurs se servent. Les seules valeurs qu'il peut ajouter sont celles qu'il avait auparavant supprimées, ou qui étaient désactivées par défaut dans les modèles pré-configurés.
+
+Pour lister toutes les sources disponibles pour une catégorie - ici, la license de distribution du jeu de données :
+
+```python
+>>> from plume.rdf.properties import property_sources
+>>> property_sources('dcat:distribution / dct:license')
+```
+
+L'argument de {py:func}`plume.rdf.properties.property_sources` est le chemin de la catégorie, qui peut être saisi tel qu'il apparaît dans le champ `path` de `meta_categorie` ou le champ `shrcat_path` de `meta_template_categories`.
+
+Le résultat est une liste d'URI sous forme de chaînes de caractères, soit la forme utilisée pour les champs `sources` des tables susmentionnées.
+
+Pour obtenir le libellé d'une source, on pourra avoir recours à la fonction {py:func}`plume.rdf.thesaurus.source_label` : 
+
+```python
+
+from plume.rdf.thesaurus import source_label
+
+label = source_label(uri, langlist)
+
+```
+*`uri` est l'URI de la source considérée. Elle peut notamment être saisie sous la forme d'une chaîne de caractères, soit telle que renvoyée par {py:func}`~plume.rdf.properties.property_sources` ou récupérée dans les champs `sources` des tables des `meta_categorie` et `meta_template_categories`. `langlist` est la liste des langues autorisées pour les traductions. On utilisera de préférence l'attribut {py:attr}`plume.rdf.widgetsdict.WidgetsDict.langlist` du dictionnaire de widgets qui a servi à générer la fiche de métadonnées courante.*
+
+En jouant sur l'argument optionnel `linked`, il est possible d'obtenir non une simple chaîne de caractères mais un élément HTML avec hyperlien : 
+
+```python
+>>> from plume.rdf.thesaurus import source_label
+>>> source_label('http://inspire.ec.europa.eu/theme', 'fr', linked=True)
+'<a href="http://inspire.ec.europa.eu/theme">Thème (INSPIRE)</a>'
+```
+
+Une seconde fonction, {py:func}`plume.rdf.thesaurus.source_url`, permet de récupérer uniquement l'URL de l'hyperlien (qui pourrait servir pour un bouton, par exemple) :
+
+```python
+
+from plume.rdf.thesaurus import source_url
+
+url = source_url(uri, langlist)
+
+```
+
+{py:func}`plume.rdf.thesaurus.source_nb_values` donne le nombre de valeurs de la source considérée :
+
+```python
+
+from plume.rdf.thesaurus import source_nb_values
+
+nb_values = source_nb_values(uri, langlist)
+
+```
+
+
+Enfin, la fonction {py:func}`plume.rdf.thesaurus.source_examples` permet de récupérer tout ou partie des valeurs proposées par la source.
+
+```python
+
+from plume.rdf.thesaurus import source_examples
+
+url = source_examples(uri, langlist, start, limit, dots)
+
+```
+*`limit`, `start` et `dots` sont des paramètres optionnels. `limit` indique le nombre maximum de valeurs à renvoyer (10 par défaut). `start` est l'indice de la première valeur renvoyée (0 par défaut, soit la première de la liste). `dots` est un booléen. S'il vaut `True`, comme c'est le cas par défaut, la valeur `'...'` est ajoutée à la fin de la liste lorsqu'il reste des valeurs non affichées.*
+
+
 ### Modalités de saisie spécifiques à certains champs
 
 D'une manière générale, le widget à utiliser pour un champ peut être déduit de son type.
