@@ -35,6 +35,7 @@ from plume.rdf.tests import (
     widgetsdict_test, thesaurus_test, transliterations_test
 )
 from plume.iso.tests import map_test
+from admin import consistency
 
 TESTS = {
     queries_test: ['queries', 'pg'],
@@ -49,7 +50,8 @@ TESTS = {
     widgetkey_test: ['widgetkey', 'rdf'],
     widgetsdict_test: ['widgetsdict', 'rdf'],
     map_test: ['map', 'iso'],
-    transliterations_test : ['transliterations', 'rdf']
+    transliterations_test : ['transliterations', 'rdf'],
+    consistency : ['consistency', 'admin']
     }
 
 def run(*names):
