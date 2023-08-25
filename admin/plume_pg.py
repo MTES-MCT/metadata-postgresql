@@ -96,12 +96,17 @@ def _table_from_shape(categories, rdfclass, path=None, no_cast=False):
             _table_from_shape(categories, prop_dict.get('rdfclass'),
                 path=prop.path, no_cast=no_cast)
 
-def query_from_shape():
+def query_from_shape(do_not_print=False):
     """Génère la requête permettant de reconstituer la table des catégories communes de PgPlume.
 
     À l'usage de l'extension PostgreSQL PgPlume. L'utilisation de cette
     fonction requiert une connexion PostgreSQL (paramètres saisis
     dynamiquement).
+
+    Parameters
+    ----------
+    do_not_print : bool, default False
+        Si ``False``, la requête est imprimée dans la console.
 
     Returns
     -------
@@ -136,13 +141,24 @@ def query_from_shape():
         ).as_string(conn)
     conn.close()
     
-    print(s)
+    if not do_not_print:
+        print(s)
     return s
 
-def store_sample_templates():
+def store_sample_templates(filepath=None):
     """Importe depuis PostgreSQL et écrit dans le fichier dédié les modèles pré-configurés de PlumePg.
     
+    Parameters
+    ----------
+    filepath : str or pathlib.Path, optional
+        Chemin absolu du fichier dans lequel seront stockées
+        les données. Plume s'attend à trouver les copies locales
+        des modèles pré-configurées dans ``pg/data/templates.json``,
+        et c'est par défaut dans ce fichier qu'écrit la fonction.
+
     """
+    if not filepath:
+        filepath = abspath('pg/data/templates.json')
     connection_string = ConnectionString()
     data = {}
     conn = connect(connection_string)
@@ -173,7 +189,6 @@ def store_sample_templates():
                 data[label] = {'categories': categories, 'tabs': tabs, 'configuration': configuration}
             cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
     conn.close()
-    with open(abspath('pg/data/templates.json'), 'w',
-        encoding='utf-8') as dest:
+    with open(filepath, 'w', encoding='utf-8') as dest:
         dump(data, dest, ensure_ascii=False, indent=4)
 
