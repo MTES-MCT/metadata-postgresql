@@ -14,7 +14,9 @@ l'extension est désinstallée et réinstallée, etc.).
 
 import unittest
 import psycopg2
+import subprocess
 from datetime import datetime
+from pathlib import Path
 
 from plume.pg.tests.connection import ConnectionString
 from plume.pg.queries import (
@@ -45,7 +47,7 @@ class PlumePgTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Préparation de la connexion PG + recréation de l'extension et des tests sur le serveur.
+        """Préparation de la connexion PG + création des tests sur le serveur.
         
         """
         cls.connection_string = ConnectionString()
@@ -55,10 +57,6 @@ class PlumePgTestCase(unittest.TestCase):
         with conn:
             with conn.cursor() as cur:
                 cur.execute(create_tests)
-                cur.execute("""
-                    DROP EXTENSION IF EXISTS plume_pg CASCADE ;
-                    CREATE EXTENSION plume_pg CASCADE ;
-                    """)  
         conn.close()
     
     def test_plume_pg_tests(self):
@@ -74,6 +72,53 @@ class PlumePgTestCase(unittest.TestCase):
                 errors = cur.fetchall()     
         conn.close()  
         self.assertEqual(errors, [])
+
+    def test_backup_restore(self):
+        """Test de sauvegarde restauration de base avec PlumePg.
+        
+        Pour que ce test réussisse, le répertoire contenant les
+        binaires de PostgreSQL doit être déclaré dans la variable
+        d'environnement Path.
+
+        """
+        target = abspath('').parents[0] / 'postgresql/tests/backup_database_temp.dump'
+        script = data_from_file(
+            abspath('').parents[0] / 'postgresql/tests/backup_database.sql'
+        )
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(script)
+        args_dump = ['pg_dump', '-F', 'c', '-f', target.as_posix(), '-d', PlumePgTestCase.connection_string]
+        subprocess.run(args=args_dump)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    DROP EXTENSION IF EXISTS plume_pg ;
+                    DROP SCHEMA IF EXISTS z_plume_recette CASCADE ;
+                    DROP TABLE IF EXISTS table_test ;
+                    DROP FUNCTION IF EXISTS plume_backup_restore_control() ;
+                    """
+                )
+        args_restore = ['pg_restore', '-d', PlumePgTestCase.connection_string, target.as_posix()]
+        subprocess.run(args=args_restore)
+        target.unlink()
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT plume_backup_restore_control() ;
+                    """
+                )
+                res = cur.fetchone()[0]
+                cur.execute(
+                    """
+                    DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
+                    """
+                )
+        conn.close()
+        self.assertTrue(res)
 
 class QueriesTestCase(unittest.TestCase):
 
