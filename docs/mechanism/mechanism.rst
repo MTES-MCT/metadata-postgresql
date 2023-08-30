@@ -6,3 +6,4 @@ Mécanique interne
 
    memo
    debian
+   ui_test
