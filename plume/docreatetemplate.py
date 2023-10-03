@@ -8,9 +8,9 @@ from plume.bibli_plume import ( returnAndSaveDialogParam )
 from plume.createtemplate import Ui_Dialog_CreateTemplate
 
 class Dialog(QDialog, Ui_Dialog_CreateTemplate):
-      def __init__(self, Dialog):
+      def __init__(self, Dialog, listLangList):
           QDialog.__init__(self)
-          self.setupUiCreateTemplate(self, Dialog)
+          self.setupUiCreateTemplate(self, Dialog, listLangList)
 
           return    
 

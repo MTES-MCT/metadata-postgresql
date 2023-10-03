@@ -25,7 +25,8 @@ from plume.pg.description import PgDescription, truncate_metadata
 from plume.pg.template import TemplateDict, search_template
 from plume.pg import queries
 
-from . import doerreur
+from plume import doerreur
+from plume import doassistanttemplate
 
 from qgis.gui import ( QgsAttributeTableModel, QgsAttributeTableView, QgsLayerTreeViewMenuProvider, QgsAttributeTableFilterModel )
 from qgis.utils import iface
@@ -36,7 +37,7 @@ import qgis
 import os                       
 import os.path
 
-
+   
 #==========================         
 def genereLabelWithDict(dicParamLabel ) :
     for k, v in dicParamLabel.items() :
@@ -50,6 +51,49 @@ def genereLabelWithDict(dicParamLabel ) :
            if k == "wordWrap"      : _label.setWordWrap(v)
     return _label
 
+#==========================         
+class GenereButtonsAssistant( ) :              # ci-dessous Nom de l'attrib,  objet attrib
+    def __init__(self, _selfCreateTemplate, dicParamButton, mattrib,         modCat_Attrib,  mDicEnum, mLabel, mHelp) :
+        self._selfCreateTemplate    = _selfCreateTemplate
+        self.dicParamButton         = dicParamButton
+        self.mattrib                = mattrib
+        self.modCat_Attrib          = modCat_Attrib
+        self.mDicEnum               = mDicEnum
+        self.mLabel                 = mLabel
+        self.mHelp                  = mHelp
+        self.setupUi()
+        
+    def setupUi(self) :
+        for k, v in self.dicParamButton.items() :
+            if v != "" :
+               if k == "typeWidget"     : _buttonAssistant = v
+               if k == "qSizePolicy"    : _buttonAssistant.setSizePolicy(v, v)
+               if k == "iconWidget"     : _buttonAssistant.setIcon(QIcon(v))
+               if k == "nameWidget"     : _buttonAssistant.setObjectName(v)
+               if k == "toolTipWidget"  : _buttonAssistant.setToolTip(v)
+               if k == "actionWidget"   : _buttonAssistant.clicked.connect(v)
+               if k == "autoRaise"      : _buttonAssistant.setAutoRaise(v)
+               if k == "checkable"      : _buttonAssistant.setCheckable(v)
+               if k == "checked"        : _buttonAssistant.setChecked(v)
+               #-- combobox
+               if k == "listItems"      : _buttonAssistant.addItems(v)
+               if k == "currentText"    : _buttonAssistant.setCurrentText(v)
+               #-- Text
+               if k == "textWidget"     : _buttonAssistant.setText(v)
+               #-- StyleSheet
+               if k == "styleSheet"     : _buttonAssistant.setStyleSheet(v)
+               #-- Raccourci
+               if k == "shorCutWidget"  : _buttonAssistant.setShortcut(QKeySequence(v))
+        _buttonAssistant.clicked.connect( lambda : self.openAssistant( self._selfCreateTemplate, self.mattrib, self.modCat_Attrib, self.mDicEnum, self.mLabel, self.mHelp ) )
+        self._buttonAssistant = _buttonAssistant
+        return
+
+    #==========================
+    def openAssistant(self, _selfCreateTemplate, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp) :
+        d = doassistanttemplate.Dialog(self, _selfCreateTemplate, self._buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp)  # DialogCreateTemplate, DialogPlume
+        d.exec_()
+        return
+    
 #==========================         
 class GenereButtonsWithDictWithEvent( ) :
     def __init__(self, _selfCreateTemplate, dicParamButton, _mapping, _groupBoxdisplayHelpFocus, _zoneDisplayHelpFocus) :
@@ -80,6 +124,8 @@ class GenereButtonsWithDictWithEvent( ) :
                if k == "textWidget"    : _button.setText(v)
                #-- StyleSheet
                if k == "styleSheet"    : _button.setStyleSheet(v)
+               #-- Tristate for QCheckBox
+               if k == "tristate"      : _button.setTristate(v)
                #-- Raccourci
                if k == "shorCutWidget" : _button.setShortcut(QKeySequence(v))
         _button.setFocusPolicy(Qt.StrongFocus)
@@ -165,7 +211,7 @@ def afficheNoConnections(self, action = ""):
     return
 
 #==================================================
-#Généralisation erreur si fin de transaction PostgreSLQ quel que soit le motif
+#Généralisation erreur si fin de transaction PostgreSQL quel que soit le motif
 def breakExecuteSql(self) :
     initIhmNoConnection(self)
     self.verrouLayer     = False   #Verrouillage de la couche 
@@ -616,7 +662,6 @@ class MyExploBrowserAsgardMenu(QTreeWidget):
                self.model       = self.proxy_model.sourceModel()  # Différent des Browser
 
                index = self.parent.indexAt(event.pos())
-
                #
                if index != -1 and self.proxy_model != None :
                   # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
@@ -695,7 +740,20 @@ class MyExploBrowser(QTreeWidget):
                   if index in self._dicTooltipExiste :
                      itemLayerTooltip = self._dicTooltipExiste[index]
                   else :
-                     itemLayerTooltip = self.proxy_model.data(index, Qt.ToolTipRole)
+                     if self.itemLayer !=  None and hasattr(self.itemLayer, 'comments') :
+                        vComment = self.itemLayer.comments()
+                        vToolTip = self.itemLayer.toolTip()
+                        if vComment and vToolTip:
+                            if vComment in vToolTip:
+                                tooltip = vToolTip
+                            else:
+                                tooltip = f'{vComment}\n\n{vToolTip}'
+                        else:
+                            tooltip = vToolTip or vComment
+                         
+                        itemLayerTooltip = tooltip
+                     else :   
+                        itemLayerTooltip = self.proxy_model.data(index, Qt.ToolTipRole)
                      self._dicTooltipExiste[index] = itemLayerTooltip 
                   # Alimentation du dictionnaire des tooltip d'ORIGINE existantes"
                   itemLayerTooltipNew, mFindMetadata_OR_itemLayerTooltipNew = truncate_metadata(itemLayerTooltip, self._activeTooltipWithtitle, self._langList)
@@ -753,8 +811,7 @@ class MyExploBrowser(QTreeWidget):
 #==================================================
 def executeSql(self, pointeur, _mKeySql, optionRetour = None) : 
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
-    pointeurBase = pointeur.cursor() 
-       
+    pointeurBase = pointeur.cursor()
     try :
       if isinstance(_mKeySql, tuple) :
          pointeurBase.execute(*_mKeySql)
@@ -776,7 +833,7 @@ def executeSql(self, pointeur, _mKeySql, optionRetour = None) :
           
     finally :
       pointeurBase.close()   
-      #-------------
+    #-------------
     return result, zMessError_Code, zMessError_Erreur, zMessError_Diag
 
 #==================================================
@@ -1003,6 +1060,8 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        valueDefautH = 640
        valueDefautTemplateL = 950
        valueDefautTemplateH = 650
+       valueDefautAssistantTemplateL = 600
+       valueDefautAssistantTemplateH = 400
        valueDefautAsgardMenuDock = "Menu Tree"
        valueDefautDisplayMessage = "dialogBox"
        valueDefautDurationBarInfo = 10
@@ -1016,6 +1075,8 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        mDicAutre["dialogHauteur"]   = valueDefautH
        mDicAutre["dialogLargeurTemplate"]   = valueDefautTemplateL
        mDicAutre["dialogHauteurTemplate"]   = valueDefautTemplateH
+       mDicAutre["dialogLargeurAssistantTemplate"]   = valueDefautAssistantTemplateL
+       mDicAutre["dialogHauteurAssistantTemplate"]   = valueDefautAssistantTemplateH
        mDicAutre["displayMessage"]  = valueDefautDisplayMessage
        mDicAutre["durationBarInfo"] = valueDefautDurationBarInfo
        mDicAutre["ihm"]             = valueDefautIHM
@@ -1169,6 +1230,14 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
                  
        for key, value in mDicAutre.items():
            mSettings.setValue(key, value)
+
+    elif mAction == "SaveAssistantTemplate" :
+       mDicAutre["dialogLargeurAssistantTemplate"] = templateWidth
+       mDicAutre["dialogHauteurAssistantTemplate"] = templateHeight
+                 
+       for key, value in mDicAutre.items():
+           mSettings.setValue(key, value)
+
     mSettings.endGroup()
     mSettings.endGroup()    
     return mDicAutre
@@ -1243,7 +1312,7 @@ def displayMess(mDialog, type,zTitre,zMess, level=Qgis.Critical, duration = 10):
        mDialog.barInfo.clearWidgets()
        mDialog.barInfo.pushMessage(zTitre, zMess, level=level, duration = duration)
     else :
-       QMessageBox.information(None,zTitre,zMess)
+       QMessageBox.information(mDialog,zTitre,zMess)
     return  
 
 #==================================================

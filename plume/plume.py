@@ -3,6 +3,7 @@
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import ( QSettings, QLocale, QFileInfo, QFileInfo, QCoreApplication, QTranslator )
+from qgis.core import ( QgsVectorDataProvider )
 
 from PyQt5.QtWidgets import (QAction, QMenu , QDockWidget, QTreeView, QWidget)
 from PyQt5.QtGui import QIcon
@@ -142,7 +143,7 @@ class MainPlugin(object):
       try : 
          self.layer = iface.activeLayer()
          if self.layer:
-            if self.layer.dataProvider().name() == 'postgres':
+            if self.layer.dataProvider().name() == 'postgres' and QgsDataSourceUri(self.layer.source()).schema() :
                layerBeforeClicked = (self.layer, "qgis")
          saveinitializingDisplay("write", layerBeforeClicked)
       except :

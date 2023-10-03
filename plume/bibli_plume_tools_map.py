@@ -297,7 +297,6 @@ class GeometryMapToolShow(QgsMapTool ):
 
       #Supprime si l'objet existe l'affichage du rubberBand
       eraseRubberBand(self, self.Dialog.dic_objetMap, self.__keyObjet)
-
       if etat:
          res = split_rdf_wkt(mCoordSaisie)
          if res:
@@ -345,6 +344,7 @@ class GeometryMapToolShow(QgsMapTool ):
                    return
                 # New Dl 19/06/2023
              self.canvas.redrawAllLayers()
+      QApplication.setOverrideCursor( QCursor( Qt.ArrowCursor ) )
       return 
 
 #==================================================

@@ -2,17 +2,21 @@
 # créé 2022
 
 import os.path
+
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import ( QMenu, QAction, \
+from PyQt5.QtWidgets import ( QMenu, QAction, QApplication, \
                               QTreeWidget, QTabWidget, QWidget, QAbstractItemView, QTreeWidgetItemIterator, QTreeWidgetItem, QHeaderView, QGridLayout, QGraphicsOpacityEffect )
-
 from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt )
-from PyQt5.QtGui     import ( QStandardItemModel, QStandardItem )
-
+from PyQt5.QtGui     import ( QStandardItemModel, QStandardItem, QIcon, QCursor )
 #
-from plume.bibli_plume import ( GenereButtonsWithDictWithEvent, returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, returnIcon, displayMess )
+from plume.bibli_plume import ( GenereButtonsWithDictWithEvent, GenereButtonsAssistant, returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, returnIcon, displayMess )
 #
 from plume.mapping_templates import ( load_mapping_read_meta_template_categories, load_mapping_read_meta_templates, load_mapping_read_meta_tabs, load_mapping_read_meta_categories )
+# for thésaurus
+from plume.rdf.properties import property_sources
+from plume.rdf.thesaurus  import source_label
+from plume.rdf.thesaurus  import source_nb_values
+from plume.rdf.thesaurus  import source_examples
 #
 from plume.pg import queries
 from qgis.core import Qgis
@@ -20,7 +24,7 @@ import re
 import json
 
 class Ui_Dialog_CreateTemplate(object):
-    def setupUiCreateTemplate(self, DialogCreateTemplate, Dialog):
+    def setupUiCreateTemplate(self, DialogCreateTemplate, Dialog, listLangList):
         #-
         self.mDic_LH = returnAndSaveDialogParam(self, "Load")
         self.editStyle              = self.mDic_LH["QEdit"]              #style saisie
@@ -44,6 +48,7 @@ class Ui_Dialog_CreateTemplate(object):
         #-
         self.DialogCreateTemplate = DialogCreateTemplate
         self.Dialog               = Dialog               #Pour remonter les variables de la boite de dialogue
+        self.listLangList         = listLangList
         myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
         self.DialogCreateTemplate.setObjectName("DialogConfirme")
         mLargDefaut, mHautDefaut = int(self.mDic_LH["dialogLargeurTemplate"]), int(self.mDic_LH["dialogHauteurTemplate"]) #900, 650    
@@ -103,10 +108,10 @@ class Ui_Dialog_CreateTemplate(object):
         self.layout_tab_widget_Association = QtWidgets.QGridLayout()
         self.layout_tab_widget_Association.setContentsMargins(0, 0, 0, 0)
         self.layout_tab_widget_Association.setRowStretch(0, 0.5)
-        self.layout_tab_widget_Association.setRowStretch(1, 5)
-        self.layout_tab_widget_Association.setRowStretch(2, 3)
-        self.layout_tab_widget_Association.setRowStretch(3, 1)
-        self.layout_tab_widget_Association.setRowStretch(4, 1)
+        self.layout_tab_widget_Association.setRowStretch(1, 3)
+        self.layout_tab_widget_Association.setRowStretch(2, 5)
+        self.layout_tab_widget_Association.setRowStretch(3, 0.5)
+        self.layout_tab_widget_Association.setRowStretch(4, 0.5)
         self.tab_widget_Association.setLayout(self.layout_tab_widget_Association)
         #--------------------------
         self.tab_widget_Ressource = QWidget()
@@ -117,7 +122,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBox_tab_widget_Ressource = QtWidgets.QGroupBox(self.tab_widget_Ressource)
         self.groupBox_tab_widget_Ressource.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
         self.groupBox_tab_widget_Ressource.setObjectName("groupBox_tab_widget_Ressource")
-        self.groupBox_tab_widget_Ressource.setStyleSheet("QGroupBox { border: 0px solid green }")
+        self.groupBox_tab_widget_Ressource.setStyleSheet("QGroupBox { border: 0px solid grey }")
         #-
         self.layout_tab_widget_Ressource = QtWidgets.QGridLayout()
         self.layout_tab_widget_Ressource.setContentsMargins(10, 10, 10, 10)
@@ -131,11 +136,12 @@ class Ui_Dialog_CreateTemplate(object):
         #Liste modeles / catégories
         self.groupBoxListeModeleCategorie = QtWidgets.QGroupBox(self.tab_widget_Association)
         self.groupBoxListeModeleCategorie.setObjectName("groupBoxListeModeleCategorie") 
-        self.groupBoxListeModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid grey }")
+        self.groupBoxListeModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid red }")
         titleListeModeleCategorie = QtWidgets.QApplication.translate("CreateTemplate_ui", "Existing models", None)                                #{Modèles existants}
         titleDiskSaveAndReinit    = QtWidgets.QApplication.translate("CreateTemplate_ui", "Choice of metadata for the selected model", None)      #{Modèles existants}
         #-
         self.layoutListeModeleCategorie = QtWidgets.QGridLayout()
+        self.layoutListeModeleCategorie.setContentsMargins(10, 0, 0, 0)
         self.groupBoxListeModeleCategorie.setLayout(self.layoutListeModeleCategorie)
         self.layout_tab_widget_Association.addWidget(self.groupBoxListeModeleCategorie, 0, 0, 1, 2)
         #-
@@ -178,11 +184,11 @@ class Ui_Dialog_CreateTemplate(object):
         #-
         self.groupBoxLabelButtonSaveAndReinit = QtWidgets.QGroupBox()
         self.groupBoxLabelButtonSaveAndReinit.setObjectName("groupBoxLabelButtonSaveAndReinit") 
-        self.groupBoxLabelButtonSaveAndReinit.setStyleSheet("QGroupBox { border: 0px solid green }")
+        self.groupBoxLabelButtonSaveAndReinit.setStyleSheet("QGroupBox { border: 0px solid blue }")
         self.layoutLabelButtonSaveAndReinit = QtWidgets.QHBoxLayout()
         self.groupBoxLabelButtonSaveAndReinit.setLayout(self.layoutLabelButtonSaveAndReinit)
-        self.layoutListeModeleCategorie.addWidget(self.groupBoxLabelButtonSaveAndReinit, 2, 0, 1, 6, Qt.AlignCenter)
-        self.layoutLabelButtonSaveAndReinit.setContentsMargins(0, 20, 0, 0)
+        self.layoutListeModeleCategorie.addWidget(self.groupBoxLabelButtonSaveAndReinit, 1, 1, 1, 6, Qt.AlignCenter)
+        self.layoutLabelButtonSaveAndReinit.setContentsMargins(0, 0, 0, 0)
 
         self.layoutLabelButtonSaveAndReinit.addWidget(self.labelDiskSaveAndReinit, 0, Qt.AlignLeft)
         self.layoutLabelButtonSaveAndReinit.addWidget(self.buttonSaveOutVersIn,    0, Qt.AlignLeft)
@@ -322,6 +328,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBoxAttributsModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid green}")
         #-
         self.layoutAttributsModeleCategorie = QtWidgets.QGridLayout()
+        self.layoutAttributsModeleCategorie.setContentsMargins(0, 0, 0, 0)
         self.layoutAttributsModeleCategorie.setObjectName("layoutAttributsModeleCategorie")
         self.groupBoxAttributsModeleCategorie.setLayout(self.layoutAttributsModeleCategorie)
         self.layout_tab_widget_Association.addWidget(self.groupBoxAttributsModeleCategorie, 2, 1)
@@ -343,9 +350,10 @@ class Ui_Dialog_CreateTemplate(object):
 
         #Button Add
         #-
+        """
         self.groupBox_buttonSaveAttribModeleCategorie = QtWidgets.QGroupBox()
         self.groupBox_buttonSaveAttribModeleCategorie.setObjectName("groupBox_buttonSaveAttribModeleCategorie")
-        self.groupBox_buttonSaveAttribModeleCategorie.setStyleSheet("QGroupBox { border: 0px solid green }")
+        self.groupBox_buttonSaveAttribModeleCategorie.setStyleSheet("QGroupBox { border: 2px solid green }")
         #-
         self.layout_groupBox_buttonSaveAttribModeleCategorie = QtWidgets.QGridLayout()
         self.layout_groupBox_buttonSaveAttribModeleCategorie.setContentsMargins(0, 0, 0, 0)
@@ -358,13 +366,14 @@ class Ui_Dialog_CreateTemplate(object):
         self.layout_groupBox_buttonSaveAttribModeleCategorie.setColumnStretch(3, 1)                                                 
         self.layout_groupBox_buttonSaveAttribModeleCategorie.setColumnStretch(4, 3)                                                  
                                                                                                                               
+        """
         self.buttonSaveAttribModeleCategorie = QtWidgets.QToolButton()
         self.buttonSaveAttribModeleCategorie.setObjectName("buttonSaveAttribModeleCategorie")
         self.buttonSaveAttribModeleCategorie.setIcon(QtGui.QIcon(os.path.dirname(__file__)+"\\icons\\general\\save.svg"))
         self.buttonSaveAttribModeleCategorie.setToolTip( returnbuttonSaveAttribCategorieToolTip("catégorie", "modèle") ) 
 
         self.buttonSaveAttribModeleCategorie.clicked.connect(lambda : self.functionUpdateModeleCategorie("buttonSaveAttribModeleCategorie"))
-        self.layout_groupBox_buttonSaveAttribModeleCategorie.addWidget(self.buttonSaveAttribModeleCategorie, 1, 3, 1, 3, Qt.AlignCenter)
+        #self.layout_groupBox_buttonSaveAttribModeleCategorie.addWidget(self.buttonSaveAttribModeleCategorie, 1, 3, 1, 3, Qt.AlignCenter)
         #Button Add
         #------
 
@@ -382,7 +391,9 @@ class Ui_Dialog_CreateTemplate(object):
         self.layout_groupBox_buttons.setColumnStretch(1, 1)
         self.layout_groupBox_buttons.setColumnStretch(2, 1)
         self.layout_groupBox_buttons.setColumnStretch(3, 1)
-        self.layout_groupBox_buttons.setColumnStretch(4, 3)
+        self.layout_groupBox_buttons.setColumnStretch(4, 1)
+        self.layout_groupBox_buttons.setColumnStretch(5, 1)
+        self.layout_groupBox_buttons.setColumnStretch(6, 1)
         #-
         #----------
         self.pushButtonAnnuler = QtWidgets.QPushButton()
@@ -390,6 +401,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.pushButtonAnnuler.clicked.connect(self.DialogCreateTemplate.reject)
         self.layout_groupBox_buttons.addWidget(self.pushButtonAnnuler, 1, 2, QtCore.Qt.AlignTop)
         #--
+        self.layout_groupBox_buttons.addWidget(self.buttonSaveAttribModeleCategorie, 1, 5, 1, 3, Qt.AlignTop)
         #----------
         self.DialogCreateTemplate.setWindowTitle(QtWidgets.QApplication.translate("plume_main", "PLUME (Metadata storage in PostGreSQL") + "  (" + str(returnVersion()) + ")")
         self.zMessTitle    =  QtWidgets.QApplication.translate("CreateTemplate_ui", "model management", None)   #Gestion des modèles
@@ -816,6 +828,9 @@ class Ui_Dialog_CreateTemplate(object):
 
     #===============================              
     def ihmsPlumeASSOCIATION(self, _selfCreateTemplate ) : 
+        QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
+
+        self._selfCreateTemplate    = _selfCreateTemplate
         if self.comboListeModeleCategorie.currentIndex() == -1 : return
         mItemClicLibelleAssociation = self.modelComboListeModeleCategorie.item(self.comboListeModeleCategorie.currentIndex(),0).text()    
         mItemClicAssociation        = self.modelComboListeModeleCategorie.item(self.comboListeModeleCategorie.currentIndex(),1).text()
@@ -835,14 +850,14 @@ class Ui_Dialog_CreateTemplate(object):
 
         self.mTreeListeCategorieIn.setVisible(True)
         self.mTreeListeCategorieOut.setVisible(True)
-        self._selfCreateTemplate    = _selfCreateTemplate
         self.modeleAssociationActif = mItemClicAssociation
         
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées == Cat Utilisées et Non Utilisées==              
-        #------ DATA template_categories 
-        mKeySql = queries.query_read_meta_template_categories()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListTemplateCategories = [row[0] for row in r]
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           #------ DATA template_categories 
+           mKeySql = queries.query_read_meta_template_categories()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListTemplateCategories = [row[0] for row in r]
         self.dicInVersOutDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
         self.dicOutVersInDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées
@@ -859,6 +874,8 @@ class Ui_Dialog_CreateTemplate(object):
         afficheLabelAndLibelle(self, True, True, True, False)
         self.buttonSaveOutVersIn.setEnabled(False)
         self.buttonReinitOutVersIn.setEnabled(False)
+
+        QApplication.setOverrideCursor( QCursor( Qt.ArrowCursor ) )
         return
     
     #===============================              
@@ -872,22 +889,25 @@ class Ui_Dialog_CreateTemplate(object):
              if not _cont : return  
              # Gestion des flags pour maj si new modele, catégorie, onglet
 
-             #------ DATA template 
-             self.comboListeModeleCategorie.clear()
-             mKeySql = queries.query_read_meta_template()
-             r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-             self.mListTemplates = [row[0] for row in r]
-             #------ DATA categories 
-             mKeySql = queries.query_read_meta_categorie()
-             r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-             self.mListCategories = [row[0] for row in r]
-      
-             listeAssociationCol1, listeAssociationCol2 = returnList_Id_Label( self.mListTemplates )
-             self.modeleAssociationActif = listeAssociationCol1[0] if len(listeAssociationCol1) > 0 else "" #Pour la première initialisation 
-             #------ DATA Tab 
-             mKeySql = queries.query_read_meta_tab()
-             r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-             self.mListTabs = [row[0] for row in r]
+             with self.Dialog.safe_pg_connection("continue") :
+                #------ DATA template 
+                self.comboListeModeleCategorie.clear()
+                mKeySql = queries.query_read_meta_template()
+                r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+                self.mListTemplates = [row[0] for row in r]
+             with self.Dialog.safe_pg_connection("continue") :
+                #------ DATA categories 
+                mKeySql = queries.query_read_meta_categorie()
+                r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+                self.mListCategories = [row[0] for row in r]
+         
+                listeAssociationCol1, listeAssociationCol2 = returnList_Id_Label( self.mListTemplates )
+                self.modeleAssociationActif = listeAssociationCol1[0] if len(listeAssociationCol1) > 0 else "" #Pour la première initialisation 
+             with self.Dialog.safe_pg_connection("continue") :
+                #------ DATA Tab 
+                mKeySql = queries.query_read_meta_tab()
+                r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+                self.mListTabs = [row[0] for row in r]
 
              #------ DATA 
              self.modelComboListeModeleCategorie = QStandardItemModel()
@@ -913,50 +933,51 @@ class Ui_Dialog_CreateTemplate(object):
 
     #===============================              
     def functionUpdateModeleCategorie(self, mActionButton):    # mActionButton = buttonSaveOutVersIn buttonReinitOutVersIn buttonSaveAttribModeleCategorie
-       self.flagNewModele = True
-       # Si les attributs sont visibles, je gère la sauvegarde par rapport à la catégorie sélectionnée
-       #if ifAttributsVisible( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories ) :  
+       with self.Dialog.safe_pg_connection("continue") :
+          self.flagNewModele = True
+          # Si les attributs sont visibles, je gère la sauvegarde par rapport à la catégorie sélectionnée                     ['empty', 'manual']     {"empty", "manual"}
+          # if ifAttributsVisible( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories ) :           {"pattern": "^(?:[[][^]]+[]])?\\n*\\s*(.+)$"}
 
-       if mActionButton == "buttonSaveAttribModeleCategorie" :  
-          dicForQuerieForAddModeleCategorie = returnListObjKeyValue(self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTabs)
-          mKeySql = queries.query_insert_or_update_meta_template_categories(dicForQuerieForAddModeleCategorie)
-          r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-          self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
-          #- Réinit
-          mKeySql = queries.query_read_meta_template_categories()
-          r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-          self._selfCreateTemplate.mListTemplateCategories = [row[0] for row in r]
-          #Réinstancier les variables dans les deux treeview 
-          self._selfCreateTemplate.mTreeListeCategorieIn.mListTemplateCategories = self._selfCreateTemplate.mListTemplateCategories
-          self._selfCreateTemplate.mTreeListeCategorieOut.mListTemplateCategories = self._selfCreateTemplate.mListTemplateCategories
+          if mActionButton == "buttonSaveAttribModeleCategorie" :  
+             dicForQuerieForAddModeleCategorie = returnListObjKeyValue(self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTabs)
+             mKeySql = queries.query_insert_or_update_meta_template_categories(dicForQuerieForAddModeleCategorie)
+             r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+             self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+             #- Réinit
+             mKeySql = queries.query_read_meta_template_categories()
+             r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+             self._selfCreateTemplate.mListTemplateCategories = [row[0] for row in r]
+             #Réinstancier les variables dans les deux treeview 
+             self._selfCreateTemplate.mTreeListeCategorieIn.mListTemplateCategories = self._selfCreateTemplate.mListTemplateCategories
+             self._selfCreateTemplate.mTreeListeCategorieOut.mListTemplateCategories = self._selfCreateTemplate.mListTemplateCategories
 
-       # je gère le passage des In en Out et Vice Versa
-       elif mActionButton == "buttonSaveOutVersIn" :  
-          _dicInVersOutDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicInVersOutDesign
-          _dicOutVersInDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicOutVersInDesign
+          # je gère le passage des In en Out et Vice Versa
+          elif mActionButton == "buttonSaveOutVersIn" :  
+             _dicInVersOutDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicInVersOutDesign
+             _dicOutVersInDesign = self._selfCreateTemplate.mTreeListeCategorieIn.dicOutVersInDesign
 
-          if len(_dicInVersOutDesign) != 0 : 
-             # Delete
-             listDelete = returnListObjKeyValueEnFonctionDesCatInCatOut(self, self.mListTemplateCategories, self.mapping_template_categories, _dicInVersOutDesign, "CAT_IN" )
-             for elemDelete in listDelete :
-                 mKeySql = queries.query_delete_meta_template_categories(elemDelete)
-                 r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
+             if len(_dicInVersOutDesign) != 0 : 
+                # Delete
+                listDelete = returnListObjKeyValueEnFonctionDesCatInCatOut(self, self.mListTemplateCategories, self.mapping_template_categories, _dicInVersOutDesign, "CAT_IN" )
+                for elemDelete in listDelete :
+                    mKeySql = queries.query_delete_meta_template_categories(elemDelete)
+                    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
 
-          if len(_dicOutVersInDesign) != 0 : 
-             # Insert Or Update
-             listAppend = returnListObjKeyValueEnFonctionDesCatInCatOut(self, self.mListTemplateCategories, self.mapping_template_categories, _dicOutVersInDesign, "CAT_OUT" )
-             for elemAppend in listAppend :
-                 mKeySql = queries.query_insert_or_update_meta_template_categories(elemAppend)
-                 r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+             if len(_dicOutVersInDesign) != 0 : 
+                # Insert Or Update
+                listAppend = returnListObjKeyValueEnFonctionDesCatInCatOut(self, self.mListTemplateCategories, self.mapping_template_categories, _dicOutVersInDesign, "CAT_OUT" )
+                for elemAppend in listAppend :
+                    mKeySql = queries.query_insert_or_update_meta_template_categories(elemAppend)
+                    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
 
-          # Save       
-          self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
-          # Réintialise les treeviews CatIn et CatOUT avec les nouvelles valeurs et sans la colorisation des backGrounds       
-          self.ihmsPlumeASSOCIATION( self )
+             # Save       
+             self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+             # Réintialise les treeviews CatIn et CatOUT avec les nouvelles valeurs et sans la colorisation des backGrounds       
+             self.ihmsPlumeASSOCIATION( self )
 
-       # je gère le passage des In en Out et Vice Versa
-       elif mActionButton == "buttonReinitOutVersIn" :  
-          self.ihmsPlumeASSOCIATION( self )
+          # je gère le passage des In en Out et Vice Versa
+          elif mActionButton == "buttonReinitOutVersIn" :  
+             self.ihmsPlumeASSOCIATION( self )
        return
 
     #===============================              
@@ -971,10 +992,6 @@ class Ui_Dialog_CreateTemplate(object):
           self.flagNewModele = True
           self.mTreeListeRessourceModele.ihmsPlumeUpdateModele(self.Dialog, mTestExisteModele.text())
        return
-
-    #===============================              
-    def functionUpdateCategorie_enCours(self):
-        pass
 
     #===============================              
     def functionUpdateOnglet(self):
@@ -1132,14 +1149,12 @@ def returnListObjAttributsId(self,  _groupBoxAttributs, mapping ) :
   return _returnListObjAttributs
 
 #==========================         
-#==========================         
 def returnListObjKeyValue(self,  _groupBoxAttributs, mapping, _mListTabs = None ) :
   _group = _groupBoxAttributs.children() 
   _returnListObjKeyValue = {}
   for mObj in _group :
       _zone = mObj.objectName()[5:]
       _value = ""
-
       if (_zone in mapping) :
          _type      = mapping[_zone]["type"]
          _format    = mapping[_zone]["format"]
@@ -1148,7 +1163,8 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping, _mListTabs = None 
    
          if _type in ("QLineEdit",) :
            __Val = mObj.text() if mObj.text() != "" else None 
-           if _format in ("jsonb",) : __Val = json.dumps(__Val, ensure_ascii=False, indent=4)
+           if _format in ("list", )  :  __Val = self._selfCreateTemplate.dicValuePropriete[_zone]
+           
          elif _type in ("QTextEdit",) :
                __Val = mObj.toPlainText() if mObj.toPlainText() != "" else None 
          elif _type in ("QComboBox",) :
@@ -1157,8 +1173,10 @@ def returnListObjKeyValue(self,  _groupBoxAttributs, mapping, _mListTabs = None 
                if __Val != None :
                   if _qcombobox == "tabs" :
                      __Val = [ elem["tab_id"] for elem in _mListTabs if str(elem["tab_label"]) == __Val ][0]
+                  elif isinstance( _qcombobox, dict ) : #  """ EXEMPLE {  "email" : {"enum_label" : "Courriel",  "enum_help" : "saisie d'une adresse electronique"}, etc .... }
+                     dicListItems = _qcombobox
+                     __Val = [ k for k, v in dicListItems.items() if str(v["enum_label"]) == __Val ][0]
                #Gestion de l'ID 
-         
          elif _type in ("QDateEdit",) :
                __Val = mObj.date().toString("dd/MM/yyyy") if mObj.date().toString("dd/MM/yyyy") != "" else None 
          elif _type in ("QDateTimeEdit",) :
@@ -1209,6 +1227,9 @@ def returnListObjKeyValueEnFonctionDesCatInCatOut(self, _mListTemplateCategories
 def genereAttributs(self,  mapping, zoneLayout, _groupBoxdisplayHelpFocus, _zoneDisplayHelpFocus ) :
   # [ == création des attibuts == ]
   _row, _col = 0, 0
+  _pathIcons         = os.path.dirname(__file__) + "/icons/general"
+  _iconSourcesSelect = _pathIcons + "/read.svg"
+  
 
   for keyNameAttrib, dicLabelTooltip in mapping.items() :
       okCreateZone = False
@@ -1226,13 +1247,10 @@ def genereAttributs(self,  mapping, zoneLayout, _groupBoxdisplayHelpFocus, _zone
          _ListValues = [ QtWidgets.QLineEdit(), "", "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QLineEdit {  font-family:" + self.policeQGroupBox  +";}" ]
       elif dicLabelTooltip["type"] == "QCheckBox" :
          okCreateZone = True           
-         _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet", "checked" ]
-         _ListValues = [ QtWidgets.QCheckBox(), "", "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QCheckBox {  font-family:" + self.policeQGroupBox  +";}", False ]
+         _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet", "checked", "tristate" ]
+         _ListValues = [ QtWidgets.QCheckBox(), "", "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QCheckBox {  font-family:" + self.policeQGroupBox  +";}", False, True if mapping[mattrib]["format"] == "Tristate(True)" else False ]
       elif dicLabelTooltip["type"] == "QComboBox" :
          okCreateZone = True
-         mDicQcomboBox = ["Généralités", "Géométries", "Autres"]
-         _Listkeys   = [ "typeWidget", "listItems", "currentText", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet" ]
-         _ListValues = [ QtWidgets.QComboBox(), mDicQcomboBox, mDicQcomboBox[1], "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QComboBox {  font-family:" + self.policeQGroupBox  +";}" ]
          _Listkeys   = [ "typeWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet" ]
          _ListValues = [ QtWidgets.QComboBox(), "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QComboBox {  font-family:" + self.policeQGroupBox  +";}" ]
 
@@ -1244,13 +1262,21 @@ def genereAttributs(self,  mapping, zoneLayout, _groupBoxdisplayHelpFocus, _zone
             _modCat_Attrib.setValidator(QtGui.QIntValidator(_modCat_Attrib))
 
          if zoneLayout.objectName()   in ["layoutAttributsModeleCategorie", ] : 
-            colonneLib, colonneAttrib = _col + 2, _col + 3        
+            colonneLib, colonneAttrib, colonneAssistant = _col + 2, _col + 3, _col + 4        
          elif zoneLayout.objectName() in [ "layoutAttributsModele", "layoutAttributsCategorie", "layoutAttributsOnglet"] : 
-            colonneLib, colonneAttrib = _col, _col + 1
+            colonneLib, colonneAttrib, colonneAssistant = _col, _col + 1, _col + 2
                     
          zoneLayout.addWidget(_modCat_Lib_Attrib, _row, colonneLib,    QtCore.Qt.AlignTop)
          zoneLayout.addWidget(_modCat_Attrib    , _row, colonneAttrib, QtCore.Qt.AlignTop)
-         
+
+         if dicLabelTooltip["assistantTranslate"][0] == "true" :
+            # lecture du fichier mapping_templates
+            mDicEnum = dicLabelTooltip["enum"] if dicLabelTooltip["assistantTranslate"][1] == "list" else None
+            _Listkeys   = [ "typeWidget", "nameWidget", "_modCat_Attrib", "iconWidget", "toolTipWidget" ]
+            _ListValues = [ QtWidgets.QToolButton(), "assistant_" + mattrib, _modCat_Attrib, _iconSourcesSelect, QtWidgets.QApplication.translate("CreateTemplate_ui", "Assistant", None)  ]
+            dicParamButton = dict(zip(_Listkeys, _ListValues))             # ci-dessous Nom de l'attrib,  objet attrib
+            _mObjetAssistant = GenereButtonsAssistant( self, dicParamButton,            mattrib,          _modCat_Attrib, mDicEnum, mapping[mattrib]["label"], mapping[mattrib]["help"] )._buttonAssistant 
+            zoneLayout.addWidget(_mObjetAssistant, _row, colonneAssistant, QtCore.Qt.AlignTop)
       _row += 1
   return 
 
@@ -1279,7 +1305,7 @@ def ifAttributsVisible(self,  _groupBoxAttributs, _mapping ) :
 def afficheAttributs(self,  _groupBoxAttributs, _mapping, display ) :
   _group = _groupBoxAttributs.children() 
   for mObj in _group :
-      if (mObj.objectName()[5:] in _mapping) or (mObj.objectName()[6:] in _mapping) :
+      if (mObj.objectName()[5:] in _mapping) or (mObj.objectName()[6:] in _mapping) or (mObj.objectName()[10:] in _mapping) :
          mObj.setVisible(display)
       if display == True and mObj.objectName()[5:] in _mapping : 
          mObj.setEnabled(False if "disabled"  in _mapping[mObj.objectName()[5:]]["property"] else True)  
@@ -1304,22 +1330,43 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
        i += 1
     # Si _mapping_template_categories_id_association_id_categorie alors catégorie déplacé provenant de Out vers In
     initialiseValueOrBlank =  len(_mapping_template_categories_id_association_id_categorie)
+    sharedOrLocal = "local"
+    dicValuePropriete = {}
     # Initialisation
+    listeThesaurus = None
     for mObj in _group :
         if (mObj.objectName()[5:] in _mapping_template_categories) :
            # widget
            _type  = _mapping_template_categories[ mObj.objectName()[5:] ]["type" ]
            if initialiseValueOrBlank == 0 :
               __Val = ""
-           else :    
-              __Val = str(_mapping_template_categories_id_association_id_categorie[ mObj.objectName()[5:] ]) if _mapping_template_categories_id_association_id_categorie[ mObj.objectName()[5:] ] != None else "" 
+           else :
+              # Ne pas transformer en string sinon, dicValuePropriete ne prendra les bons types
+              #__Val = _mapping_template_categories_id_association_id_categorie[ mObj.objectName()[5:] ] if _mapping_template_categories_id_association_id_categorie[ mObj.objectName()[5:] ] != None else "" 
+              __Val = _mapping_template_categories_id_association_id_categorie[ mObj.objectName()[5:] ] 
+
+           # Gestion for Sources, geo_tools, Compute, demandant None pour zone Vierge
+           if _mapping_template_categories[ mObj.objectName()[5:] ]["format"] == "list"  :
+              if (__Val == None or __Val == "") : __Val = None
+
+           #Initialise un dictionnaire des valeurs retournées par PostgreSQL pour l'IHM de l'asssistant
+           dicValuePropriete[mObj.objectName()[5:]] = __Val
+
+           # ICI, on transforme en string pour les QWidgets de saisie ou d'affichage sinon en json pour le format ) "jsonb" 
+           if _mapping_template_categories[ mObj.objectName()[5:] ]["format"] == "jsonb"  :
+              # For display json in QlineEdit  
+              __Val = "" if (__Val == None or __Val == "") else json.dumps(__Val, ensure_ascii=False) 
+           else :
+              __Val = str("" if __Val == None  else __Val)
+
            if _type in ("QLineEdit",) :
               mObj.setText(__Val if __Val != None else "")  
            elif _type in ("QTextEdit",) :
               mObj.setPlainText(__Val if __Val != None else "")  
            elif _type in ("QComboBox",) :
-              #Alim la QcomboBox
+
               if _mapping_template_categories[ mObj.objectName()[5:] ]["dicListItems" ] == ("tabs") :
+                 #Alim la QcomboBox via z_plume.meta_tab
                  listItems    = sorted(set([ elem["tab_label"] for elem in _mListTabs ]), key=lambda col: col.lower())
                  mLibAucun    = "Aucun"
                  mDicLibAucun = {"tab_label" : "Aucun", "tab_id" : ""}
@@ -1333,6 +1380,24 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
                  __valCurrent = [ elem["tab_label"] for elem in _mListTabs if str(elem["tab_id"]) == __Val ]
                  mObj.clear()
                  mObj.addItems(listItems)
+
+              elif isinstance( _mapping_template_categories[ mObj.objectName()[5:] ]["dicListItems" ], dict ) :
+                 #Alim la QcomboBox via plume.mapping_templates
+                 """ EXEMPLE
+                 { 
+                          "email" : {"enum_label" : "Courriel",  "enum_help" : "saisie d'une adresse electronique"},
+                          "phone" : {"enum_label" : "Téléphone", "enum_help" : "saisie d'un numéro de téléphone"},
+                          "url"   : {"enum_label" : "Url",       "enum_help" : "saisie d'une url"}
+                        }
+                 """       
+                 dicListItems    = _mapping_template_categories[ mObj.objectName()[5:] ]["dicListItems" ]
+                 listItems    = [ v["enum_label"] for k, v in dicListItems.items() ] 
+                 listItems.append("Aucun")
+                 listItems = sorted(listItems)
+                 __valCurrent = [ v["enum_label"] for k, v in dicListItems.items() if str(k) == __Val ] if (__Val != "" and __Val != None) else "Aucun"
+                 mObj.clear()
+                 mObj.addItems(listItems)
+
               mObj.setCurrentText( __valCurrent[0])  
            elif _type in ("QLabel",) :
               mObj.setText(__Val if __Val != None else "")  
@@ -1346,9 +1411,48 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
               _displayFormat = 'hh:mm:ss'
               mObj.setTime(QTime.fromString( __Val, _displayFormat))       
            elif _type in ("QCheckBox",) :
-              mObj.setCheckState((QtCore.Qt.Checked if str(__Val).lower() == 'true' else QtCore.Qt.Unchecked) if __Val != None else QtCore.Qt.PartiallyChecked)
+              # je reprends dicValuePropriete[mObj.objectName()[5:]] et pas __Val pour conserver le None pour le setTristate(True)
+              mObj.setCheckState((QtCore.Qt.Checked if str( dicValuePropriete[mObj.objectName()[5:]] ).lower() == 'true' else QtCore.Qt.Unchecked) if dicValuePropriete[mObj.objectName()[5:]] != None else QtCore.Qt.PartiallyChecked)
+              
+           #=================
+           # CONTROLES DE SURFACE
+           if (mObj.objectName()[5:] == "shrcat_path" and __Val != "") : sharedOrLocal = "shared" 
+           if mObj.objectName()[5:] == "sources":  mObj.setEnabled(True if sharedOrLocal == "shared" else False) 
+           if  (    _mapping_template_categories[ mObj.objectName()[5:] ]["assistantTranslate"][0] == "true" 
+               and  _mapping_template_categories[ mObj.objectName()[5:] ]["assistantTranslate"][1] == "list" ) :  mObj.setEnabled(False) 
 
-    return
+           #-- for button assistant en fonction returnListeThesaurus
+           if mObj.objectName()[5:] == "sources" :
+              listeThesaurus = returnListeThesaurus(self.listLangList, _mItemClic_CAT_IN_OUT)
+
+        #-- for button assistant en fonction returnListeThesaurus
+        if mObj.objectName() == "assistant_sources" : 
+           if len(listeThesaurus) == 0 : mObj.setVisible(False)
+    return dicValuePropriete, listeThesaurus
+
+
+#==========================         
+               
+#==========================  
+# Recherche et retourne les valeurs du thésaurus en fonction de la catégorie cliquée.
+# Si rien n'est retorunée alors on n'affiche pas le bouton d'assistant
+# si retour, alors on envoie en poramètre les valeurs des thésaurus
+def returnListeThesaurus( listLangList, _mItemClic_CAT_IN_OUT ) :
+    # gestion du Out
+    mListSources = property_sources(_mItemClic_CAT_IN_OUT)
+    mDicTempo = {}
+    for elem in mListSources : 
+        label = source_label(elem, listLangList)
+        examples = source_examples(elem, listLangList)
+        enum_help_title =  "<b>Exemples du contenu du thésaurus :</b><br>"
+        enum_help = "<table><tr><td>" + enum_help_title + "</td></tr><tr><td><ul>"
+        for elem_in_examples in examples :
+            enum_help += "<li>" + elem_in_examples + "</li>" 
+        enum_help += "</ul></td></tr></table>"
+        mDicTempo[elem] = {"enum_label" : label,  "enum_help" : enum_help}
+    # gestion du Out
+
+    return mDicTempo
 
 #==========================         
 #==========================  
@@ -1371,12 +1475,14 @@ def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBo
              _mapping_template_id_template = _mListTemplates[i]
              break  
        i += 1
-       
     # Si _mapping_template_categories_id_association_id_categorie alors catégorie déplacé provenant de Out vers In
     # if Vierge
     initialiseValueOrBlank =  len(_mapping_template_id_template) if _blank == None else 0
 
+    sharedOrLocal = "local"
+    dicValuePropriete = {}
     # Initialisation
+    listeThesaurus = None
     for mObj in _group :
         if (mObj.objectName()[5:] in _mapping_template) :
            # widget
@@ -1385,17 +1491,68 @@ def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBo
               __Val = ""
            else :    
               if _blank == None :
-                 __Val = str(_mapping_template_id_template[ mObj.objectName()[5:] ]) if _mapping_template_id_template[ mObj.objectName()[5:] ] != None else ""
+                 __Val = _mapping_template_id_template[ mObj.objectName()[5:] ]
               else :     
                  # if Vierge
                  __Val = ""
+           # Gestion for Sources, geo_tools, Compute, demandant None pour zone Vierge
+           if _mapping_template[ mObj.objectName()[5:] ]["format"] == "list"  :
+              if (__Val == None or __Val == "") : __Val = None
+              
+           #Initialise un dictionnaire des valeurs retournées par PostgreSQL pour l'IHM de l'asssistant
+           dicValuePropriete[mObj.objectName()[5:]] = __Val
+
+           # ICI, on transforme en string pour les QWidgets de saisie ou d'affichage sinon en json pour le format ) "jsonb" 
+           if _mapping_template[ mObj.objectName()[5:] ]["format"] == "jsonb"  :
+              # For display json in QlineEdit  
+              __Val = "" if (__Val == None or __Val == "") else json.dumps(__Val, ensure_ascii=False) 
+           else :
+              __Val = str("" if __Val == None  else __Val)
+
+           # For display json in QlineEdit  
+           if _mapping_template[ mObj.objectName()[5:] ]["format"] == "jsonb"  :
+              __Val = json.dumps(__Val, ensure_ascii=False)
 
            if _type in ("QLineEdit",) :
               mObj.setText(__Val if __Val != None else "")  
            elif _type in ("QTextEdit",) :
               mObj.setPlainText(__Val if __Val != None else "")  
            elif _type in ("QComboBox",) :
-              mObj.setCurrentText(__Val if __Val != None else "")  
+
+              if _mapping_template[ mObj.objectName()[5:] ]["dicListItems" ] == ("tabs") :
+                 #Alim la QcomboBox via z_plume.meta_tab
+                 listItems    = sorted(set([ elem["tab_label"] for elem in _mListTabs ]), key=lambda col: col.lower())
+                 mLibAucun    = "Aucun"
+                 mDicLibAucun = {"tab_label" : "Aucun", "tab_id" : ""}
+                 if mLibAucun in listItems  : 
+                    del listItems[listItems.index(mLibAucun)]       # Pour gérer le tri avec Aucun en tête
+                 if mDicLibAucun in _mListTabs  : 
+                    del _mListTabs[_mListTabs.index(mDicLibAucun)]  # Pour gérer le tri avec Aucun en tête
+                 if mLibAucun not in listItems :                 
+                    listItems.insert( 0, "Aucun" )
+                    _mListTabs.insert( 0, {"tab_label" : "Aucun", "tab_id" : ""} )
+                 __valCurrent = [ elem["tab_label"] for elem in _mListTabs if str(elem["tab_id"]) == __Val ]
+                 mObj.clear()
+                 mObj.addItems(listItems)
+
+              elif isinstance( _mapping_template[ mObj.objectName()[5:] ]["dicListItems" ], dict ) :
+                 #Alim la QcomboBox via plume.mapping_templates
+                 """ EXEMPLE
+                 { 
+                          "email" : {"enum_label" : "Courriel",  "enum_help" : "saisie d'une adresse electronique"},
+                          "phone" : {"enum_label" : "Téléphone", "enum_help" : "saisie d'un numéro de téléphone"},
+                          "url"   : {"enum_label" : "Url",       "enum_help" : "saisie d'une url"}
+                        }
+                 """       
+                 dicListItems    = _mapping_template[ mObj.objectName()[5:] ]["dicListItems" ]
+                 listItems    = [ v["enum_label"] for k, v in dicListItems.items() ] 
+                 listItems.append("Aucun")
+                 listItems = sorted(listItems)
+                 __valCurrent = [ v["enum_label"] for k, v in dicListItems.items() if str(k) == __Val ] if (__Val != "" and __Val != None) else "Aucun"
+                 mObj.clear()
+                 mObj.addItems(listItems)
+
+              mObj.setCurrentText( __valCurrent[0])  
            elif _type in ("QLabel",) :
               mObj.setText(__Val if __Val != None else "")  
            elif _type in ("QDateEdit",) :
@@ -1408,10 +1565,26 @@ def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBo
               _displayFormat = 'hh:mm:ss'
               mObj.setTime(QTime.fromString( __Val, _displayFormat))       
            elif _type in ("QCheckBox",) :
-              mObj.setCheckState((QtCore.Qt.Checked if str(__Val).lower() == 'true' else QtCore.Qt.Unchecked) if __Val != None else QtCore.Qt.PartiallyChecked)
+              # je reprends dicValuePropriete[mObj.objectName()[5:]] et pas __Val pour conserver le None pour le setTristate(True)
+              mObj.setCheckState((QtCore.Qt.Checked if str( dicValuePropriete[mObj.objectName()[5:]] ).lower() == 'true' else QtCore.Qt.Unchecked) if dicValuePropriete[mObj.objectName()[5:]] != None else QtCore.Qt.PartiallyChecked)
 
            mObj.setVisible(display)
-    return
+
+           #=================
+           # CONTROLES DE SURFACE
+           if (mObj.objectName()[5:] == "shrcat_path" and __Val != "") : sharedOrLocal = "shared" 
+           if mObj.objectName()[5:] == "sources":  mObj.setEnabled(True if sharedOrLocal == "shared" else False) 
+           if  (    _mapping_template[ mObj.objectName()[5:] ]["assistantTranslate"][0] == "true" 
+               and  _mapping_template[ mObj.objectName()[5:] ]["assistantTranslate"][1] == "list" ) :  mObj.setEnabled(False) 
+
+           #-- for button assistant en fonction returnListeThesaurus
+           if mObj.objectName()[5:] == "sources" :
+              listeThesaurus = returnListeThesaurus(self.listLangList, _mItemClicModele)
+
+        #-- for button assistant en fonction returnListeThesaurus
+        if mObj.objectName() == "assistant_sources" : 
+           if len(listeThesaurus) == 0 : mObj.setVisible(False)
+    return dicValuePropriete, listeThesaurus
 
 #==========================   
 # Retoune les listes des noms et libelles et attributs associés  
@@ -1517,6 +1690,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         self.fontCategorieInVersOut           = _selfCreateTemplate.fontCategorieInVersOut
         self.modelComboListeModeleCategorie   = _selfCreateTemplate.modelComboListeModeleCategorie
         self.comboListeModeleCategorie        = _selfCreateTemplate.comboListeModeleCategorie
+        self.listLangList                     = _selfCreateTemplate.listLangList
         #---
         self.self_Cat_In                      = self_Cat_In   #self_Cat_In                                                     
         self.self_Cat_Out                     = self_Cat_Out  #self_Cat_Out 
@@ -1543,6 +1717,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
         #Create Arbo
         dictNoeudsArboIn  , rowNodeIn  = {}, 0 
         dictNoeudsArboOut , rowNodeOut = {}, 0 
+        #self._selfCreateTemplate.dicValuePropriete         = {} 
 
         if not action : return # Permet de ne pas repasser dans l'algo pour instancier les variables dans la création des QTreeWidgetItem
         """
@@ -1719,7 +1894,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                     #Affiche les attributs
                     afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
                     #Initialise les attributs avec valeurs
-                    initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
+                    self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
                     afficheLabelAndLibelle(self, True, True, True, True) 
                  else :   
                     #Affiche les attributs
@@ -1783,6 +1958,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
     #===============================              
     def ihmsPlume_CAT_IN_OUT(self, item, column): 
         if item == None : return 
+        QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
+        
         mItemClic_CAT_IN_OUT = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
         mItemClicAssociation = item.data(3, QtCore.Qt.DisplayRole)  # id association
         mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
@@ -1794,8 +1971,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
               #Affiche les attributs
               afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
               #Initialise les attributs avec valeurs
-              initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
-              afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, True) 
+              self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True ) 
+              afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, True)
            else :   
               #Affiche les attributs
               afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
@@ -1810,6 +1987,8 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
 
         self._selfCreateTemplate.buttonSaveOutVersIn.setEnabled(  False if (len(self._selfCreateTemplate.dicInVersOutDesign) == 0 and len(self._selfCreateTemplate.dicOutVersInDesign) == 0) else True)
         self._selfCreateTemplate.buttonReinitOutVersIn.setEnabled(False if (len(self._selfCreateTemplate.dicInVersOutDesign) == 0 and len(self._selfCreateTemplate.dicOutVersInDesign) == 0) else True)
+
+        QApplication.setOverrideCursor( QCursor( Qt.ArrowCursor ) )
         return
 
     #===============================              
@@ -2068,6 +2247,7 @@ class TREEVIEWMODELE(QTreeWidget):
         self.mapping_templates                       = _selfCreateTemplate.mapping_templates
         self.groupBoxdisplayHelpFocusAttributsModele = _selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele
         self.zoneDisplayHelpFocusAttributsModele     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsModele
+        self.listLangList                            = _selfCreateTemplate.listLangList
         
 
         self.mListTemplates          = _selfCreateTemplate.mListTemplates
@@ -2123,19 +2303,20 @@ class TREEVIEWMODELE(QTreeWidget):
         self.modeleActif = mItemClicModele
         
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              
-        #------ DATA template 
-        mKeySql = queries.query_read_meta_template()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListTemplates = [row[0] for row in r]
-        listeModeleCol1, listeModeleCol2 = returnList_Id_Label( self.mListTemplates )
-        self.modeleActif = listeModeleCol1[0] #Pour la première initialisation
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           #------ DATA template 
+           mKeySql = queries.query_read_meta_template()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListTemplates = [row[0] for row in r]
+           listeModeleCol1, listeModeleCol2 = returnList_Id_Label( self.mListTemplates )
+           self.modeleActif = listeModeleCol1[0] #Pour la première initialisation
         #------
         self._selfCreateTemplate.buttonAddModele.setVisible(True)
         #Affiche les attributs
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, True ) 
         self._selfCreateTemplate.buttonAddModele.setVisible(True)
         #Initialise les attributs avec valeurs
-        initialiseAttributsModelesCategoriesOnglets( self, mItemClicModele, self.groupBoxAttributsModele, self.mapping_templates, self.mListTemplates, True ) 
+        self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModelesCategoriesOnglets( self, mItemClicModele, self.groupBoxAttributsModele, self.mapping_templates, self.mListTemplates, True ) 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         return
@@ -2143,16 +2324,18 @@ class TREEVIEWMODELE(QTreeWidget):
     #===============================              
     def ihmsPlumeUpdateModele(self, mDialog, mId):
         #===============================              
-        dicForQuerieForAddModele = returnListObjKeyValue(self, self.groupBoxAttributsModele, self.mapping_templates)
+        dicForQuerieForAddModele = returnListObjKeyValue(self._selfCreateTemplate, self.groupBoxAttributsModele, self.mapping_templates)
 
-        mKeySql = queries.query_insert_or_update_meta_template(dicForQuerieForAddModele)
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-        self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
-        #- Réinit
-        mKeySql = queries.query_read_meta_template()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListTemplates = [row[0] for row in r]
-        listeModeleCol1, listeModeleCol2 = returnList_Id_Label( self.mListTemplates )
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_insert_or_update_meta_template(dicForQuerieForAddModele)
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+           self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           #- Réinit
+           mKeySql = queries.query_read_meta_template()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListTemplates = [row[0] for row in r]
+           listeModeleCol1, listeModeleCol2 = returnList_Id_Label( self.mListTemplates )
         self.clear()
         self.afficheMODELE(self._selfCreateTemplate, listeModeleCol1, listeModeleCol2)
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
@@ -2164,7 +2347,7 @@ class TREEVIEWMODELE(QTreeWidget):
         #===============================              
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, True ) 
         self._selfCreateTemplate.buttonAddModele.setVisible(True)
-        initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsModele, self.mapping_templates, self.mListTemplates, True, "Vierge" ) 
+        self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsModele, self.mapping_templates, self.mListTemplates, True, "Vierge" ) 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         return
@@ -2176,9 +2359,10 @@ class TREEVIEWMODELE(QTreeWidget):
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
         dicForQuerieForAddModele = returnListObjKeyValue(self, self.groupBoxAttributsModele, self.mapping_templates)
-        mKeySql = queries.query_delete_meta_template(dicForQuerieForAddModele)
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
-        self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_delete_meta_template(dicForQuerieForAddModele)
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
+           self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsModele, self.mapping_templates, False ) 
         self._selfCreateTemplate.buttonAddModele.setVisible(False)
@@ -2219,12 +2403,14 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self.zoneDisplayHelpFocusAttributsCategorie = _selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie
         _selfCreateTemplate.listeRessourceCategorie = listeRessourceCategorie 
         self.listeRessourceCategorie                = _selfCreateTemplate.listeRessourceCategorie
+        self.listLangList                           = _selfCreateTemplate.listLangList
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
         # ======================================
         # ======================================
         dictNoeudsArboIn  , rowNodeIn  = {}, 0 
+        #self._selfCreateTemplate.dicValuePropriete         = {} 
         #Create Arbo 
         i = 0
         while i < len(self.listeRessourceCategorie) : 
@@ -2297,9 +2483,10 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
         index = self.indexAt(point)
         #-------
-        mKeySql = queries.query_read_meta_categorie()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListCategories = [row[0] for row in r]
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_read_meta_categorie()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListCategories = [row[0] for row in r]
         
         if len(self.mListCategories) == 0 : 
            self.treeMenu = QMenu(self)
@@ -2338,19 +2525,20 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         
         if returnIfExisteCategorie(item) : 
            #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              
-           #------ DATA template 
-           mKeySql = queries.query_read_meta_categorie()
-           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-           self.mListCategories = [row[0] for row in r]
-           listeCategorieCol1, listeCategorieCol2 = returnList_Id_Label( self.mListCategories )
-           self.categorieActif = listeCategorieCol1[0] #Pour la première initialisation
+           with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+              #------ DATA template 
+              mKeySql = queries.query_read_meta_categorie()
+              r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+              self.mListCategories = [row[0] for row in r]
+              listeCategorieCol1, listeCategorieCol2 = returnList_Id_Label( self.mListCategories )
+              self.categorieActif = listeCategorieCol1[0] #Pour la première initialisation
            #------
            self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
            #Affiche les attributs
            afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, True ) 
            self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
            #Initialise les attributs avec valeurs
-           initialiseAttributsModelesCategoriesOnglets( self, mItemClicCategorie, self.groupBoxAttributsCategorie, self.mapping_categories, self.mListCategories, True )
+           self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModelesCategoriesOnglets( self, mItemClicCategorie, self.groupBoxAttributsCategorie, self.mapping_categories, self.mListCategories, True )
         else :    
            #Affiche les attributs
            afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, False ) 
@@ -2364,14 +2552,15 @@ class TREEVIEWCATEGORIE(QTreeWidget):
     def ihmsPlumeUpdateCategorie(self, mDialog, mId):
         #===============================              
         dicForQuerieForAddCategorie = returnListObjKeyValue(self, self.groupBoxAttributsCategorie, self.mapping_categories)
-       
-        mKeySql = queries.query_insert_or_update_meta_categorie(dicForQuerieForAddCategorie)
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-        self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
-        #- Réinit
-        mKeySql = queries.query_read_meta_categorie()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListCategories = [row[0] for row in r]
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_insert_or_update_meta_categorie(dicForQuerieForAddCategorie)
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+           self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           #- Réinit
+           mKeySql = queries.query_read_meta_categorie()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListCategories = [row[0] for row in r]
 
         if len(self.mListCategories)  > 0 : 
            listeRessourceCategorie = returnListRessourceCategorie( self, self.mListCategories )
@@ -2388,7 +2577,7 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         #===============================              
         afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, True ) 
         self._selfCreateTemplate.buttonAddCategorie.setVisible(True)
-        initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsCategorie, self.mapping_categories, self.mListCategories, True, "Vierge" ) 
+        self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsCategorie, self.mapping_categories, self.mListCategories, True, "Vierge" ) 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
         return
@@ -2400,9 +2589,10 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
         dicForQuerieForAddCategorie = returnListObjKeyValue(self, self.groupBoxAttributsCategorie, self.mapping_categories)
-        mKeySql = queries.query_delete_meta_categorie(dicForQuerieForAddCategorie)
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
-        self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_delete_meta_categorie(dicForQuerieForAddCategorie)
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
+           self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsCategorie, self.mapping_categories, False ) 
         self._selfCreateTemplate.buttonAddCategorie.setVisible(False)
@@ -2438,6 +2628,7 @@ class TREEVIEWONGLET(QTreeWidget):
         self._selfCreateTemplate               = _selfCreateTemplate
         self.groupBoxdisplayHelpFocusAttributsOnglet = _selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet
         self.zoneDisplayHelpFocusAttributsOnglet     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet
+        self.listLangList                            = _selfCreateTemplate.listLangList
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -2459,9 +2650,10 @@ class TREEVIEWONGLET(QTreeWidget):
     def menuContextuelPlumeONGLET(self, point):
         index = self.indexAt(point)
         #-------
-        mKeySql = queries.query_read_meta_tab()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListTabs = [row[0] for row in r]
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_read_meta_tab()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListTabs = [row[0] for row in r]
         
         if len(self.mListTabs) == 0 : 
            self.treeMenu = QMenu(self)
@@ -2499,19 +2691,20 @@ class TREEVIEWONGLET(QTreeWidget):
         self.ongletActif = mItemClicOnglet
         
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              
-        #------ DATA template 
-        mKeySql = queries.query_read_meta_tab()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListTabs = [row[0] for row in r]
-        listeOngletCol1, listeOngletCol2 = returnList_Id_Label( self.mListTabs )
-        self.ongletActif = listeOngletCol1[0] #Pour la première initialisation
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           #------ DATA template 
+           mKeySql = queries.query_read_meta_tab()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListTabs = [row[0] for row in r]
+           listeOngletCol1, listeOngletCol2 = returnList_Id_Label( self.mListTabs )
+           self.ongletActif = listeOngletCol1[0] #Pour la première initialisation
         #------
         self._selfCreateTemplate.buttonAddOnglet.setVisible(True)
         #Affiche les attributs
         afficheAttributs( self, self.groupBoxAttributsOnglet, self.mapping_tabs, True ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(True)
         #Initialise les attributs avec valeurs
-        initialiseAttributsModelesCategoriesOnglets( self, mItemClicOnglet, self.groupBoxAttributsOnglet, self.mapping_tabs, self.mListTabs, True ) 
+        self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModelesCategoriesOnglets( self, mItemClicOnglet, self.groupBoxAttributsOnglet, self.mapping_tabs, self.mListTabs, True ) 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
         return
@@ -2519,16 +2712,18 @@ class TREEVIEWONGLET(QTreeWidget):
     #===============================              
     def ihmsPlumeUpdateOnglet(self, mDialog, mId):
         #===============================              
-        dicForQuerieForAddOnglet = returnListObjKeyValue(self, self.groupBoxAttributsOnglet, self.mapping_tabs)
+        dicForQuerieForAddOnglet = returnListObjKeyValue(self._selfCreateTemplate, self.groupBoxAttributsOnglet, self.mapping_tabs)
 
-        mKeySql = queries.query_insert_or_update_meta_tab(dicForQuerieForAddOnglet)
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
-        self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
-        #- Réinit
-        mKeySql = queries.query_read_meta_tab()
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
-        self.mListTabs = [row[0] for row in r]
-        listeOngletCol1, listeOngletCol2 = returnList_Id_Label( self.mListTabs )
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_insert_or_update_meta_tab(dicForQuerieForAddOnglet)
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+           self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           #- Réinit
+           mKeySql = queries.query_read_meta_tab()
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+           self.mListTabs = [row[0] for row in r]
+           listeOngletCol1, listeOngletCol2 = returnList_Id_Label( self.mListTabs )
         self.clear()
         self.afficheONGLET(self._selfCreateTemplate, listeOngletCol1, listeOngletCol2)
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
@@ -2540,7 +2735,7 @@ class TREEVIEWONGLET(QTreeWidget):
         #===============================              
         afficheAttributs( self, self.groupBoxAttributsOnglet, self.mapping_tabs, True ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(True)
-        initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsOnglet, self.mapping_tabs, self.mListTabs, True, "Vierge" ) 
+        self._selfCreateTemplate.dicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModelesCategoriesOnglets( self, "", self.groupBoxAttributsOnglet, self.mapping_tabs, self.mListTabs, True, "Vierge" ) 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
         return
@@ -2552,9 +2747,10 @@ class TREEVIEWONGLET(QTreeWidget):
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
         dicForQuerieForAddOnglet = returnListObjKeyValue(self, self.groupBoxAttributsOnglet, self.mapping_tabs)
-        mKeySql = queries.query_delete_meta_tab(dicForQuerieForAddOnglet)
-        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
-        self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+           mKeySql = queries.query_delete_meta_tab(dicForQuerieForAddOnglet)
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = None)
+           self._selfCreateTemplate.Dialog.mConnectEnCours.commit()
         #Efface les attributs
         afficheAttributs( self, self.groupBoxAttributsOnglet, self.mapping_tabs, False ) 
         self._selfCreateTemplate.buttonAddOnglet.setVisible(False)
@@ -2562,3 +2758,4 @@ class TREEVIEWONGLET(QTreeWidget):
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
         return
+

@@ -30,7 +30,7 @@ from plume import doabout
 from plume import doimportcsw
 from plume import docreatetemplate
 
-from qgis.core import ( Qgis, QgsProject, QgsApplication, QgsSettings, QgsLayerItem, QgsVectorLayer, QgsDataSourceUri, QgsCredentials )
+from qgis.core import ( Qgis, QgsProject, QgsApplication, QgsSettings, QgsLayerItem, QgsVectorLayer, QgsDataSourceUri, QgsCredentials, QgsVectorDataProvider )
 from qgis.gui  import ( QgsRubberBand, QgsMessageBar )
 from PyQt5.QtCore    import ( Qt, QSize )
 
@@ -55,44 +55,49 @@ class Ui_Dialog_plume(object):
         self.firstOpenConnect = True
     
     @contextmanager
-    def safe_pg_connection(self) :
+    #== Gestionnaire de contexte généraliste avec remise de l'IHM à vierge
+    #== option None par défaut sinon "continue" pour ne pas remettre l'IHM à vierge
+    def safe_pg_connection(self, option = None) :
         if not getattr(self, 'mConnectEnCours', False) or self.mConnectEnCours.closed:
            self.getAllFromUri()
         try:
            yield
            
         except psycopg2.Error as err :
-           self.layerBeforeClicked = ("", "")
-           saveinitializingDisplay("write", self.layerBeforeClicked)
-           breakExecuteSql(self)
+           if option == None : 
+              self.layerBeforeClicked = ("", "")
+              saveinitializingDisplay("write", self.layerBeforeClicked)
+              breakExecuteSql(self)
 
            if err.diag:
-              zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+              zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning" + " - psycopg2", None)
               zMess  = err.diag.message_primary  
               displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
-
+           
         except NoReturnSql as err_NoReturnSql :
-           self.layerBeforeClicked = ("", "")
-           saveinitializingDisplay("write", self.layerBeforeClicked)
-           breakExecuteSql(self)
+           if option == None : 
+              self.layerBeforeClicked = ("", "")
+              saveinitializingDisplay("write", self.layerBeforeClicked)
+              breakExecuteSql(self)
 
-           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning" + " - NoReturnSql", None)
            zMess  = str(err_NoReturnSql.mMess) 
            displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
 
         except Exception as err_Exception :
-           self.layerBeforeClicked = ("", "")
-           saveinitializingDisplay("write", self.layerBeforeClicked)
-           breakExecuteSql(self)
+           if option == None : 
+              self.layerBeforeClicked = ("", "")
+              saveinitializingDisplay("write", self.layerBeforeClicked)
+              breakExecuteSql(self)
 
-           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning" + " - Exception", None)
            zMess  = str(err_Exception) + "\n" + str(traceback.format_tb(Exception.__traceback__)) 
            displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
         
         finally:
            if getattr(self, 'mConnectEnCours', False) : self.mConnectEnCours.close()
+    #== Gestionnaire de contexte généraliste avec remise de l'IHM à vierge
  
-                
     def setupUi(self, Dialog, _dicTooltipExiste):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
@@ -672,10 +677,9 @@ class Ui_Dialog_plume(object):
               self.layer = iface.activeLayer()
         #-
         if self.layer:
-           if self.layer.dataProvider().name() == 'postgres':
+           if self.layer.dataProvider().name() == 'postgres' and QgsDataSourceUri(self.layer.source()).schema() :
               # == Gestion Context ==
               with self.safe_pg_connection() :
-                #self.getAllFromUri()
                 self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
                 #--                                                                          
                 afficheNoConnections(self, "hide")
@@ -743,7 +747,6 @@ class Ui_Dialog_plume(object):
                  self.layer = QgsVectorLayer(item.uri(), item.name(), 'postgres')
                  # == Gestion Context ==
                  with self.safe_pg_connection() :
-                    #self.getAllFromUri()
                     self.messWindowTitle = "Plume | " + self.returnSchemaTableGeom(self.layer)[0] + "." + self.returnSchemaTableGeom(self.layer)[1] + " (" + self.returnSchemaTableGeom(self.layer)[2] + ")"
                     #--
                     afficheNoConnections(self, "hide")
@@ -933,9 +936,8 @@ class Ui_Dialog_plume(object):
         
     #==========================
     def clickCreateTemplate(self):
-        
-        with self.safe_pg_connection() :
-           d = docreatetemplate.Dialog(self)
+        with self.safe_pg_connection("continue") :
+           d = docreatetemplate.Dialog(self, self.langList)
            d.exec_()
         return
         
