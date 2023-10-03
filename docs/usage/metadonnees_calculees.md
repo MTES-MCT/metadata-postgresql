@@ -24,7 +24,7 @@ Les catégories pour lesquelles le calcul est proposé sont, à ce stade :
 
 [^activation-suivi-dates]: Il est également recommandé d'avoir [activé les fonctionnalités d'enregistrement des dates](#activation-de-lenregistrement-des-dates), sans quoi le calcul ne renverra jamais rien.
 
-Les paramètres optionnels sont spécifiés via le champ `compute_params` des tables `z_plume.meta_categorie` et `z_plume.meta_template_categories`. Il s'agit d'un champ de type `jsonb`, qui attend un dictionnaire dont les clés sont les noms des paramètres et les valeurs les valeurs des paramètres.
+Les paramètres optionnels sont spécifiés via le champ `compute_params` des tables `z_plume.meta_categorie` et `z_plume.meta_template_categories`. Il s'agit d'un champ de type `jsonb`, qui attend un dictionnaire dont les clés sont les noms des paramètres et dont les valeurs sont les valeurs des paramètres.
 
 Par exemple :
 
