@@ -1509,10 +1509,6 @@ def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBo
            else :
               __Val = str("" if __Val == None  else __Val)
 
-           # For display json in QlineEdit  
-           if _mapping_template[ mObj.objectName()[5:] ]["format"] == "jsonb"  :
-              __Val = json.dumps(__Val, ensure_ascii=False)
-
            if _type in ("QLineEdit",) :
               mObj.setText(__Val if __Val != None else "")  
            elif _type in ("QTextEdit",) :
