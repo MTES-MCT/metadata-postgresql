@@ -7,9 +7,9 @@ from qgis.core import ( QgsSettings )
 from plume.assistanttemplate import Ui_Dialog_AssistantTemplate
 
 class Dialog(QDialog, Ui_Dialog_AssistantTemplate):
-      def __init__(self, DialogCreateTemplate, DialogPlume, _buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp):      # DialogCreateTemplate, DialogPlume
+      def __init__(self, DialogCreateTemplate, DialogPlume, _buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp, keyAncetre_ModeleCategorie_Modele_Categorie_Onglet):      # DialogCreateTemplate, DialogPlume
           QDialog.__init__(self)
-          self.setupUiAssistantTemplate(self, DialogCreateTemplate, DialogPlume, _buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp)
+          self.setupUiAssistantTemplate(self, DialogCreateTemplate, DialogPlume, _buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp, keyAncetre_ModeleCategorie_Modele_Categorie_Onglet)
           return    
 
       #==================================================

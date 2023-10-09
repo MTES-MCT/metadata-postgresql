@@ -53,7 +53,7 @@ def genereLabelWithDict(dicParamLabel ) :
 
 #==========================         
 class GenereButtonsAssistant( ) :              # ci-dessous Nom de l'attrib,  objet attrib
-    def __init__(self, _selfCreateTemplate, dicParamButton, mattrib,         modCat_Attrib,  mDicEnum, mLabel, mHelp) :
+    def __init__(self, _selfCreateTemplate, dicParamButton, mattrib,         modCat_Attrib,  mDicEnum, mLabel, mHelp, keyAncetre_ModeleCategorie_Modele_Categorie_Onglet) :
         self._selfCreateTemplate    = _selfCreateTemplate
         self.dicParamButton         = dicParamButton
         self.mattrib                = mattrib
@@ -61,6 +61,7 @@ class GenereButtonsAssistant( ) :              # ci-dessous Nom de l'attrib,  ob
         self.mDicEnum               = mDicEnum
         self.mLabel                 = mLabel
         self.mHelp                  = mHelp
+        self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet = keyAncetre_ModeleCategorie_Modele_Categorie_Onglet
         self.setupUi()
         
     def setupUi(self) :
@@ -84,13 +85,13 @@ class GenereButtonsAssistant( ) :              # ci-dessous Nom de l'attrib,  ob
                if k == "styleSheet"     : _buttonAssistant.setStyleSheet(v)
                #-- Raccourci
                if k == "shorCutWidget"  : _buttonAssistant.setShortcut(QKeySequence(v))
-        _buttonAssistant.clicked.connect( lambda : self.openAssistant( self._selfCreateTemplate, self.mattrib, self.modCat_Attrib, self.mDicEnum, self.mLabel, self.mHelp ) )
+        _buttonAssistant.clicked.connect( lambda : self.openAssistant( self._selfCreateTemplate, self.mattrib, self.modCat_Attrib, self.mDicEnum, self.mLabel, self.mHelp, self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet ) )
         self._buttonAssistant = _buttonAssistant
         return
 
     #==========================
-    def openAssistant(self, _selfCreateTemplate, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp) :
-        d = doassistanttemplate.Dialog(self, _selfCreateTemplate, self._buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp)  # DialogCreateTemplate, DialogPlume
+    def openAssistant(self, _selfCreateTemplate, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp, keyAncetre_ModeleCategorie_Modele_Categorie_Onglet) :
+        d = doassistanttemplate.Dialog(self, _selfCreateTemplate, self._buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp, keyAncetre_ModeleCategorie_Modele_Categorie_Onglet)  # DialogCreateTemplate, DialogPlume
         d.exec_()
         return
     

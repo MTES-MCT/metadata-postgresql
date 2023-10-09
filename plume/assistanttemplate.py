@@ -20,7 +20,7 @@ import json
 import traceback
 
 class Ui_Dialog_AssistantTemplate(object):   
-    def setupUiAssistantTemplate(self, DialogAssistantTemplate, DialogCreateTemplate, DialogPlume, _buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp) :   # DialogAssistantTemplate, DialogCreateTemplate, DialogPlume
+    def setupUiAssistantTemplate(self, DialogAssistantTemplate, DialogCreateTemplate, DialogPlume, _buttonAssistant, mattrib, modCat_Attrib, mDicEnum, mLabel, mHelp, keyAncetre_ModeleCategorie_Modele_Categorie_Onglet) :   # DialogAssistantTemplate, DialogCreateTemplate, DialogPlume
         #-
         #self.mDic_LH = returnAndSaveDialogParam(self, "Load")
         self.mDic_LH                = DialogPlume.mDic_LH
@@ -50,6 +50,7 @@ class Ui_Dialog_AssistantTemplate(object):
         self.mDicEnum                  = mDicEnum
         self.mLabel                    = mLabel
         self.mHelp                     = mHelp
+        self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet = keyAncetre_ModeleCategorie_Modele_Categorie_Onglet
         #-
         myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
         self.DialogAssistantTemplate.setObjectName("DialogConfirme")
@@ -130,7 +131,7 @@ class Ui_Dialog_AssistantTemplate(object):
         self.zoneDisplayHelpFocus = self.genereLabelWithDictAssistant( dicParamLabel )
         self.zoneDisplayHelpFocus.setTextFormat(Qt.MarkdownText)        
         self.layoutListeHelp.addWidget( self.zoneDisplayHelpFocus, 0, 0)
-        self.zoneDisplayHelpFocus.setAlignment( Qt.AlignJustify | Qt.AlignVCenter )
+        self.zoneDisplayHelpFocus.setAlignment( Qt.AlignLeft | Qt.AlignVCenter )
         self.zoneDisplayHelpFocus.setText(self.mHelp)        
         #=====================================
         # [ == scrolling HELP == ]
@@ -181,23 +182,23 @@ class Ui_Dialog_AssistantTemplate(object):
         #- Affiche
         if self.mDicEnum != None :
            if hasattr(self.DialogPlume.dicValuePropriete, "loccat_path") :
-              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete["loccat_path"] if self.DialogPlume.dicValuePropriete["loccat_path"] != "" else self.DialogPlume.dicValuePropriete["shrcat_path"]
+              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet]["loccat_path"] if self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet]["loccat_path"] != "" else self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet]["shrcat_path"]
            elif hasattr(self.DialogPlume.dicValuePropriete, "path") :
-              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete["path"]
+              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet]["path"]
            elif hasattr(self.DialogPlume.dicValuePropriete, "tpl_id") :
-              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete["tpl_id"]
+              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet]["tpl_id"]
            elif hasattr(self.DialogPlume.dicValuePropriete, "tab_id") :
-              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete["tab_id"]
+              self.mNameCategorieClicked = self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet]["tab_id"]
 
            if isinstance( self.mDicEnum, dict ) : #  exemple dicEnum["geo_tools"]
               self.mListeProprietesDispo  = self.mDicEnum
-              self.mListeProprietesSelect = self.DialogPlume.dicValuePropriete[self.mattrib] 
+              self.mListeProprietesSelect = self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet][self.mattrib] 
            elif self.mDicEnum == "sources" :      # For assistant pour lancer les requêtes pour alimenter les sources des thésaurus
               if self.DialogPlume.listeThesaurus != None :
                  # Géré dans le [ def ihmsPlume_CAT_IN_OUT(self, item, column): ]
                  self.mListeProprietesDispo = self.mDicEnum = self.DialogPlume.listeThesaurus
                  # gestion du In on ne touche à rien, ce sera fait dans le affiche_PROPRIETE_IN_OUT
-                 self.mListeProprietesSelect = self.DialogPlume.dicValuePropriete[self.mattrib]
+                 self.mListeProprietesSelect = self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet][self.mattrib]
                  
            elif self.mDicEnum in ("compute_params", "md_conditions") :      # For assistant pour la saisir du jsonb
               self.mTreeListeOut.setVisible(False)
@@ -217,7 +218,7 @@ class Ui_Dialog_AssistantTemplate(object):
         elif self.mDicEnum in ("compute_params", "md_conditions") :       # For assistant pour la saisir du jsonb    
            self.zoneJSONB.setAlignment( Qt.AlignJustify | Qt.AlignVCenter )
            # json dans la zone
-           mVal, _exit = returnTranslatePostgreSQL_PythonVsJson(self.DialogPlume, self.DialogPlume.dicValuePropriete[self.mattrib], "pythonVERSjson")  # dumps
+           mVal, _exit = returnTranslatePostgreSQL_PythonVsJson(self.DialogPlume, self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet][self.mattrib], "pythonVERSjson")  # dumps
            self.zoneJSONB.setPlainText( "" if mVal in (None, "null") else mVal )
         #========
         #-
@@ -281,7 +282,7 @@ class Ui_Dialog_AssistantTemplate(object):
            #Mets à jour la variable et le dictionnaire
            if len(_list) == 0  : _list = None
            self.mListeProprietesSelect                  = _list
-           self.DialogPlume.dicValuePropriete[_mattrib] = _list
+           self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet][_mattrib] = _list
         elif _mDicEnum in ("compute_params", "md_conditions") :       # For assistant pour la saisir du jsonb 
            # La zone du QTextEdit   
            _zoneJSONB = _zoneJSONB.toPlainText()
@@ -298,7 +299,7 @@ class Ui_Dialog_AssistantTemplate(object):
               _zoneJSONB = json.dumps(mVal, ensure_ascii=False)  # dumps
               _modCat_Attrib.setText( str("" if _zoneJSONB.lower() == "null" else _zoneJSONB ) )
               #
-              self.DialogPlume.dicValuePropriete[_mattrib] = mVal  
+              self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet][_mattrib] = mVal  
         if _exit == True : self.close()
         return 
 
