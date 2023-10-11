@@ -675,6 +675,9 @@ class Ui_Dialog_plume(object):
               return
            else :
               self.layer = iface.activeLayer()
+              if self.layer == None : # For click on group in layerTreeView
+                 if not self.verrouLayer : initIhmNoConnection(self)
+                 return
         #-
         if self.layer:
            if self.layer.dataProvider().name() == 'postgres' and QgsDataSourceUri(self.layer.source()).schema() :
