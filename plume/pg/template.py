@@ -229,7 +229,9 @@ def search_template(templates, metagraph=None):
     
     for tpl_label, check_sql_filter, md_conditions, priority in templates:
     
-        if r and (priority is None or priority <= p):
+        priority = priority or 0
+    
+        if r and priority <= p:
             continue
         
         # filtre SQL (dont on a d'ores-et-déjà le résultat

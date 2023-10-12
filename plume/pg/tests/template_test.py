@@ -967,6 +967,33 @@ class TemplateTestCase(unittest.TestCase):
             self.assertTrue(isinstance(e, ValueError))
             self.assertTrue('131' in str(e))
 
+    def test_choose_template_without_priority(self):
+        """Choix du modèle lorsque celui qui remplit la condition n'a pas de priorité définie."""
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+
+        with conn:
+            with conn.cursor() as cur:
+
+                cur.execute(
+                    '''
+                    INSERT INTO z_plume.meta_template (tpl_label, sql_filter, priority) VALUES
+                        ('Bon modèle sans priorité', true, NULL),
+                        ('Un autre modèle avec priorité', false, 10) ;
+                    '''
+                )
+                cur.execute(
+                    *query_list_templates('s_schema', 'table')
+                    )
+                templates = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+
+        conn.close()
+
+        self.assertEqual(
+            search_template(templates),
+            'Bon modèle sans priorité'
+            )
+
 if __name__ == '__main__':
     unittest.main()
 
