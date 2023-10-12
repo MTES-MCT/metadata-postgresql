@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dcat="http://www.w3.org/ns/dcat#"
+   xmlns:dct="http://purl.org/dc/terms/"
+   xmlns:foaf="http://xmlns.com/foaf/0.1/"
+   xmlns:ns1="http://spdx.org/rdf/terms#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-962eed69-2b84-4b8e-addf-98227a0a646f">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>962eed69-2b84-4b8e-addf-98227a0a646f</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2023</dct:title>
+    <dct:description>Actualisation au 01/01/2023 des données relatives aux gestionnaires du réseau routier national (format csv)</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20230728-164144/gestionnaires-rrn-2023.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/962eed69-2b84-4b8e-addf-98227a0a646f"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2023-07-28T16:41:44.956000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2023-07-28T16:43:56.163000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1813021</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="N577d66af1b124130831dde80b63c409a"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-1c18aa4f-f683-4cb7-abce-6ccaa803ed86">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>1c18aa4f-f683-4cb7-abce-6ccaa803ed86</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2021_shp</dct:title>
+    <dct:description>Actualisation au 01/01/2021 des données relatives aux gestionnaires du réseau routier national (format shp)</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20210721-145256/gestionnaires-rrn-2021-shp.zip"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/1c18aa4f-f683-4cb7-abce-6ccaa803ed86"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-07-21T14:52:57.978000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-07-21T14:56:07.501000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14198979</dcat:byteSize>
+    <dcat:mediaType>application/zip</dcat:mediaType>
+    <dct:format>zip</dct:format>
+    <ns1:checksum rdf:nodeID="N1302c3860c4b42ceab876c0e52d7f1fa"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-78af659c-c3ca-427a-9aad-fa286c9023ed">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>78af659c-c3ca-427a-9aad-fa286c9023ed</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2020_shp</dct:title>
+    <dct:description>Actualisation des données relatives aux gestionnaires du RRN au 01/01/2020 (format shp)</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20201001-122504/gestionnaires-rrn-2020-shp.zip"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/78af659c-c3ca-427a-9aad-fa286c9023ed"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-10-01T12:25:05.388000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-10-01T12:28:04.831000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">13717866</dcat:byteSize>
+    <dcat:mediaType>application/zip</dcat:mediaType>
+    <dct:format>zip</dct:format>
+    <ns1:checksum rdf:nodeID="Na3e51a97896d4468aa3c75df9c06424b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-53b608e7-c6ac-460c-ba98-945e9d5bd820">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>53b608e7-c6ac-460c-ba98-945e9d5bd820</dct:identifier>
+    <dct:title>GestionnairesRRN_2017</dct:title>
+    <dct:description>Mise à jour du lot "GestionnairesRRN" au 01/01/2017</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20170801-190305/Gestionnaires_2017.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/53b608e7-c6ac-460c-ba98-945e9d5bd820"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2017-08-01T19:03:05.697000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2017-08-01T19:03:23.752000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1079901</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="N160d9d74fbc246a9ba5f6ab535aa1d64"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-7718263f-3cd8-4d7d-b29b-ec1a21d7827d">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>7718263f-3cd8-4d7d-b29b-ec1a21d7827d</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2022_shp</dct:title>
+    <dct:description>Actualisation au 01/01/2022 des données relatives aux gestionnairestes du réseau routier national (format shp)</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20220427-163212/gestionnaires-rrn-2022-shp.zip"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/7718263f-3cd8-4d7d-b29b-ec1a21d7827d"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-04-27T16:32:13.281000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-04-27T16:35:37.293000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10436740</dcat:byteSize>
+    <dcat:mediaType>application/zip</dcat:mediaType>
+    <dct:format>zip</dct:format>
+    <ns1:checksum rdf:nodeID="N58be3c6b09da4b689059d1541bffec64"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf1a841dc6252409ea25494877ac1096f">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>4d5cd0269b42b3a0d5ca4bf92a88971877d6d385</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-83990883-7928-433f-b1bc-6ae95ae132ef">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>83990883-7928-433f-b1bc-6ae95ae132ef</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2022</dct:title>
+    <dct:description>Actualisation au 01/01/2022 des données relatives aux gestionnaires du réseau routier national (format csv)c</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20220412-173948/gestionnaires-rrn-2022.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/83990883-7928-433f-b1bc-6ae95ae132ef"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-04-12T17:39:48.776000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-04-27T16:30:17.610000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1573068</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="Nef758cce01da4544bce20ca398c0c004"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-9349322c-c20a-4776-ac28-d041048cb693">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>9349322c-c20a-4776-ac28-d041048cb693</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2021</dct:title>
+    <dct:description>Actualisation au 01/01/2021 de la liste des gestionnaires du réseau routier national (format csv)</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20210721-144900/gestionnaires-rrn-2021.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/9349322c-c20a-4776-ac28-d041048cb693"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-07-21T14:49:00.771000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-07-21T14:57:39.040000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1638904</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="Nfd3abb62daf54f4d9008c0d5d5166d90"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Na3e51a97896d4468aa3c75df9c06424b">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>851181a8e7e5280db9f7374680583881003855e3</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N493596a158b549cdbf7aeb3b7048451b">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>f0268c94e43fd4dc7565fff76607fb9b73ffc7a6</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-31cf7bfd-3e56-456a-9887-e98efe6f9b0f">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>31cf7bfd-3e56-456a-9887-e98efe6f9b0f</dct:identifier>
+    <dct:title>GestionnairesRRN_2019.csv</dct:title>
+    <dct:description>Actualisation au 01/01/19 des données relatives aux gestionnaires du réseau routier national</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20200124-111850/gestionnaires-rrn-2019.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/31cf7bfd-3e56-456a-9887-e98efe6f9b0f"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-01-24T11:18:51.433000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-01-24T11:21:00.127000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1531076</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="Nf1a841dc6252409ea25494877ac1096f"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-9045452c-f6a6-4e13-b82c-6f55e671656d">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>9045452c-f6a6-4e13-b82c-6f55e671656d</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2018</dct:title>
+    <dct:description>Actualisation au 01/01/18 des données relatives aux gestionnaires du réseau routier national</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20180801-111526/Gestionnaires_RRN_2018.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/9045452c-f6a6-4e13-b82c-6f55e671656d"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2018-08-01T11:15:26.693000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2019-03-20T17:57:03.357000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1304464</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="N26d3bccb31a04c95a77a9c7f6f25a647"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-e8fa9f65-86c2-4e18-99fd-2172af583ff2">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>e8fa9f65-86c2-4e18-99fd-2172af583ff2</dct:identifier>
+    <dct:title>GestionnairesRRB_2014</dct:title>
+    <dct:description>Ce fichier précise le nom du gestionnaire de chaque section du réseau routier national en 2014. 
+Il répond aux recommandations de la directive INSPIRE et peut s'inscrire dans la rubrique "Réseau de transport routier - Autorités en charge de la maintenance". 
+
+Chaque section de route est définie par: 
+- son nom (route)
+- sa longueur
+- ses coordonnées de début (D) et de fin (F) exprimées en coordonnées (X, Y, Z) ou par un système de repérage routier composé de 4 attributs :
+  - pr = Point de repère routier
+  - depPr =  département où se situe le PR
+  - concessionPr = indique si le PR se trouve sur une section concédée (C) ou non (N)
+  - abs = abscisse ou distance (en mètres) séparant le point du PR auquel il se rattache
+- cote = précise si le PR se trouve sur une chaussée séparée droite (D) ou gauche (G) ou sur une route à chaussée unique (I)
+- concession = indique si la section est concédée (C) ou non (N)
+- le nom du gestionnaire</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20160819-151007/Gestionnaires_2014.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/e8fa9f65-86c2-4e18-99fd-2172af583ff2"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2016-08-11T17:21:58.467000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2016-08-28T17:45:29.253000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">976272</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="Na60633192c644da2b2134d38cb68466f"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
+    <dct:identifier>57a84262c751df5b85bb5dd4</dct:identifier>
+    <dct:title>Gestionnaires du réseau routier national</dct:title>
+    <dct:description>Ce jeu de données précise le nom du gestionnaire de chaque section du réseau routier national. 
+Il répond aux recommandations de la directive INSPIRE et peut s'inscrire dans la rubrique "Réseau de transport routier - Autorités en charge de la maintenance". 
+
+Chaque section de route est définie par: 
+- son nom (route)
+- sa longueur
+- ses coordonnées de début (D) et de fin (F) exprimées en coordonnées (X, Y, Z) ou par un système de repérage routier composé de 4 attributs :
+  - pr = Point de repère routier
+  - depPr =  département où se situe le PR
+  - concessionPr = indique si le PR se trouve sur une section concédée (C) ou non (N)
+  - abs = abscisse ou distance (en mètres) séparant le point du PR auquel il se rattache
+- cote = précise si le PR se trouve sur une chaussée séparée droite (D) ou gauche (G) ou sur une route à chaussée unique (I)
+- concession = indique si la section est concédée (C) ou non (N)
+- le nom du gestionnaire</dct:description>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2016-08-08T10:27:14.059000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2023-07-28T16:46:53.026000</dct:modified>
+    <dcat:keyword>gestionnaire</dcat:keyword>
+    <dcat:keyword>reseau-routier-national</dcat:keyword>
+    <dcat:keyword>rrn</dcat:keyword>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-8667d7a9-f615-4cc6-9695-8f89792a2279"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-962eed69-2b84-4b8e-addf-98227a0a646f"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-7718263f-3cd8-4d7d-b29b-ec1a21d7827d"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-83990883-7928-433f-b1bc-6ae95ae132ef"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-1c18aa4f-f683-4cb7-abce-6ccaa803ed86"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-9349322c-c20a-4776-ac28-d041048cb693"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-78af659c-c3ca-427a-9aad-fa286c9023ed"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-4d1ca9a7-dbce-4d76-8538-512e82467a72"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-31cf7bfd-3e56-456a-9887-e98efe6f9b0f"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-9045452c-f6a6-4e13-b82c-6f55e671656d"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-53b608e7-c6ac-460c-ba98-945e9d5bd820"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-468ca64f-258f-4a50-b81f-2b390fcbad89"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-cb155393-dabc-475b-85b0-439c6873b701"/>
+    <dcat:distribution rdf:resource="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-e8fa9f65-86c2-4e18-99fd-2172af583ff2"/>
+    <dct:accrualPeriodicity rdf:resource="http://purl.org/cld/freq/annual"/>
+    <dct:publisher rdf:resource="https://www.data.gouv.fr/organizations/534fff8da3a7292c64a77eee/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-4d1ca9a7-dbce-4d76-8538-512e82467a72">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>4d1ca9a7-dbce-4d76-8538-512e82467a72</dct:identifier>
+    <dct:title>GestionnairesRRN_2020</dct:title>
+    <dct:description>Actualisation au 01/01/2020 des données (format csv) relatives aux gestionnaires du réseau routier national.</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20200601-170545/gestionnaires-rrn-2020.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/4d1ca9a7-dbce-4d76-8538-512e82467a72"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-06-01T17:05:45.835000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-06-01T17:12:42.814000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1574798</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="N6367c5b7e34c407786d3fa4d83f1e700"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-468ca64f-258f-4a50-b81f-2b390fcbad89">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>468ca64f-258f-4a50-b81f-2b390fcbad89</dct:identifier>
+    <dct:title>GestionnairesRRN_2016</dct:title>
+    <dct:description>Gestionnaires du RRn entre le 1er janvier et le 31 décembre 2016</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20170801-185545/Gestionnaires_2016.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/468ca64f-258f-4a50-b81f-2b390fcbad89"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2017-08-01T18:55:45.909000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2017-08-01T18:56:01.837000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">933360</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="Ndbb7f0ef2bf742829b6f2e69291f5fd1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nfd3abb62daf54f4d9008c0d5d5166d90">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>90f94614a93e7e40ebd5495aed0eecf6a6d242ba</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-8667d7a9-f615-4cc6-9695-8f89792a2279">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>8667d7a9-f615-4cc6-9695-8f89792a2279</dct:identifier>
+    <dct:title>Gestionnaires_RRN_2023_shp</dct:title>
+    <dct:description>Actualisation au 01/01/2023 des données relatives aux gestionnaires du réseau routier national (format csv)</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20230728-164524/gestionnaires-rrn-2023-shp.zip"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/8667d7a9-f615-4cc6-9695-8f89792a2279"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2023-07-28T16:45:25.170000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2023-07-28T16:46:53.008000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11160668</dcat:byteSize>
+    <dcat:mediaType>application/zip</dcat:mediaType>
+    <dct:format>zip</dct:format>
+    <ns1:checksum rdf:nodeID="N08d56ab1c5684801b7dbb5d2bda3ab49"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Na60633192c644da2b2134d38cb68466f">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>2aad9c602738e89bc0fa0da43f5c8da0776893e7</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/datasets/57a84262c751df5b85bb5dd4/#resource-cb155393-dabc-475b-85b0-439c6873b701">
+    <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:identifier>cb155393-dabc-475b-85b0-439c6873b701</dct:identifier>
+    <dct:title>Gestionnaires_2015</dct:title>
+    <dct:description>Gestionnaires du réseau routier national entre le 1er janvier et le 31 décembre 2015</dct:description>
+    <dcat:downloadURL rdf:resource="https://static.data.gouv.fr/resources/gestionnaires-du-reseau-routier-national/20170801-185018/Gestionnaires_2015.csv"/>
+    <dcat:accessURL rdf:resource="https://www.data.gouv.fr/fr/datasets/r/cb155393-dabc-475b-85b0-439c6873b701"/>
+    <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2017-08-01T18:50:19.022000</dct:issued>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2017-08-01T18:52:39.534000</dct:modified>
+    <dct:rights>Licence Ouverte / Open Licence</dct:rights>
+    <dct:license rdf:resource="https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"/>
+    <dcat:byteSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">981455</dcat:byteSize>
+    <dcat:mediaType>text/csv</dcat:mediaType>
+    <dct:format>csv</dct:format>
+    <ns1:checksum rdf:nodeID="N493596a158b549cdbf7aeb3b7048451b"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N26d3bccb31a04c95a77a9c7f6f25a647">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>ac7046363b20be6c6f2f5f89a666d54dd74eaadb</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N1302c3860c4b42ceab876c0e52d7f1fa">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>1c6c8adb8ae3494719e9ff3181085c5afdb7a7fc</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N08d56ab1c5684801b7dbb5d2bda3ab49">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>efeb4f19174553b38ccaf433985b675ceb7369d9</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nef758cce01da4544bce20ca398c0c004">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>d552d747a8e2820977b82c95a77c40547f04981c</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N160d9d74fbc246a9ba5f6ab535aa1d64">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>1b55858b8877f3cb6c01b05430cfb77eb6b29387</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.data.gouv.fr/organizations/534fff8da3a7292c64a77eee/">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+    <foaf:name>Ministère de la Transition écologique</foaf:name>
+    <rdfs:label>Ministère de la Transition écologique</rdfs:label>
+    <foaf:homepage rdf:resource="https://www.ecologique-solidaire.gouv.fr/"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N58be3c6b09da4b689059d1541bffec64">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>253fdce81e35a7b96b913f44caea830cf6f3ff5a</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N577d66af1b124130831dde80b63c409a">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>0f65910a4d85ae168b0198847fd1d6c34702cc33</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6367c5b7e34c407786d3fa4d83f1e700">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>9b387739a23061d15c7cc8940c5813487a8bf84e</ns1:checksumValue>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ndbb7f0ef2bf742829b6f2e69291f5fd1">
+    <rdf:type rdf:resource="http://spdx.org/rdf/terms#Checksum"/>
+    <ns1:algorithm rdf:resource="http://spdx.org/rdf/terms#checksumAlgorithm_sha1"/>
+    <ns1:checksumValue>a0b1d038b5ae1c82963a02fa2dda2265c99b6ba6</ns1:checksumValue>
+  </rdf:Description>
+</rdf:RDF>
