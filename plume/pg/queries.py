@@ -2576,3 +2576,66 @@ def query_stamp_to_metadata_disable():
         """),
         expecting='nothing'
     )
+
+def query_for_theme_computing(
+    schema_name, table_name, level_one=True, level_two=True, **kwargs
+):
+    """Pseudo-requête pour le calcul du ou des thèmes Ecosphères associés au schéma.
+
+    Il s'agit d'une pseudo-requête, dans la mesure où aucune 
+    information n'est effectivement récupérée côté serveur,
+    puisque c'est du nom du schéma que sont in fine déduits les thèmes.
+    Mais elle permet de présenter les paramètres sont une forme
+    adaptée au process de calcul.
+    
+    À utiliser comme suit :
+    
+        >>> query = query_for_theme_computing(schema_name='nom du schéma',
+        ...     table_name='nom de la relation', **compute_params)
+        >>> cur.execute(*query)
+        >>> result = cur.fetchall()
+    
+    ``compute_params`` est le dictionnaire fourni par la clé
+    `'compute parameters'` du dictionnaire interne associé à
+    la clé courante du dictionnaire de widgets. Si spécifié par
+    le modèle, il contiendra la valeur des paramètres `level_one`
+    et/ou `level_two`.
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    table_name : str
+        Nom de la relation (table, vue...).
+    level_one : bool, default True
+        Si ``True``, le ou les thèmes de premier niveau
+        associés au nom du schéma sont ajoutés (les plus
+        génériques).
+    level_two : bool, default True
+        Si ``True``, le ou les thèmes de second niveau,
+        associés au nom du schéma sont ajoutés (les plus
+        spécifiques).
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
+    
+    Returns
+    -------
+    PgQueryWithArgs
+        Une requête prête à être envoyée au serveur PostgreSQL, incluant
+        son tuple de paramètres.
+    
+    Notes
+    -----
+    Cette fonction est référencée par le module
+    :py:mod:`plume.pg.computer`.
+    
+    """
+    return PgQueryWithArgs(
+        query=sql.SQL("""
+            SELECT %s, %s, %s
+            """),
+        args=(schema_name, level_one, level_two),
+        expecting='one row',
+        allow_none=False, # impossible
+        missing_mssg="Résultat anormalement nul"
+    )

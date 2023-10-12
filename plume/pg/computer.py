@@ -5,14 +5,16 @@
 import re
 from datetime import datetime
 
-from plume.rdf.rdflib import URIRef
+from plume.rdf.rdflib import URIRef, Literal
 from plume.rdf.utils import CRS_NS
-from plume.rdf.namespaces import DCT, PLUME
+from plume.rdf.namespaces import DCT, PLUME, DCAT, SKOS
 from plume.rdf.properties import PlumeProperty
 from plume.rdf.widgetkey import WidgetKey
+from plume.rdf.thesaurus import VocabularyGraph
 from plume.pg.queries import (
     query_get_srid_list, query_get_comment_fragments,
-    query_get_creation_date, query_get_modification_date
+    query_get_creation_date, query_get_modification_date,
+    query_for_theme_computing
 )
 
 class ComputationMethod():
@@ -40,7 +42,8 @@ class ComputationMethod():
         retourné par le serveur avant de le passer aux
         clés du dictionnaire de widgets. Elle doit prendre
         pour argument les éléments des tuples résultant de la
-        requête et renvoyer un objet :py:class:`ComputationResult`.
+        requête et renvoyer un objet :py:class:`ComputationResult`
+        ou une liste de tels objets.
     sources : list(rdflib.term.URIRef), optional
         Pour les métadonnées prenant leurs valeurs dans plusieurs
         sources de vocabulaire contrôlé, les sources
@@ -146,7 +149,7 @@ class ComputationResult():
         self.language = language if self.str_value else None
         self.source = source
 
-def default_parser(*result):
+def default_parser(*result, **kwargs):
     """Fonction qui fera office de dé-sérialiseur par défaut.
     
     Parameters
@@ -154,6 +157,8 @@ def default_parser(*result):
     *result : tuple
         Un enregistrement du résultat d'une requête sur le
         serveur PostgreSQL.
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
     
     Returns
     -------
@@ -179,13 +184,15 @@ def default_parser(*result):
         return ComputationResult()
     return ComputationResult(str_value=result[0])
 
-def datetime_parser(timestamp):
+def datetime_parser(timestamp, **kwargs):
     """Désérialisation d'un tampon de date et heure.
     
     Parameters
     ----------
     timestamp : datetime.datetime
         Une date avec heure.
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
     
     Returns
     -------
@@ -198,7 +205,7 @@ def datetime_parser(timestamp):
             )
     return ComputationResult()
 
-def crs_parser(crs_auth, crs_code):
+def crs_parser(crs_auth, crs_code, **kwargs):
     """Renvoie l'URI complet d'un référentiel de coordonnées.
     
     Parameters
@@ -208,6 +215,8 @@ def crs_parser(crs_auth, crs_code):
         référentiel.
     crs_code : str
         Code du référentiel dans le registre de l'autorité.
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
     
     Returns
     -------
@@ -219,6 +228,45 @@ def crs_parser(crs_auth, crs_code):
         return ComputationResult()
     value = URIRef('{}{}'.format(CRS_NS[crs_auth], crs_code))
     return ComputationResult(value=value)
+
+def ecospheres_themes_parser(
+    schema_name, level_one=True, level_two=True, **kwargs
+):
+    """Renvoie les thèmes Ecosphères associés à un schéma de la nomenclature nationale.
+    
+    Parameters
+    ----------
+    schema_name : str
+        Nom du schéma.
+    level_one : bool, default True
+        Si ``True``, le ou les thèmes de premier niveau
+        associés au nom du schéma sont ajoutés (les plus
+        génériques).
+    level_two : bool, default True
+        Si ``True``, le ou les thèmes de second niveau,
+        associés au nom du schéma sont ajoutés (les plus
+        spécifiques).
+    **kwargs : dict, optional
+        Paramètres supplémentaires ignorés.
+    
+    Returns
+    -------
+    list(ComputationResult)
+    
+    """
+    themes_scheme = URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres')
+    result = []
+    themes_graph = VocabularyGraph[themes_scheme]
+    for theme in themes_graph.subjects(PLUME.pgSchema, Literal(schema_name)):
+        if level_one and (theme, SKOS.narrower, None) in themes_graph:
+            result.append(
+                ComputationResult(value=theme, source=themes_scheme)
+            )
+        if level_two and not (theme, SKOS.narrower, None) in themes_graph:
+            result.append(
+                ComputationResult(value=theme, source=themes_scheme)
+            )
+    return result
 
 METHODS = {
     DCT.conformsTo : ComputationMethod(
@@ -254,6 +302,14 @@ METHODS = {
         dependances=['plume_pg'],
         parser=datetime_parser,
         description='Import de la date de dernière modification, si enregistrée côté serveur'
+        ),
+    DCAT.theme : ComputationMethod(
+        query_builder=query_for_theme_computing,
+        parser=ecospheres_themes_parser,
+        sources=[
+            URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres')
+        ],
+        description='Thèmes de la nomenclature Ecosphères associés au nom du schéma'
         )
     }
 """Dictionnaire des méthodes de calcul associées aux catégories de métadonnées.

@@ -10,11 +10,12 @@ Les catégories pour lesquelles le calcul est proposé sont, à ce stade :
 
 | Chemin de la catégorie | Information calculée | Paramètres optionnels | Dépendances |
 | --- | --- | --- | --- |
+| `dcat:theme` | Pour les schémas de la nomenclature, [thème(s) Ecosphères](https://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres) correspondant(s). Les thèmes Ecosphères forment une classification à deux niveaux basée sur celle de la COVADIS. | Par défaut, les thèmes de niveau 1 (le plus général) et de niveau 2 (sous-catégorisation plus spécifique) sont récupérés. `{"level_one" : false}` inhibe la récupération du thème de niveau 1, `{"level_two" : false}` celle du thème de niveau 2. | Aucune. |
 | `dct:conformsTo` | Tous les référentiels de coordonnées déclarés pour les géométries de la table ou vue. | Aucun. | L'extension PostGIS doit être active sur la base. |
-| `dct:description` | Importe le contenu du descriptif PostgreSQL de l'objet[^extrait-descriptif], soit dans son intégralité, soit en utilisant une expression régulière. |  `pattern` est l'expression régulière spécifiant l'extrait du descriptif à importer[^doc-pattern]. Si l'expression renvoie plusieurs fragments, seul le premier est conservé. S'il y a lieu, `flags` contient les paramètres associés à l'expression régulière[^doc-flags]. `pattern` et `flags` correspondent précisément aux paramètres de même nom de la fonction ` regexp_matches(text, text, text)` de PostgreSQL, qui est en fait utilisée pour l'opération. | L'extension *PlumePg* doit être active sur la base. |
-| `dct:title` | Idem `dct:description`. | Idem. | Idem. |
 | `dct:created` | La date de création de la table si l'information est présente dans la table `z_plume.stamp.timestamp`. | Aucun. | L'extension *PlumePg* doit être active sur la base[^activation-suivi-dates]. |
+| `dct:description` | Importe le contenu du descriptif PostgreSQL de l'objet[^extrait-descriptif], soit dans son intégralité, soit en utilisant une expression régulière. |  `pattern` est l'expression régulière spécifiant l'extrait du descriptif à importer[^doc-pattern]. Si l'expression renvoie plusieurs fragments, seul le premier est conservé. S'il y a lieu, `flags` contient les paramètres associés à l'expression régulière[^doc-flags]. `pattern` et `flags` correspondent précisément aux paramètres de même nom de la fonction ` regexp_matches(text, text, text)` de PostgreSQL, qui est en fait utilisée pour l'opération. | L'extension *PlumePg* doit être active sur la base. |
 | `dct:modified` | La date de dernière modification de la table si l'information est présente dans la table `z_plume.stamp.timestamp`. | Aucun. | L'extension *PlumePg* doit être active sur la base[^activation-suivi-dates]. |
+| `dct:title` | Idem `dct:description`. | Idem. | Idem. |
 
 [^extrait-descriptif]: Si des métadonnées ont déjà été saisies pour la table, seule la partie du descriptif qui précède la balise `<METADATA>` sera considérée.
 

@@ -50,6 +50,39 @@ class VocabulariesTestCase(unittest.TestCase):
                 (None, PLUME.ontology, iri) in SHAPE,
                 f"Vocabulary <{iri}> isn't used"
             )
+    
+    def test_ecospheres_themes_schemas_pg(self):
+        """Contrôle de l'association de schémas de la nomenclature thématiques aux thèmes Ecosphères."""
+        themes = VocabularyGraph[URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres')]
+        pg_schemas_niv1 = []
+        pg_schemas_niv2 = []
+        for theme in themes.subjects(RDF.type, SKOS.Concept):
+            # tous les thèmes de second niveau ont un schéma associé
+            pg_schema = themes.value(theme, PLUME.pgSchema)
+            self.assertIsNotNone(
+                pg_schema,
+                f"Le thème <{theme}> n'a pas de schéma associé"
+            )
+            # les schémas n'apparaissent qu'une seule fois par niveau
+            if (theme, SKOS.narrower, None) in themes:
+                self.assertNotIn(
+                    pg_schema, pg_schemas_niv1,
+                    f'Le schéma "{pg_schema}" est référencé sur plusieurs thèmes de niveau 1'
+                )
+                pg_schemas_niv1.append(pg_schema)
+            else:
+                self.assertNotIn(
+                    pg_schema, pg_schemas_niv2,
+                    f'Le schéma "{pg_schema}" est référencé sur plusieurs thèmes de niveau 2'
+                )
+                pg_schemas_niv2.append(pg_schema)
+            # les schémas référencés sur des thèmes de niveau 2 le sont aussi
+            # sur leur thème parent
+            for parent in themes.subjects(SKOS.narrower, theme):
+                self.assertTrue(
+                    (parent, PLUME.pgSchema, pg_schema) in themes,
+                    f'Le schéma "{pg_schema}" devrait être référencé sur le thème parent <{parent}> du thème <{theme}>'
+                )
 
 class VocabularyGraphTestCase(unittest.TestCase):
 

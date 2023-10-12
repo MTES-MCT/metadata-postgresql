@@ -780,11 +780,7 @@ class WidgetsDict(dict):
             * ``widgets to move`` : liste de tuples contenant les informations relatives
               à des widgets dont - parce qu'on a supprimé un widget antérieurement
               positionné au-dessus d'eux dans la grille - il faut à présent modifier
-              la position.
-            * ``value to update`` : liste de clés du dictionnaire de widgets
-              (:py:class:`plume.rdf.widgetkey.WidgetKey`) telles que la valeur
-              du widget principal doit être mise à jour selon la valeur disponible
-              dans la clé ``'value'`` du dictionnaire interne.
+              la position. Les tuples comptent six éléments :
               
               * ``[0]`` est la grille (:py:class:`QtWidgets.QGridLayout`) ;
               * ``[1]`` est le widget (:py:class:`QtWidgets.QWidget`) à déplacer ;
@@ -793,6 +789,10 @@ class WidgetsDict(dict):
               * ``[3]`` est l'indice (inchangé) de la colonne (paramètre ``column``) ;
               * ``[4]`` est le nombre (inchangé) de lignes occupées (paramètre ``rowSpan``) ;
               * ``[5]`` est le nombre (inchangé) de colonnes occupées (paramètre ``columnSpan``).
+            * ``value to update`` : liste de clés du dictionnaire de widgets
+              (:py:class:`plume.rdf.widgetkey.WidgetKey`) telles que la valeur
+              du widget principal doit être mise à jour selon la valeur disponible
+              dans la clé ``'value'`` du dictionnaire interne.
         
         """
         d = {k: [] for k in ('new keys', 'widgets to show', 'widgets to hide',
@@ -1283,9 +1283,12 @@ class WidgetsDict(dict):
             # s'il y en avait davantage
         e_list = []
         for r in result:
-            e = method.parser.__call__(*r)
-            if e.value is not None or e.str_value is not None:
-                e_list.append(e)
+            parsed_values = method.parser.__call__(*r)
+            if not isinstance(parsed_values, list):
+                parsed_values = [parsed_values]
+            for parsed_value in parsed_values:
+                if parsed_value.value is not None or parsed_value.str_value is not None:
+                    e_list.append(parsed_value)
         # on commence par préparer les clés dans lesquelles
         # seront ensuite intégrées les valeurs
         if isinstance(widgetkey, GroupOfValuesKey):

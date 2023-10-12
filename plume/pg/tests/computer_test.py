@@ -2,10 +2,13 @@
 import unittest
 import psycopg2
 
-from plume.pg.computer import datetime_parser, has_computation_method
+from plume.pg.computer import (
+    datetime_parser, has_computation_method, ecospheres_themes_parser
+)
 from plume.rdf.properties import PlumeProperty
 from plume.rdf.widgetsdict import WidgetsDict
 from plume.rdf.namespaces import DCAT, DCT, PlumeNamespaceManager
+from plume.rdf.rdflib import URIRef
 from plume.pg.tests.connection import ConnectionString
 
 class ComputerTestCase(unittest.TestCase):
@@ -50,8 +53,45 @@ class ComputerTestCase(unittest.TestCase):
         widgetsdict = WidgetsDict()
         widgetkey = widgetsdict.root.search_from_path(DCT.conformsTo)
         self.assertTrue(has_computation_method(widgetkey))
-        widgetkey = widgetsdict.root.search_from_path(DCAT.theme)
+        widgetkey = widgetsdict.root.search_from_path(DCAT.keyword)
         self.assertFalse(has_computation_method(widgetkey))
+
+    def test_ecospheres_themes_parser(self):
+        """Test de l'association des thèmes écosphères à un schéma."""
+        self.assertEqual(
+            sorted([r.value for r in ecospheres_themes_parser('c_tr_infra_ferroviaire', level_one=True, level_two=True)], key=lambda x: str(x)),
+            [
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-ferree'),
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructures-de-transport')
+            ]
+        )
+        self.assertEqual(
+            sorted([r.value for r in ecospheres_themes_parser('c_tr_infra_ferroviaire')], key=lambda x: str(x)),
+            [
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-ferree'),
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructures-de-transport')
+            ]
+        )
+        self.assertEqual(
+            [r.value for r in ecospheres_themes_parser('c_tr_infra_ferroviaire', level_one=False, level_two=True)],
+            [
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-ferree')
+            ]
+        )
+        self.assertEqual(
+            [r.value for r in ecospheres_themes_parser('c_tr_infra_ferroviaire', level_one=True, level_two=False)],
+            [
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructures-de-transport')
+            ]
+        )
+        self.assertEqual(
+            [r.source for r in ecospheres_themes_parser('c_tr_infra_ferroviaire', level_one=True, level_two=False)],
+            [URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres')]
+        )
+        self.assertEqual(
+            [r.value for r in ecospheres_themes_parser('c_tr_infra_ferroviaire', level_one=False, level_two=False)],
+            []
+        )
 
 
 if __name__ == '__main__':

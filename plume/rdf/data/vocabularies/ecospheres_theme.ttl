@@ -1,6 +1,12 @@
+@prefix plume: <http://registre.data.developpement-durable.gouv.fr/plume/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/amenagement-et-urbanisme> a skos:Concept ;
+    plume:pgSchema "c_amgt_urb_pol_euro",
+        "c_amgt_urb_servitude",
+        "c_amgt_urb_zon_amgt",
+        "c_amgt_urb_zon_etudes",
+        "c_amgt_urb_zon_plan" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/etudes>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/planification>,
@@ -10,12 +16,23 @@
     skos:prefLabel "Aménagement et urbanisme"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/climat> a skos:Concept ;
+    plume:pgSchema "c_air_clim_changement",
+        "c_air_clim_meteo" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/changement-climatique>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/meteorologie> ;
     skos:prefLabel "Climat"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/eau> a skos:Concept ;
+    plume:pgSchema "c_eau_aep",
+        "c_eau_assainissement",
+        "c_eau_masse_eau",
+        "c_eau_ouvrage",
+        "c_eau_peche",
+        "c_eau_surveillance",
+        "c_eau_travail_action",
+        "c_eau_utilisation_autre",
+        "c_eau_zonages" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/alimentation-en-eau-potable>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/assainissement>,
@@ -28,6 +45,12 @@
     skos:prefLabel "Eau"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/etablissements-d-activites> a skos:Concept ;
+    plume:pgSchema "c_cult_soc_ser_enseignement",
+        "c_cult_soc_ser_equip_sport_cult",
+        "c_cult_soc_ser_erp_autre",
+        "c_cult_soc_ser_patrim_cult",
+        "c_cult_soc_ser_sante_social",
+        "c_cult_soc_ser_tourisme" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/autres-etablissements-recevant-du-public>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/equipements-de-tourisme>,
@@ -38,6 +61,10 @@
     skos:prefLabel "Établissements d'activités"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/foncier-et-occupation-du-sol> a skos:Concept ;
+    plume:pgSchema "c_fon_sol_agricole",
+        "c_fon_sol_mutation",
+        "c_fon_sol_occupation",
+        "c_fon_sol_propriete" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/foncier-agricole>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/mutation-fonciere>,
@@ -46,6 +73,15 @@
     skos:prefLabel "Foncier et occupation du sol"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/habitat-et-politique-de-la-ville> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_access_propriete",
+        "c_hab_vil_besoin_logt",
+        "c_hab_vil_construction",
+        "c_hab_vil_habitat_indigne",
+        "c_hab_vil_occupation_logt",
+        "c_hab_vil_parc_loc_social",
+        "c_hab_vil_parc_logt",
+        "c_hab_vil_politique",
+        "c_hab_vil_renovation" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/accession-a-la-propriete>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/besoins-en-logements>,
@@ -59,6 +95,10 @@
     skos:prefLabel "Habitat et politique de la ville"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/industrie> a skos:Concept ;
+    plume:pgSchema "c_indus_prod_eolien",
+        "c_indus_prod_industriel",
+        "c_indus_prod_mine_carriere_granul",
+        "c_indus_prod_prod_energ" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/mines>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/parcs-eoliens>,
@@ -67,6 +107,13 @@
     skos:prefLabel "Industrie, production d'énergie et exploitation du sol"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructures-de-transport> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_aerien",
+        "c_tr_infra_circulation_douce",
+        "c_tr_infra_ferroviaire",
+        "c_tr_infra_fluvial",
+        "c_tr_infra_maritime",
+        "c_tr_infra_plateforme_multimod",
+        "c_tr_infra_routier" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/circulation-douce>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-aeroportuaire>,
@@ -78,6 +125,13 @@
     skos:prefLabel "Infrastructures de transport"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/mer-et-littoral> a skos:Concept ;
+    plume:pgSchema "c_mer_litt_autres_activites",
+        "c_mer_litt_chasse_maritime",
+        "c_mer_litt_ecol_littoral",
+        "c_mer_litt_lim_admin_spe",
+        "c_mer_litt_lutte_anti_pollu",
+        "c_mer_litt_nav_maritime",
+        "c_mer_litt_topographie" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/chasse-maritime>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/ecologie-du-littoral>,
@@ -88,6 +142,11 @@
     skos:prefLabel "Mer et littoral"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/nature-paysages-et-biodiversite> a skos:Concept ;
+    plume:pgSchema "c_nat_pays_bio_chasse",
+        "c_nat_pays_bio_invent_nat_bio",
+        "c_nat_pays_bio_invent_pays",
+        "c_nat_pays_bio_zonage_nat",
+        "c_nat_pays_bio_zonage_pays" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/chasse>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/inventaires-des-paysages>,
@@ -97,6 +156,11 @@
     skos:prefLabel "Nature, paysages et biodiversité"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/nuisances-dechets-et-pollution> a skos:Concept ;
+    plume:pgSchema "c_air_clim_qual_pollu",
+        "c_nuis_bruit",
+        "c_nuis_dechet",
+        "c_nuis_electromag",
+        "c_nuis_pollu_sol" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/bruit>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/dechets>,
@@ -106,6 +170,11 @@
     skos:prefLabel "Nuisances, déchets et pollution"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reseaux-d-energie-et-de-communication> a skos:Concept ;
+    plume:pgSchema "c_res_energ_amgt_num_terri",
+        "c_res_energ_autre",
+        "c_res_energ_electricite",
+        "c_res_energ_hydrocarbure",
+        "c_res_energ_telecom" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/amenagement-numerique-des-territoires>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reseau-de-telecommunication>,
@@ -114,6 +183,17 @@
     skos:prefLabel "Réseaux d'énergie et de communication"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/risques> a skos:Concept ;
+    plume:pgSchema "c_risque_avalanche",
+        "c_risque_eruption_volcanique",
+        "c_risque_gestion_risque",
+        "c_risque_inondation",
+        "c_risque_minier",
+        "c_risque_mouvement_terrain",
+        "c_risque_radon",
+        "c_risque_seisme",
+        "c_risque_techno",
+        "c_risque_zonages_naturel",
+        "c_risque_zonages_techno" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/gestion-du-risque>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-des-avalanches>,
@@ -129,6 +209,12 @@
     skos:prefLabel "Risques"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/transport-et-deplacements> a skos:Concept ;
+    plume:pgSchema "c_tr_depl_collectif",
+        "c_tr_depl_exceptionnel",
+        "c_tr_depl_marchandise",
+        "c_tr_depl_mat_dangereuse",
+        "c_tr_depl_securite_routiere",
+        "c_tr_depl_trafic" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:narrower <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/securite-routiere>,
         <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/trafic-routier>,
@@ -139,330 +225,412 @@
     skos:prefLabel "Transport et déplacements"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/accession-a-la-propriete> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_access_propriete" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Accession à la propriété"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/alimentation-en-eau-potable> a skos:Concept ;
+    plume:pgSchema "c_eau_aep" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Alimentation en eau potable"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/amenagement-numerique-des-territoires> a skos:Concept ;
+    plume:pgSchema "c_res_energ_amgt_num_terri" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Aménagement numérique des territoires"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/assainissement> a skos:Concept ;
+    plume:pgSchema "c_eau_assainissement" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Assainissement"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/autres-etablissements-recevant-du-public> a skos:Concept ;
+    plume:pgSchema "c_cult_soc_ser_erp_autre" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Autres établissements recevant du public"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/besoins-en-logements> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_besoin_logt" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Besoins en logements"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/bruit> a skos:Concept ;
+    plume:pgSchema "c_nuis_bruit" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Bruit"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/changement-climatique> a skos:Concept ;
+    plume:pgSchema "c_air_clim_changement" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Changement climatique"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/chasse> a skos:Concept ;
+    plume:pgSchema "c_nat_pays_bio_chasse" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Chasse"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/chasse-maritime> a skos:Concept ;
+    plume:pgSchema "c_mer_litt_chasse_maritime" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Chasse maritime"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/circulation-douce> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_circulation_douce" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Circulation douce"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/construction> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_construction" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Construction"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/dechets> a skos:Concept ;
+    plume:pgSchema "c_nuis_dechet" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Déchets"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/ecologie-du-littoral> a skos:Concept ;
+    plume:pgSchema "c_mer_litt_ecol_littoral" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Écologie du littoral"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/equipements-de-tourisme> a skos:Concept ;
+    plume:pgSchema "c_cult_soc_ser_tourisme" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Équipements de tourisme"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/equipements-sportifs-ou-culturels> a skos:Concept ;
+    plume:pgSchema "c_cult_soc_ser_equip_sport_cult" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Équipements sportifs ou culturels"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/etablissements-d-enseignement> a skos:Concept ;
+    plume:pgSchema "c_cult_soc_ser_enseignement" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Etablissements d'enseignement"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/etablissements-de-sante-et-medico-sociaux> a skos:Concept ;
+    plume:pgSchema "c_cult_soc_ser_sante_social" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Établissements de santé et médico-sociaux"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/etudes> a skos:Concept ;
+    plume:pgSchema "c_amgt_urb_zon_etudes" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Études"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/foncier-agricole> a skos:Concept ;
+    plume:pgSchema "c_fon_sol_agricole" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Foncier agricole"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/gestion-du-risque> a skos:Concept ;
+    plume:pgSchema "c_risque_gestion_risque" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Gestion du risque"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/habitat-indigne> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_habitat_indigne" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Habitat indigne"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-aeroportuaire> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_aerien" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Infrastructure aéroportuaire"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-ferree> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_ferroviaire" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Infrastructure ferrée, gares et ouvrages d'art"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-portuaire> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_maritime" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Infrastructure portuaire"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/infrastructure-routiere> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_routier" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Infrastructure routière"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/interventions-sur-les-cours-d-eau> a skos:Concept ;
+    plume:pgSchema "c_eau_travail_action" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Interventions sur les cours d'eau"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/inventaires-des-paysages> a skos:Concept ;
+    plume:pgSchema "c_nat_pays_bio_invent_pays" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Inventaires des paysages"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/inventaires-nature-et-biodiversite> a skos:Concept ;
+    plume:pgSchema "c_nat_pays_bio_invent_nat_bio" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Inventaires nature et biodiversité"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/limite-administrative-speciale-en-mer> a skos:Concept ;
+    plume:pgSchema "c_mer_litt_lim_admin_spe" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Limite administrative spéciale en mer et sur le littoral"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/lutte-anti-pollution-en-mer> a skos:Concept ;
+    plume:pgSchema "c_mer_litt_lutte_anti_pollu" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Lutte anti-pollution en mer et sur le littoral"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/masses-d-eau> a skos:Concept ;
+    plume:pgSchema "c_eau_masse_eau" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Masses d'eau"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/meteorologie> a skos:Concept ;
+    plume:pgSchema "c_air_clim_meteo" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Météorologie"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/mines> a skos:Concept ;
+    plume:pgSchema "c_indus_prod_mine_carriere_granul" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Mines, carrières et extraction de granulats"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/mutation-fonciere> a skos:Concept ;
+    plume:pgSchema "c_fon_sol_mutation" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Mutation foncière"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/navigation-maritime> a skos:Concept ;
+    plume:pgSchema "c_mer_litt_nav_maritime" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Navigation maritime"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/occupation-des-logements> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_occupation_logt" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Occupation des logements"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/occupation-du-sol> a skos:Concept ;
+    plume:pgSchema "c_fon_sol_occupation" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Occupation du sol"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/ouvrages-hydrauliques> a skos:Concept ;
+    plume:pgSchema "c_eau_ouvrage" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Ouvrages hydrauliques"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/parc-de-logements> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_parc_logt" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Parc de logements"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/parc-locatif-social> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_parc_loc_social" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Parc locatif social"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/parcs-eoliens> a skos:Concept ;
+    plume:pgSchema "c_indus_prod_eolien" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Parcs éoliens"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/patrimoine-culturel> a skos:Concept ;
+    plume:pgSchema "c_cult_soc_ser_patrim_cult" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Patrimoine culturel"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/peche-en-eaux-interieures> a skos:Concept ;
+    plume:pgSchema "c_eau_peche" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Pêche en eaux intérieures"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/perturbations-electromagnetiques> a skos:Concept ;
+    plume:pgSchema "c_nuis_electromag" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Perturbations électromagnétiques"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/planification> a skos:Concept ;
+    plume:pgSchema "c_amgt_urb_zon_plan" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Planification"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/plateformes-multi-modales> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_plateforme_multimod" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Plateformes multi-modales"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/politique-de-la-ville> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_politique" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Politique de la ville"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/politique-europeenne-d-amenagement> a skos:Concept ;
+    plume:pgSchema "c_amgt_urb_pol_euro" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Politique européenne d'aménagement"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/pollution-des-sols> a skos:Concept ;
+    plume:pgSchema "c_nuis_pollu_sol" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Pollution des sols"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-des-avalanches> a skos:Concept ;
+    plume:pgSchema "c_risque_avalanche" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention des avalanches"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-des-eruptions-volcaniques> a skos:Concept ;
+    plume:pgSchema "c_risque_eruption_volcanique" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention des éruptions volcaniques"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-des-inondations> a skos:Concept ;
+    plume:pgSchema "c_risque_inondation" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention des inondations"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-des-risques-technologiques> a skos:Concept ;
+    plume:pgSchema "c_risque_techno" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention des risques technologiques"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-du-risque-minier> a skos:Concept ;
+    plume:pgSchema "c_risque_minier" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention du risque minier"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-du-risque-mouvement-de-terrain> a skos:Concept ;
+    plume:pgSchema "c_risque_mouvement_terrain" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention du risque mouvement de terrain"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-du-risque-radon> a skos:Concept ;
+    plume:pgSchema "c_risque_radon" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention du risque radon"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/prevention-du-risque-sismique> a skos:Concept ;
+    plume:pgSchema "c_risque_seisme" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Prévention du risque sismique"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/production-d-energie-hors-eolien> a skos:Concept ;
+    plume:pgSchema "c_indus_prod_prod_energ" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Production d'énergie hors éolien"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/propriete-fonciere> a skos:Concept ;
+    plume:pgSchema "c_fon_sol_propriete" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Propriété foncière"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/protection-de-l-eau> a skos:Concept ;
+    plume:pgSchema "c_eau_zonages" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Protection de l'eau"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/protection-et-gestion-de-la-nature> a skos:Concept ;
+    plume:pgSchema "c_nat_pays_bio_zonage_nat" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Protection et gestion de la nature"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/protection-et-gestion-des-paysages> a skos:Concept ;
+    plume:pgSchema "c_nat_pays_bio_zonage_pays" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Protection et gestion des paysages"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/qualite-de-l-air> a skos:Concept ;
+    plume:pgSchema "c_air_clim_qual_pollu" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Qualité de l'air"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reglementation-de-prevention-des-risques-naturels> a skos:Concept ;
+    plume:pgSchema "c_risque_zonages_naturel" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Réglementation de prévention des risques naturels"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reglementation-de-prevention-des-risques-technologiques> a skos:Concept ;
+    plume:pgSchema "c_risque_zonages_techno" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Réglementation de prévention des risques technologiques"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/renovation-urbaine> a skos:Concept ;
+    plume:pgSchema "c_hab_vil_renovation" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Rénovation urbaine"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reseau-de-telecommunication> a skos:Concept ;
+    plume:pgSchema "c_res_energ_telecom" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Réseau de télécommunication"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reseau-electrique> a skos:Concept ;
+    plume:pgSchema "c_res_energ_electricite" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Réseau électrique"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reseau-hydrocarbures> a skos:Concept ;
+    plume:pgSchema "c_res_energ_hydrocarbure" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Réseau de transport et de stockage des hydrocarbures"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/reseau-navigable> a skos:Concept ;
+    plume:pgSchema "c_tr_infra_fluvial" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Réseau navigable et ouvrages de navigation"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/securite-routiere> a skos:Concept ;
+    plume:pgSchema "c_tr_depl_securite_routiere" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Sécurité routière"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/servitudes-d-utilite-publique> a skos:Concept ;
+    plume:pgSchema "c_amgt_urb_servitude" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Servitudes d'utilité publique"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/sites-industriels> a skos:Concept ;
+    plume:pgSchema "c_indus_prod_industriel" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Sites industriels"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/surveillance-de-la-ressource-en-eau> a skos:Concept ;
+    plume:pgSchema "c_eau_surveillance" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Surveillance de la ressource en eau"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/topographie-en-mer> a skos:Concept ;
+    plume:pgSchema "c_mer_litt_topographie" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Topographie en mer et sur le littoral"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/trafic-routier> a skos:Concept ;
+    plume:pgSchema "c_tr_depl_trafic" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Trafic routier et exploitation de la route"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/transport-collectif> a skos:Concept ;
+    plume:pgSchema "c_tr_depl_collectif" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Transport collectif"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/transport-de-marchandises> a skos:Concept ;
+    plume:pgSchema "c_tr_depl_marchandise" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Transport de marchandises"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/transport-de-matieres-dangereuses> a skos:Concept ;
+    plume:pgSchema "c_tr_depl_mat_dangereuse" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Transport de matières dangereuses"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/transport-exceptionnel> a skos:Concept ;
+    plume:pgSchema "c_tr_depl_exceptionnel" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Transport exceptionnel"@fr .
 
 <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/zonages-d-amenagement> a skos:Concept ;
+    plume:pgSchema "c_amgt_urb_zon_amgt" ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres> ;
     skos:prefLabel "Zonages d'aménagement"@fr .
 

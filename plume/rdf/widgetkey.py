@@ -3556,7 +3556,7 @@ class GroupOfValuesKey(GroupKey):
                         d.append(child.m_twin)
                 else:
                     continue
-            elif sources is None or child.value_source in sources:
+            elif child.value is None or sources is None or child.value_source in sources:
                 if n:
                     n -= 1
                     child.value = None

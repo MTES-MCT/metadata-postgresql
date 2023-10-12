@@ -3644,6 +3644,217 @@ class WidgetsDictTestCase(unittest.TestCase):
         themekey = widgetsdict.root.search_from_path(DCAT.theme)
         self.assertIsNone(widgetsdict[themekey]['value help text'])
 
+    def test_compute_theme(self):
+        """Processus complet de calcul des métadonnées pour dcat:theme.
+        
+        Avec le mode ``'auto'`` pour le calcul automatique.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix uuid: <urn:uuid:> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "Un jeu de données"@fr ;
+                dcat:theme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/zonages-d-amenagement>,
+                    <http://publications.europa.eu/resource/authority/data-theme/ENER> .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute('''
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['manual', 'auto']
+                        WHERE path = 'dcat:theme' ;
+                    ''')
+                cur.execute(
+                    *query_get_categories('Classique')
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        g = widgetsdict.root.search_from_path(DCAT.theme)
+        self.assertTrue(widgetsdict[g]['has compute button'])
+        self.assertTrue(widgetsdict[g]['auto compute'])
+        self.assertIsNotNone(widgetsdict[g]['compute method'].description)
+        self.assertEqual(widgetsdict[g]['compute method'].dependances, [])
+        self.assertEqual(len(g.children), 2)
+        self.assertEqual(g.children[1].value, URIRef('http://publications.europa.eu/resource/authority/data-theme/ENER'))
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = widgetsdict.computing_query(g, 'c_air_clim_changement', 'un_jeu_de_donnees')
+                cur.execute(*query)
+                result = cur.fetchall()
+        conn.close()
+        self.assertListEqual(result, [('c_air_clim_changement', True, True,)])
+        
+        widgetsdict[g]['main widget'] = '<g QGroupBox dcat:theme>'
+        widgetsdict[g]['grid widget'] = '<g QGridLayout dcat:theme>'
+        widgetsdict[g]['compute widget'] = '<g-compute QToolButton dcat:theme>'
+        widgetsdict[g.button]['main widget'] = '<g-plus-button QToolButton dcat:theme>'
+
+        c0 = g.children[0]
+        widgetsdict[c0]['main widget'] = '<c0 QComboBox dcat:theme>'
+        widgetsdict[c0]['minus widget'] = '<c0-minus QToolButton dcat:theme>'
+        widgetsdict[c0]['switch source widget'] = '<c0-source QToolButton dcat:theme>'
+        widgetsdict[c0]['switch source menu'] = '<c0-source QMenu dcat:theme>'
+        widgetsdict[c0]['switch source actions'] = ['<c0-source QAction n°1', '<c0-source QAction n°2']
+
+        c1 = g.children[1]
+        widgetsdict[c1]['main widget'] = '<c1 QComboBox dcat:theme>'
+        widgetsdict[c1]['minus widget'] = '<c1-minus QToolButton dcat:theme>'
+        widgetsdict[c1]['switch source widget'] = '<c1-source QToolButton dcat:theme>'
+        widgetsdict[c1]['switch source menu'] = '<c1-source QMenu dcat:theme>'
+        widgetsdict[c1]['switch source actions'] = ['<c1-source QAction n°1', '<c1-source QAction n°2']
+        
+        # --- intégration ---
+        actionsdict = widgetsdict.computing_update(g, result)
+        self.assertEqual(len(g.children), 3)
+        self.assertEqual(
+            sorted([child.value for child in g.children], key=lambda x: str(x)),
+            [
+                URIRef('http://publications.europa.eu/resource/authority/data-theme/ENER'),
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/changement-climatique'),
+                URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/climat')
+            ]
+        )
+        self.assertEqual(actionsdict['new keys'],  [g.children[2]])
+        self.assertEqual(actionsdict['value to update'], [c0])
+        self.assertListEqual(
+            actionsdict['widgets to move'],
+            [
+                (
+                    '<g QGridLayout dcat:theme>',
+                    '<g-plus-button QToolButton dcat:theme>',
+                    3, 0, 1, 1
+                )
+            ]
+        )
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('value to update', 'new keys', 'widgets to move'):
+                    self.assertFalse(l)
+
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix uuid: <urn:uuid:> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "Un jeu de données"@fr ;
+                dcat:theme <http://publications.europa.eu/resource/authority/data-theme/ENER>,
+                    <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/climat>,
+                    <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/changement-climatique> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046".
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
+
+    def test_compute_theme_with_params(self):
+        """Processus complet de calcul des métadonnées pour dcat:theme, avec paramétrage manuel.
+        
+        Avec le mode ``'auto'`` pour le calcul automatique.
+        Idem test précédent, si ce n'est que ``compute_params`` est
+        spécifié par le modèle et qu'on part d'un graphe qui ne 
+        contient pas de thème.
+        
+        """
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix uuid: <urn:uuid:> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "Un jeu de données"@fr .
+            """
+        metagraph = Metagraph().parse(data=metadata)
+
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute('''
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['manual', 'auto'],
+                            compute_params = '{"level_one": false}'::jsonb
+                        WHERE path = 'dcat:theme' ;
+                    ''')
+                cur.execute(
+                    *query_get_categories('Classique')
+                    )
+                categories = cur.fetchall()
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(metagraph=metagraph, template=template)
+        g = widgetsdict.root.search_from_path(DCAT.theme)
+        self.assertTrue(widgetsdict[g]['has compute button'])
+        self.assertTrue(widgetsdict[g]['auto compute'])
+        self.assertIsNotNone(widgetsdict[g]['compute method'].description)
+        self.assertEqual(widgetsdict[g]['compute method'].dependances, [])
+        self.assertEqual(len(g.children), 1)
+        self.assertIsNone(g.children[0].value)
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = widgetsdict.computing_query(g, 'c_air_clim_changement', 'un_jeu_de_donnees')
+                cur.execute(*query)
+                result = cur.fetchall()
+        conn.close()
+        self.assertListEqual(result, [('c_air_clim_changement', False, True,)])
+        
+        widgetsdict[g]['main widget'] = '<g QGroupBox dcat:theme>'
+        widgetsdict[g]['grid widget'] = '<g QGridLayout dcat:theme>'
+        widgetsdict[g]['compute widget'] = '<g-compute QToolButton dcat:theme>'
+        widgetsdict[g.button]['main widget'] = '<g-plus-button QToolButton dcat:theme>'
+
+        c0 = g.children[0]
+        widgetsdict[c0]['main widget'] = '<c0 QComboBox dcat:theme>'
+        widgetsdict[c0]['minus widget'] = '<c0-minus QToolButton dcat:theme>'
+        widgetsdict[c0]['switch source widget'] = '<c0-source QToolButton dcat:theme>'
+        widgetsdict[c0]['switch source menu'] = '<c0-source QMenu dcat:theme>'
+        widgetsdict[c0]['switch source actions'] = ['<c0-source QAction n°1', '<c0-source QAction n°2']
+        
+        # --- intégration ---
+        actionsdict = widgetsdict.computing_update(g, result)
+        self.assertEqual(len(g.children), 1)
+        self.assertEqual(g.children[0].value, URIRef('http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/changement-climatique'))
+        self.assertEqual(actionsdict['value to update'], [c0])
+        # la source doit également être mise à jour, car celle qui 
+        # est utilisée par défaut ne correspond pas aux thèmes Ecosphères :
+        self.assertEqual(actionsdict['concepts list to update'], [c0])
+        self.assertEqual(actionsdict['switch source menu to update'], [c0])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('value to update', 'concepts list to update', 'switch source menu to update'):
+                    self.assertFalse(l)
+
+        metadata = """
+            @prefix dcat: <http://www.w3.org/ns/dcat#> .
+            @prefix dct: <http://purl.org/dc/terms/> .
+            @prefix uuid: <urn:uuid:> .
+
+            uuid:479fd670-32c5-4ade-a26d-0268b0ce5046 a dcat:Dataset ;
+                dct:title "Un jeu de données"@fr ;
+                dcat:theme <http://registre.data.developpement-durable.gouv.fr/ecospheres/themes-ecospheres/changement-climatique> ;
+                dct:identifier "479fd670-32c5-4ade-a26d-0268b0ce5046".
+            """
+        metagraph = Metagraph().parse(data=metadata)
+        self.assertTrue(isomorphic(metagraph,
+            widgetsdict.build_metagraph(preserve_metadata_date=True)))
+
 if __name__ == '__main__':
     unittest.main()
 

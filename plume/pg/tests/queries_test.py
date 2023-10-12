@@ -37,7 +37,7 @@ from plume.pg.queries import (
     query_plume_pg_import_sample_template, query_plume_pg_create, query_plume_pg_drop,
     query_plume_pg_update, query_plume_pg_status, query_stamp_recording_disable,
     query_stamp_recording_enable, query_stamp_to_metadata_disable, query_stamp_to_metadata_enable,
-    query_read_any_row
+    query_read_any_row, query_for_theme_computing
 )
 from plume.pg.template import LocalTemplatesCollection, TemplateDict
 from plume.rdf.widgetsdict import WidgetsDict
@@ -1917,6 +1917,25 @@ class QueriesTestCase(unittest.TestCase):
         self.assertIsNone(res_1)
         self.assertIsNotNone(res_2)
         self.assertIsNone(res_2[0]['label'])
+
+    def test_query_for_theme_computing(self):
+        """Pseudo-requête pour le calcul des thèmes."""
+        conn = psycopg2.connect(PlumePgTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(*query_for_theme_computing('schema_1', 'table_1'))
+                res_1 = cur.fetchone()
+                cur.execute(*query_for_theme_computing('schema_2', 'table_2', level_one=False))
+                res_2 = cur.fetchone()
+                cur.execute(*query_for_theme_computing('schema_3', 'table_3', level_two=False))
+                res_3 = cur.fetchone()
+                cur.execute(*query_for_theme_computing('schema_4', 'table_4', level_one=False, level_two=False))
+                res_4 = cur.fetchone()
+        conn.close()
+        self.assertEqual(res_1, ('schema_1', True, True))
+        self.assertEqual(res_2, ('schema_2', False, True))
+        self.assertEqual(res_3, ('schema_3', True, False))
+        self.assertEqual(res_4, ('schema_4', False, False))
 
 if __name__ == '__main__':
     unittest.main()

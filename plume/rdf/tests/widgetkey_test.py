@@ -84,11 +84,17 @@ class WidgetKeyTestCase(unittest.TestCase):
         v1 = ValueKey(parent=g, m_twin=p1, is_hidden_m=True,
             value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
         p2 = GroupOfPropertiesKey(parent=g)
-        v2 = ValueKey(parent=g, m_twin=p2, is_hidden_m=False,
-            value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'))
+        v2 = ValueKey(
+            parent=g, m_twin=p2, is_hidden_m=False,
+            value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'),
+            value=URIRef('http://www.opengis.net/def/interface/ogcapi-features')
+        )
         p3 = GroupOfPropertiesKey(parent=g)
-        v3 = ValueKey(parent=g, m_twin=p3, is_hidden_m=False,
-            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'))
+        v3 = ValueKey(
+            parent=g, m_twin=p3, is_hidden_m=False,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            value=URIRef('http://www.opengis.net/def/crs/EPSG/0/2154')
+        )
         # --- en préservant tout ---
         WidgetKey.clear_actionsbook()
         l1 = g.shrink_expend(2, sources=[])
@@ -192,11 +198,39 @@ class WidgetKeyTestCase(unittest.TestCase):
             ]
         )
         b = PlusButtonKey(parent=g)
-        v = ValueKey(parent=g, value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'))
+        v = ValueKey(
+            parent=g,
+            value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard'),
+            value=URIRef('http://www.opengis.net/def/interface/ogcapi-features')
+        )
         l = g.shrink_expend(2, sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')])
         self.assertEqual(len(l), 2)
         self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertTrue(not v in l)
         self.assertEqual(len(g.children), 3)
+
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+                URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        v = ValueKey(
+            parent=g,
+            value_source=URIRef('http://registre.data.developpement-durable.gouv.fr/plume/DataServiceStandard')
+            # pas de valeur
+        )
+        l = g.shrink_expend(2, sources=[URIRef('http://www.opengis.net/def/crs/EPSG/0')])
+        self.assertEqual(len(l), 2)
+        self.assertTrue(all(isinstance(key, ValueKey) for key in l))
+        self.assertTrue(v in l)
+        self.assertEqual(len(g.children), 2)
 
         r = RootKey()
         t = TabKey(parent=r, label='Général')
