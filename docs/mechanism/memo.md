@@ -28,14 +28,21 @@ Pour lancer uniquement les tests de certains modules ou packages, il faut les li
 
 ```
 
-L'exécution des tests nécessite de se connecter à une base PostgreSQL avec un compte super-utilisateur. La base doit remplir les conditions suivantes :
-- la version de PostgreSQL est supérieure ou égale à PostgreSQL 10.
-- l'extension *PlumePg* (`plume_pg`) est disponible dans sa dernière version ainsi qu'en version 0.0.1, avec tous les fichiers de mise à jour pour passer de l'une à l'autre ;
-- si requise pour l'installation de *PlumePg*[^pgcrypto], l'extension `pgcrypto` est active ;
-- l'extension *PostGIS* (`postgis`) est active ;
-- l'extension [*Asgard*](https://github.com/MTES-MCT/asgard-postgresql) (`asgard`) est disponible sur le serveur dans une version supérieure ou égale à 1.3.2, mais **non active**.
+Pour la plupart des modules, l'exécution des tests nécessite de se connecter à une base PostgreSQL de version supérieure ou égale à 10. Les paramètres de connexion sont à renseigner via l'invite de commande. Si les paramètres par défaut indiqués entre parenthèses conviennent, il suffit d'appuyer sur la touche `Entrée` pour les valider.
+
+La base de test, nommée `plume_rec` par défaut, est (re-)créée préalablement aux tests, ce qui suppose donc de n'avoir aucune connexion active sur cette base si elle existe déjà.
+
+Le rôle de connexion doit impérativement être super-utilisateur.
+
+Les extensions suivantes doivent être disponibles sur le serveur :
+- *PlumePg* (`plume_pg`), dans sa dernière version ainsi qu'en version 0.0.1, avec tous les fichiers de mise à jour pour passer de l'une à l'autre.
+- `pgcrypto`[^pgcrypto].
+- *PostGIS* (`postgis`).
+- [*Asgard*](https://github.com/MTES-MCT/asgard-postgresql) (`asgard`), dans une version supérieure ou égale à 1.3.2.
 
 [^pgcrypto]: Nécessaire pour les versions inférieures ou égales à PostgreSQL 12. Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](../usage/gestion_plume_pg.md).
+
+À noter que module de test {py:mod}`plume.pg.tests.queries_test` inclut le test {py:meth}`~plume.pg.tests.queries_test.PlumePgTestCase.test_backup_restore`, qui vérifie le bon déroulé d'un processus de sauvegarde et restauration sur une base où Plume est installée. Ce test nécessite l'usage des binaires `pg_dump` et `pg_restore` de PostgreSQL et ne fonctionnera que si **le répertoire contenant les binaires associés à la version la plus récente de PostgreSQL appelée à être testée a été déclaré dans la variable d'environnement Path**. Sous Windows, il s'agit en principe du répertoire `C:\Program Files\PostgreSQL\X\bin`, où `X` est le numéro de la version majeure de PostgreSQL.
 
 ## Générer un ZIP propre du plugin
 
