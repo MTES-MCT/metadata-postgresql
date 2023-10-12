@@ -998,6 +998,8 @@ BEGIN
     CREATE EXTENSION asgard ;
     CREATE ROLE g_stamp_edit ;
     CREATE ROLE g_stamp_prod ;
+    -- <!> ligne suivante à retirer quand Asgard sera compatible avec PG16
+    GRANT g_stamp_prod TO g_admin ;
     
     CREATE SCHEMA c_bibliotheque ;
     PERFORM z_asgard.asgard_initialise_schema('c_librairie') ;
