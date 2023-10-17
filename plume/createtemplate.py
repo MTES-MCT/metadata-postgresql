@@ -1857,9 +1857,6 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
 
     #===============================              
     def menuContextuelPlume_CAT_IN_OUT(self, point):
-        # Empêche l'affichage des attributs et de leurs valeurs
-        if not (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) : return
-
         index = self.indexAt(point)
         if not index.isValid():
            return
@@ -1870,27 +1867,31 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
               mItemClic_CAT_IN_OUT = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
               mItemClicAssociation = item.data(3, QtCore.Qt.DisplayRole)  # id association
               mOrigine             = item.data(4, QtCore.Qt.DisplayRole)  # Origine Cat In ou Cat OUT
-              #-------
-              self.groupBoxdisplayHelpFocus.setVisible(False)
-              self.zoneDisplayHelpFocus.setText("")
-              if mOrigine == "CAT_IN" :
-                 if returnIfExisteCategorie(item) : 
-                    #Affiche les attributs
-                    afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
-                    #Initialise les attributs avec valeurs
-                    returnDicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True )
-                    if hasattr(self._selfCreateTemplate, "dicValuePropriete") : self._selfCreateTemplate.dicValuePropriete['initialiseAttributsModeleCategorie'] = returnDicValuePropriete 
 
-                    afficheLabelAndLibelle(self, True, True, True, True) 
+              # Empêche l'affichage des attributs et de leurs valeurs si la sauvegarde de la constitution du modèle n'est pas validée
+              if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) : 
+                 #-------
+                 self.groupBoxdisplayHelpFocus.setVisible(False)
+                 self.zoneDisplayHelpFocus.setText("")
+                 if mOrigine == "CAT_IN" :
+                    if returnIfExisteCategorie(item) : 
+                       #Affiche les attributs
+                       afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
+                       #Initialise les attributs avec valeurs
+                       returnDicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True )
+                       if hasattr(self._selfCreateTemplate, "dicValuePropriete") : self._selfCreateTemplate.dicValuePropriete['initialiseAttributsModeleCategorie'] = returnDicValuePropriete 
+
+                       afficheLabelAndLibelle(self, True, True, True, True) 
+                    else :   
+                       #Affiche les attributs
+                       afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
+                       afficheLabelAndLibelle(self, True, True, True, False) 
+                    # 
                  else :   
-                    #Affiche les attributs
+                    #Efface les attributs
                     afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
                     afficheLabelAndLibelle(self, True, True, True, False) 
-                 # 
-              else :   
-                 #Efface les attributs
-                 afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, False ) 
-                 afficheLabelAndLibelle(self, True, True, True, False) 
+
 
               self.buttonSaveOutVersIn.setEnabled(  False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
               self.buttonReinitOutVersIn.setEnabled(False if (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) else True)
@@ -1945,7 +1946,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
     def ihmsPlume_CAT_IN_OUT(self, item, column): 
         if item == None : return 
 
-        # Empêche l'affichage des attributs et de leurs valeurs
+        # Empêche l'affichage des attributs et de leurs valeurs si la sauvegarde de la constitution du modèle n'est pas validée
         if not (len(self._selfCreateTemplate.dicInVersOutDesign) == 0 and len(self._selfCreateTemplate.dicOutVersInDesign) == 0) : return
 
         QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
