@@ -1857,6 +1857,9 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
 
     #===============================              
     def menuContextuelPlume_CAT_IN_OUT(self, point):
+        # Empêche l'affichage des attributs et de leurs valeurs
+        if not (len(self.dicInVersOutDesign) == 0 and len(self.dicOutVersInDesign) == 0) : return
+
         index = self.indexAt(point)
         if not index.isValid():
            return
@@ -1876,7 +1879,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
                     afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
                     #Initialise les attributs avec valeurs
                     returnDicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True )
-                    self._selfCreateTemplate.dicValuePropriete['initialiseAttributsModeleCategorie'] = returnDicValuePropriete 
+                    if hasattr(self._selfCreateTemplate, "dicValuePropriete") : self._selfCreateTemplate.dicValuePropriete['initialiseAttributsModeleCategorie'] = returnDicValuePropriete 
 
                     afficheLabelAndLibelle(self, True, True, True, True) 
                  else :   
@@ -1941,6 +1944,10 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
     #===============================              
     def ihmsPlume_CAT_IN_OUT(self, item, column): 
         if item == None : return 
+
+        # Empêche l'affichage des attributs et de leurs valeurs
+        if not (len(self._selfCreateTemplate.dicInVersOutDesign) == 0 and len(self._selfCreateTemplate.dicOutVersInDesign) == 0) : return
+
         QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
         
         mItemClic_CAT_IN_OUT = item.data(1, QtCore.Qt.DisplayRole)  # id catégorie
@@ -1955,7 +1962,7 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
               afficheAttributs( self, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, True ) 
               #Initialise les attributs avec valeurs
               returnDicValuePropriete, self._selfCreateTemplate.listeThesaurus = initialiseAttributsModeleCategorie( self, mItemClic_CAT_IN_OUT, mItemClicAssociation, self.groupBoxAttributsModeleCategorie, self.mapping_template_categories, self.mListTemplateCategories, self.mListTabs, True )
-              self._selfCreateTemplate.dicValuePropriete['initialiseAttributsModeleCategorie'] = returnDicValuePropriete 
+              if hasattr(self._selfCreateTemplate, "dicValuePropriete") : self._selfCreateTemplate.dicValuePropriete['initialiseAttributsModeleCategorie'] = returnDicValuePropriete 
               
               afficheLabelAndLibelle(self._selfCreateTemplate, True, True, True, True)
            else :   

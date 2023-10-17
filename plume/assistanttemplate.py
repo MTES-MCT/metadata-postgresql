@@ -219,7 +219,7 @@ class Ui_Dialog_AssistantTemplate(object):
            self.zoneJSONB.setAlignment( Qt.AlignJustify | Qt.AlignVCenter )
            # json dans la zone
            mVal, _exit = returnTranslatePostgreSQL_PythonVsJson(self.DialogPlume, self.DialogPlume.dicValuePropriete[self.keyAncetre_ModeleCategorie_Modele_Categorie_Onglet][self.mattrib], "pythonVERSjson")  # dumps
-           self.zoneJSONB.setPlainText( "" if mVal in (None, "null") else mVal )
+           self.zoneJSONB.setPlainText( "" if mVal in (None, "null", '""') else mVal )
         #========
         #-
         self.groupBox_buttons = QtWidgets.QGroupBox()

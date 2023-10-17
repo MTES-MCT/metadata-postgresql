@@ -96,14 +96,13 @@ class GenereButtonsAssistant( ) :              # ci-dessous Nom de l'attrib,  ob
         return
     
 #==========================         
-class GenereButtonsWithDictWithEvent( ) :
+class GenereButtonsWithDictWithEvent() :
     def __init__(self, _selfCreateTemplate, dicParamButton, _mapping, _groupBoxdisplayHelpFocus, _zoneDisplayHelpFocus) :
         self._selfCreateTemplate       = _selfCreateTemplate
         self.dicParamButton            = dicParamButton
         self._mapping                  = _mapping
         self._groupBoxdisplayHelpFocus = _groupBoxdisplayHelpFocus
         self._zoneDisplayHelpFocus     = _zoneDisplayHelpFocus
-        
         self.setupUi()
 
     def setupUi(self) :
@@ -132,7 +131,7 @@ class GenereButtonsWithDictWithEvent( ) :
         _button.setFocusPolicy(Qt.StrongFocus)
         _button.focusInEvent = self.displayHelpWithFocus
         self._button = _button
-        
+
     def displayHelpWithFocus(self, event) :
         if event.type() == QEvent.FocusIn:
            self._groupBoxdisplayHelpFocus.setVisible(True)
@@ -140,7 +139,7 @@ class GenereButtonsWithDictWithEvent( ) :
            if self._button.objectName()[5:] in self._mapping : 
               mText = self._mapping[ self._button.objectName()[5:] ][ "help" ]
               self._zoneDisplayHelpFocus.setText(mText)
-       
+
 #==========================
 def ifActivateRightsToManageModels(_self) : #Retourne un booléen pour activer le bouton pour la gestion des modèles
     mKeySql = queries.query_is_template_admin()
