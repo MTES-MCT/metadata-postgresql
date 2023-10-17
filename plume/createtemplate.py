@@ -1421,7 +1421,7 @@ def initialiseAttributsModeleCategorie(self,  _mItemClic_CAT_IN_OUT, _mItemClicA
                
 #==========================  
 # Recherche et retourne les valeurs du thésaurus en fonction de la catégorie cliquée.
-# Si rien n'est retorunée alors on n'affiche pas le bouton d'assistant
+# Si rien n'est retourné alors on n'affiche pas le bouton d'assistant
 # si retour, alors on envoie en poramètre les valeurs des thésaurus
 def returnListeThesaurus( listLangList, _mItemClic_CAT_IN_OUT ) :
     # gestion du Out

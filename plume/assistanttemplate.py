@@ -387,6 +387,10 @@ class TREEVIEW_PROPRIETE_IN_OUT(QTreeWidget):
     #===============================              
     def affiche_PROPRIETE_IN_OUT(self, DialogCreateTemplate, self_Pro_In, self_Pro_Out, mattrib = None, mDicOut = None, mDicIn = None, action = False, firstDisplay = False, header = None ) :
         _pathIcons = os.path.dirname(__file__) + "/icons/logo"
+        # For logo dans tooltip 
+        _pathIconsButtons         = os.path.dirname(__file__) + "/icons/buttons"
+        self.menuIconHelpComputeManuel = _pathIconsButtons + "/compute_button.svg"
+        #----------
         if header != None : self.setHeaderLabels([ header[2] if header[0] == "PRO_IN" else header[1] ])               
         self.DialogCreateTemplate    = DialogCreateTemplate                                                   
         #---
@@ -459,7 +463,7 @@ class TREEVIEW_PROPRIETE_IN_OUT(QTreeWidget):
            # Devient : ['Littérale', 'IN', 'aide', gsp:wktLiteral', 'datatype'] ou ['Langue', 'OUT', 'rdf:langString', 'aide', 'datatype']
            paramQTreeWidgetItem = [ v["enum_label"] ] + [ "IN" ] + [ k ] + [ v["enum_help"] ] + [mattrib] 
            nodeUser = QTreeWidgetItem(None, paramQTreeWidgetItem)
-           nodeUser.setToolTip( 0, v["enum_help"] )
+           nodeUser.setToolTip( 0, v["enum_help"].replace('menuIconHelpComputeManuel', self.menuIconHelpComputeManuel) )
            #self.design_Items(nodeUser, self.dicOutVersInDesign, _label, _color_In_OutVersIn) #For colorisation
            self.self_Pro_In.insertTopLevelItems( rowNodeIn, [ nodeUser ] )
            rowNodeIn += 1
@@ -473,7 +477,7 @@ class TREEVIEW_PROPRIETE_IN_OUT(QTreeWidget):
            # Devient : ['Littérale', 'OUT', 'aide', gsp:wktLiteral', 'datatype'] ou ['Langue', 'OUT', 'rdf:langString', 'aide', 'datatype']
            paramQTreeWidgetItem = [ v["enum_label"] ] + [ "OUT" ] + [ k ] + [ v["enum_help"] ] + [mattrib] 
            nodeUser = QTreeWidgetItem(None, paramQTreeWidgetItem)
-           nodeUser.setToolTip( 0, v["enum_help"] )
+           nodeUser.setToolTip( 0, v["enum_help"].replace('menuIconHelpComputeManuel', self.menuIconHelpComputeManuel) )
            #self.design_Items(nodeUser, self.dicOutVersInDesign, _label, _color_In_OutVersIn) #For colorisation
            self.self_Pro_Out.insertTopLevelItems( rowNodeOut, [ nodeUser ] )
            rowNodeOut += 1
