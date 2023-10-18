@@ -19,6 +19,8 @@ from plume.pg.template import dump_template_data
 from plume.rdf.utils import abspath, data_from_file
 from plume import __path__ as plume_path
 
+from plume import mapping_templates 
+
 from admin.plume_pg import store_sample_templates, query_from_shape
 
 class ConsistencyTestCase(unittest.TestCase):
@@ -115,6 +117,53 @@ class ConsistencyTestCase(unittest.TestCase):
                 plume_pg_raw = data_from_file(file)
                 break
         self.assertIn(insert_query, plume_pg_raw)
+
+    def test_mapping_templates_enum(self):
+        """Vérifie que les valeurs des types énumérés stockées dans plume.mapping_templates.dicEnum sont cohérentes avec celles de PostgreSQL."""
+        for enum_key, query_func in (
+            ('special', queries.query_read_enum_meta_special),
+            ('datatype', queries.query_read_enum_meta_datatype),
+            ('geo_tools', queries.query_read_enum_meta_geo_tool),
+            ('compute', queries.query_read_enum_meta_compute)
+        ):
+            conn = psycopg2.connect(ConsistencyTestCase.connection_string)
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute(*query_func())
+                    result = cur.fetchone()[0]
+            conn.close()
+            for pg_enum_value in result:
+                with self.subTest(pg_enum_value=pg_enum_value):
+                    self.assertTrue(pg_enum_value in mapping_templates.dicEnum[enum_key])
+            for loc_enum_value in mapping_templates.dicEnum[enum_key]:
+                with self.subTest(loc_enum_value=loc_enum_value):
+                    self.assertTrue(loc_enum_value in result)
+
+    def test_mapping_templates_attributes(self):
+        """Vérifie que les attributs listés dans plume.mapping_templates correspondent aux attributs des tables de PlumePg."""
+        for attr_dict, table_name in (
+            (mapping_templates.load_mapping_read_meta_template_categories, 'meta_template_categories'),
+            (mapping_templates.load_mapping_read_meta_templates, 'meta_template'),
+            (mapping_templates.load_mapping_read_meta_categories, 'meta_categorie'),
+            (mapping_templates.load_mapping_read_meta_tabs, 'meta_tab')
+        ):
+            conn = psycopg2.connect(ConsistencyTestCase.connection_string)
+            with conn:
+                with conn.cursor() as cur:
+                    query = queries.query_get_columns(
+                        schema_name='z_plume',
+                        table_name=table_name
+                    )
+                    cur.execute(*query)
+                    columns = cur.fetchall()
+            conn.close()
+            pg_attnames = [column[0] for column in columns]
+            for pg_attname in pg_attnames:
+                with self.subTest(pg_attname=pg_attname):
+                    self.assertTrue(pg_attname in attr_dict)
+            for loc_attname in attr_dict:
+                with self.subTest(loc_attname=loc_attname):
+                    self.assertTrue(loc_attname in pg_attnames)
 
 if __name__ == '__main__':
     unittest.main()
