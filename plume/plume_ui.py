@@ -98,7 +98,7 @@ class Ui_Dialog_plume(object):
            if getattr(self, 'mConnectEnCours', False) : self.mConnectEnCours.close()
     #== Gestionnaire de contexte généraliste avec remise de l'IHM à vierge
  
-    def setupUi(self, Dialog, _dicTooltipExiste):
+    def setupUi(self, Dialog, _dicTooltipExiste ):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
         self.zMessError_Transaction = "FIN TRANSACTION"
@@ -876,7 +876,6 @@ class Ui_Dialog_plume(object):
 
     #==========================
     def closeEvent(self, event):
-
         try :
            self.navigateurTreeView.clicked.disconnect(self.retrieveInfoLayerBrowser)
         except:
@@ -891,7 +890,7 @@ class Ui_Dialog_plume(object):
            iface.layerTreeView().clicked.disconnect(self.retrieveInfoLayerQgis)
         except:
            pass
-
+           
     #==========================
     def resizeEvent(self, event):
         if self.firstOpen :

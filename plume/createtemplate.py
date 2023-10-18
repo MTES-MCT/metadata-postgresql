@@ -210,7 +210,8 @@ class Ui_Dialog_CreateTemplate(object):
         self.mListTemplates = [row[0] for row in r]
 
         listeAssociationCol1, listeAssociationCol2 = returnList_Id_Label( self.mListTemplates )
-        self.modeleAssociationActif = listeAssociationCol1[0] #Pour la première initialisation 
+        self.modeleAssociationActif = listeAssociationCol1[0] if len(listeAssociationCol1) > 0 else "" #Pour la première initialisation
+            
         #------
         #------ DATA categories 
         mKeySql = queries.query_read_meta_categorie()
@@ -845,7 +846,6 @@ class Ui_Dialog_CreateTemplate(object):
         self.dicInVersOutDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
         self.dicOutVersInDesign = {} # Pour la gestion des double clic et la regénération des données en entrée de l'algo
         #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées
-        
         self.listCategorieOut, self.listCategorieIn = ventileCatInCatOut(self, mItemClicAssociation, self.mListTemplateCategories, self.mListCategories)
 
         self.mTreeListeCategorieIn.clear()
@@ -1103,14 +1103,39 @@ def ventileCatInCatOut(self, _mItemClicAssociation, mListTemplateCategories, mLi
           
           mConditionInOut = _lib_Categories == _lib_Template_Categories and str(mListTemplateCategories[j]["tpl_id"]) == _mItemClicAssociation
           
-          _dicTempo = dict(zip( ["_displayLibelle", "_label", "_libelle", "_clickAsso", "mOrigine", "mNoeud", "_local"], [_displayLibelle, _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_IN' if mConditionInOut else 'CAT_OUT', _noeud, _returnAttribCategorie["origin"]] ))
+          _Listkeys   = [ "_displayLibelle", "_label",           "_libelle",             "_clickAsso",          "mOrigine",                                 "mNoeud", "_local" ]
+          _ListValues = [ _displayLibelle,   _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_IN' if mConditionInOut else 'CAT_OUT', _noeud,   _returnAttribCategorie["origin"] ]
+          _dicTempo   = dict(zip( _Listkeys, _ListValues ))
 
           # Ventilation Cat IN / Cat Out 
           if mConditionInOut :
              _listCategorieIn.append(_dicTempo)
              break
           j += 1
-       if not mConditionInOut : _listCategorieOut.append(_dicTempo)
+
+       # Cas où je ne trouve pas la catégorie dans template_Categories
+       # et le cas ou template_Categories est vide pour la première saisie d'un modèle
+       if not mConditionInOut :  
+          # _libelle (_label)  Nom du libellé de la catégorie + Nom de la catégorie (colonne 1 in QtreeWidget)
+          # _label      Nom de la catégorie                                         (colonne 2 in QtreeWidget)
+          # _libelle    Nom du libellé de la catégorie                              (colonne 3 in QtreeWidget) 
+          # _clickAsso  Nom du modèle cliqué
+          # mOrigine    Sens (In vers Out ou vice Versa
+          # mNoeud      Est-ce un Noeud
+          _returnAttribCategorie = returnAttribCategoriesEnFonctionLibelleTemplateCategorie(self, _lib_Categories, self.mListCategories)[0]
+          _lib_Categories_in     = _returnAttribCategorie["path"]
+          _libelle_Categories_in = _returnAttribCategorie["label"]
+
+          if _returnAttribCategorie["origin"] == "local" :
+             _displayLibelle = str(_libelle_Categories_in) + self.sepLeftTemplate + str(path_elements[ -1 ])    + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+          else :
+             _displayLibelle = str(path_elements[ -1 ])    + self.sepLeftTemplate + str(_libelle_Categories_in) + self.sepRightTemplate # For Affichage LIBELLE PLUS Dernier ELEMENT du chemin (paths)
+          
+          _Listkeys   = [ "_displayLibelle", "_label",           "_libelle",             "_clickAsso",          "mOrigine", "mNoeud", "_local" ]
+          _ListValues = [ _displayLibelle,   _lib_Categories_in, _libelle_Categories_in, _mItemClicAssociation, 'CAT_OUT',  _noeud,   _returnAttribCategorie["origin"] ]
+          _dicTempo   = dict(zip( _Listkeys, _ListValues ))
+        
+          _listCategorieOut.append(_dicTempo)
        i += 1
     
     return _listCategorieOut, _listCategorieIn
@@ -2267,10 +2292,10 @@ class TREEVIEWMODELE(QTreeWidget):
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         index = self.indexAt(point)
-        if not index.isValid():
-           return
+        #if not index.isValid():
+        #   return
         #-------
-        if index.data(0) != None : 
+        if len(self.mListTemplates) == 0 : 
            self.treeMenu = QMenu(self)
            #-
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
@@ -2279,15 +2304,28 @@ class TREEVIEWMODELE(QTreeWidget):
            self.treeMenu.addAction(self.treeAction_add)
            self.treeAction_add.setToolTip(treeAction_addTooltip)
            self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
-           #-
-           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
-           treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model", None)  #Supprimer le modèle
-           self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
-           self.treeMenu.addAction(self.treeAction_del)
-           self.treeAction_del.setToolTip(treeAction_delTooltip)
-           self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
            #-------
-           self.treeMenu.exec_(self.mapToGlobal(point))
+           self.treeMenu.exec_(self.mapToGlobal(point))        
+        else :   
+
+           if index.data(0) != None : 
+              self.treeMenu = QMenu(self)
+              #-
+              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
+              treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add model", None)  #Supprimer le modèle
+              self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+              self.treeMenu.addAction(self.treeAction_add)
+              self.treeAction_add.setToolTip(treeAction_addTooltip)
+              self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
+              #-
+              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
+              treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model", None)  #Supprimer le modèle
+              self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
+              self.treeMenu.addAction(self.treeAction_del)
+              self.treeAction_del.setToolTip(treeAction_delTooltip)
+              self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
+              #-------
+              self.treeMenu.exec_(self.mapToGlobal(point))
         return
         
     #===============================              
