@@ -13,9 +13,14 @@ from qgis.utils import iface
 from plume.config import (PLUME_VERSION)  
 from distutils.version import StrictVersion
 
+import platform
+
 #==================================================
 #==================================================
 def returnVersion() : return PLUME_VERSION
+#==================================================
+# Obtenir des informations sur le système d'exploitation
+def getOsInfo() : return ( platform.system(), platform.release() ) 
 #==================================================
 
 from plume.rdf.widgetsdict import WidgetsDict
@@ -413,7 +418,10 @@ def exportObjetMetagraph(self, schema, table, format, mListExtensionFormat) :
         extStr += ";;" + str(elem) + " (" + str(extStrExt) + ")"
     TypeList = extStr[2:]
     table = table.replace(".","_").replace(" ","_")
-    InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "metadata_" + str(schema) + "_" + str(table) + "" +  export_extension_from_format(format)
+    if getOsInfo()[0].upper() == "WINDOWS" :
+       InitDir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + "metadata_" + str(schema) + "_" + str(table) + "" +  export_extension_from_format(format)
+    else :   
+       InitDir = "metadata_" + str(schema) + "_" + str(table) + "" +  export_extension_from_format(format)
     mDialogueSave = QFileDialog
     fileName  = mDialogueSave.getSaveFileName(None,QtWidgets.QApplication.translate("bibli_plume", "PLUME Export of metadata files", None),InitDir,TypeList)[0] 
     format    = export_format_from_extension(os.path.splitext(fileName)[1], format)
@@ -440,7 +448,10 @@ def importObjetMetagraph(self) :
             extStrExt += "*" + str(elemExt) + " "
         extStr += ";;" + str(elem) + " (" + str(extStrExt) + ")"
          
-    MonFichierPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    if getOsInfo()[0].upper() == "WINDOWS" :
+       MonFichierPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    else :   
+       MonFichierPath = ""
     MonFichierPath = MonFichierPath.replace("\\","/")        
     InitDir = MonFichierPath
     TypeList = extStr[2:]
@@ -463,7 +474,10 @@ def importObjetMetagraph(self) :
 #==================================================
 def importObjetMetagraphInspire(self) :
     #boite de dialogue Fichiers
-    MonFichierPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    if getOsInfo()[0].upper() == "WINDOWS" :
+       MonFichierPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    else :   
+       MonFichierPath = ""
     MonFichierPath = MonFichierPath.replace("\\","/")        
     InitDir = MonFichierPath
     TypeList = QtWidgets.QApplication.translate("bibli_plume", "Inspire file", None) + " (*.xml);;" + QtWidgets.QApplication.translate("bibli_plume", "Other files", None) + " (*.*)"

@@ -6,11 +6,11 @@ import time
 from qgis.core import ( QgsSettings, QgsApplication )
 from PyQt5 import QtCore, QtGui, QtWidgets 
 from plume.config import (PLUME_VERSION) 
+from plume.bibli_plume import ( getOsInfo )
 from PyQt5.QtWidgets import ( QMessageBox, QProgressDialog, QPushButton )
 from qgis.core import QgsSettings
 import qgis
 import os
-import platform
  
 #==================================================
 def manageLibrary() :
@@ -104,11 +104,6 @@ def manageLibrary() :
           mSettings.endGroup()
           #------ BIBLI ----
     return
-
-
-#==================================================
-# Obtenir des informations sur le système d'exploitation
-def getOsInfo() : return ( platform.system(), platform.release() ) 
 
 #==================================================
 def getPathPip() :
