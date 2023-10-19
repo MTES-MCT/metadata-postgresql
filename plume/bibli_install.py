@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import ( QMessageBox, QProgressDialog, QPushButton )
 from qgis.core import QgsSettings
 import qgis
 import os
+import platform
  
 #==================================================
 def manageLibrary() :
@@ -103,31 +104,45 @@ def manageLibrary() :
           mSettings.endGroup()
           #------ BIBLI ----
     return
-    
+
+
+#==================================================
+# Obtenir des informations sur le système d'exploitation
+def getOsInfo() : return ( platform.system(), platform.release() ) 
+
 #==================================================
 def getPathPip() :
     return dict( os.environ, PATH = os.environ['PATH'] + ( (";" + QgsApplication.systemEnvVars()['PYTHONHOME'].replace("\\","/") + "/scripts") if 'PYTHONHOME' in QgsApplication.systemEnvVars() else "" ) )
 
 #==================================================
 def updatePip() :
-    si = subprocess.STARTUPINFO() 
-    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    if getOsInfo()[0].upper() == "WINDOWS" :
+       si = subprocess.STARTUPINFO() 
+       si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
-       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '0', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'], check=True, startupinfo=si, env = getPathPip()) 
+       if getOsInfo()[0].upper() == "WINDOWS" :
+          _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '0', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'], check=True, startupinfo=si, env = getPathPip())
+       else :     
+          _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '--upgrade', '--retries', '0', '--timeout', '5', '--quiet', '--quiet', '--quiet', 'pip'], check=True, env=getPathPip())
     except subprocess.CalledProcessError as err :
        return False
     return True
 
 #==================================================
 def updateRequierement(mPathPerso) :
-    si = subprocess.STARTUPINFO() 
-    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    if getOsInfo()[0].upper() == "WINDOWS" :
+       si = subprocess.STARTUPINFO() 
+       si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
-       _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '-r', mPathPerso], check=True, startupinfo=si, env = getPathPip() )
+       if getOsInfo()[0].upper() == "WINDOWS" :
+          _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '-r', mPathPerso], check=True, startupinfo=si, env = getPathPip() )
+       else :     
+          _sortie = subprocess.run(['python3', '-m', 'pip', 'install', '-r', mPathPerso], check=True, env=getPathPip())
+
     except subprocess.CalledProcessError as err:
        return  False
     return True
-        
+
 #==================================================
 class ManagerPatienter() :
    #------
