@@ -6,7 +6,7 @@ Cette page récapitule les actions à réaliser pour maintenir et modifier diff�
 
 ## Exécution des tests
 
-Le module {py:mod}`admin.tests` compile les tests de tous les modules de Plume.
+Le module {py:mod}`admin.tests` compile les tests de tous les modules internes de Plume (packages `plume.iso`, `plume.rdf` et `plume.pg`), ainsi que de l'extension PostgreSQL PlumePg.
 
 On pourra soit exécuter le fichier {file}`/admin/tests.py` comme un script, ce qui lancera l'ensemble des tests, soit utiliser la fonction {py:func}`admin.tests.run`.
 
@@ -15,6 +15,11 @@ Pour lancer tous les tests :
 ```python
 
 >>> from admin.tests import run
+host (localhost): 
+port (5432): 
+dbname (plume_rec): 
+user (postgres): 
+password : mot de passe à saisir
 >>> run()
 
 ```
@@ -24,17 +29,24 @@ Pour lancer uniquement les tests de certains modules ou packages, il faut les li
 ```python
 
 >>> from admin.tests import run
+host (localhost): 
+port (5432): 5433
+dbname (plume_rec): plume_tests
+user (postgres): 
+password : mot de passe à saisir
 >>> run('pg', 'widgetkey')
 
 ```
 
-Pour la plupart des modules, l'exécution des tests nécessite de se connecter à une base PostgreSQL de version supérieure ou égale à 10. Les paramètres de connexion sont à renseigner via l'invite de commande. Si les paramètres par défaut indiqués entre parenthèses conviennent, il suffit d'appuyer sur la touche `Entrée` pour les valider.
+L'exécution des tests nécessite de se connecter à une base PostgreSQL de version supérieure ou égale à 10. Les paramètres de connexion sont à renseigner via l'invite de commande au moment de l'import du module {py:mod}`admin.tests`. Si les paramètres par défaut indiqués entre parenthèses conviennent, il suffit d'appuyer sur la touche `Entrée` pour les valider, sinon la valeur saisie (puis validée en appuyant sur la touche `Entrée`) remplace la valeur par défaut. Dans l'exemple précédent, l'utilisateur a par exemple conservé les valeurs par défaut pour l'adresse du serveur et le rôle, par contre il a corrigé le port et le nom de la base.
+
+Il n'y a pas de valeur par défaut pour le mot de passe, qui doit toujours être saisi manuellement.
 
 La base de test, nommée `plume_rec` par défaut, est (re-)créée préalablement aux tests, ce qui suppose donc de n'avoir aucune connexion active sur cette base si elle existe déjà.
 
 Le rôle de connexion doit impérativement être super-utilisateur.
 
-Les extensions suivantes doivent être disponibles sur le serveur :
+Les extensions suivantes doivent par ailleurs être disponibles sur le serveur :
 - *PlumePg* (`plume_pg`), dans sa dernière version ainsi qu'en version 0.0.1, avec tous les fichiers de mise à jour pour passer de l'une à l'autre.
 - `pgcrypto`[^pgcrypto].
 - *PostGIS* (`postgis`).
