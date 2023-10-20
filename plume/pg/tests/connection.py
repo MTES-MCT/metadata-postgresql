@@ -63,16 +63,16 @@ class MetaConnection(type):
     def postgres(cls):
         """str : Chaîne de connexion à la base de maintenance ``postgres``."""
         return (
-            f"host={cls.host} port={cls.port} dbname=postgres "
-            f"user={cls.user} password={cls.password}"
+            f'host={cls.host} port={cls.port} dbname=postgres '
+            f"user='{cls.user}' password='{cls.password}'"
         )
     
     @property
     def connection_string(cls):
         """str : Chaîne de connexion à la base cible."""
         return (
-            f"host={cls.host} port={cls.port} dbname={cls.dbname} "
-            f"user={cls.user} password={cls.password}"
+            f"host={cls.host} port={cls.port} dbname='{cls.dbname}' "
+            f"user='{cls.user}' password='{cls.password}'"
         )
 
 class ConnectionString(str, metaclass=MetaConnection):
