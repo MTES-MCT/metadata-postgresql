@@ -65,7 +65,7 @@ Cf. [Test de l’interface utilisateur](./ui_test.md).
 
 ### Documentation technique 
 
-*URL de publication : https://mtes-mct.github.io/metadata-postgresql/*
+*URL de publication : [https://mtes-mct.github.io/metadata-postgresql/](https://mtes-mct.github.io/metadata-postgresql/)*
 
 La documentation technique, dont les sources se trouvent dans le répertoire [`docs`](https://github.com/MTES-MCT/metadata-postgresql/tree/main/docs), est généralement mise à jour au fil du développement des évolutions. Il conviendra de s'assurer que tel a bien été le cas.
 
@@ -74,7 +74,7 @@ Les modifications du code source sont automatiquement répercutées dans les pag
 
 ### Documentation utilisateur
 
-*URL de publication : https://snum.scenari-community.org/Plume/Documentation/*
+*URL de publication : [https://snum.scenari-community.org/Plume/Documentation/](https://snum.scenari-community.org/Plume/Documentation/)*
 
 Toutes les modifications qui ajoutent des fonctionnalités ou modifient des fonctionnalités existantes nécessiteront de plus d'amender en conséquence la documentation utilisateur sous Scenari.
 
