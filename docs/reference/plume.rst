@@ -2,7 +2,7 @@ Plugin QGIS Plume
 =================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    plume.iso
    plume.pg

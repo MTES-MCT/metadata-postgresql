@@ -2,7 +2,7 @@ Usage
 =====
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    generation_dictionnaire_widgets
    creation_widgets
