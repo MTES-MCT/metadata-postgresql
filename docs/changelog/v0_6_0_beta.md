@@ -2,7 +2,7 @@
 
 *Date de publication : 8 décembre 2022.*
 
-*Sur GitHub : https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.6-beta.*
+*Sur GitHub : [https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.6-beta](https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.6-beta).*
 
 Plume 0.6 bêta rassemble des améliorations sensibles en matière d'ergonomie et de petites améliorations fonctionnelles.
 

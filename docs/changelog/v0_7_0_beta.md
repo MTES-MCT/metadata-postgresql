@@ -2,7 +2,7 @@
 
 *Date de publication : 20 mars 2023.*
 
-*Sur GitHub : https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.7-beta.*
+*Sur GitHub : [https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.7-beta](https://github.com/MTES-MCT/metadata-postgresql/releases/tag/v0.7-beta).*
 
 L'extension PostgreSQL PlumePG doit obligatoirement être mise à jour en parallèle en version 0.2.0.
 
