@@ -2,7 +2,7 @@ Référence
 =========
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    admin
    plume
