@@ -436,8 +436,24 @@ Une fois son paramétrage réalisé, l'utilise clique sur un bouton `Import`, ce
     ```python
 
     from plume.rdf.metagraph import metagraph_from_iso
+    from plume.iso.map import MissingMetadataElement
 
-    metagraph = metagraph_from_iso(raw_xml, old_metagraph=old_metagraph, preserve=preserve)
+    try:
+        metagraph = metagraph_from_iso(
+            raw_xml,
+            old_metagraph=old_metagraph,
+            preserve=preserve
+        )
+    except MissingMetadataElement as err:
+        # cas où le XML est valide mais ne contient pas de
+        # métadonnées, sans doute parce que l'identifiant de la
+        # fiche n'a pas été reconnu
+        ...
+    except Exception as err:
+        # autres erreurs, notamment les erreurs 
+        # xml.etree.ElementTree.ParseError générées lorsque
+        # le XML n'est pas valide
+        ...
 
     ```
 
@@ -485,7 +501,10 @@ from plume.rdf.metagraph import metagraph_from_iso_file
 try:
     metagraph = metagraph_from_iso_file(filepath, old_metagraph=old_metagraph)
 except:
-    # par exemple si le chemin ne pointe pas sur un fichier 
+    # par exemple si le chemin ne pointe pas sur un fichier
+    # ou si le XML n'est pas valide (xml.etree.ElementTree.ParseError)
+    # ou s'il ne contient pas de métadonnées 
+    # (plume.iso.map.MissingMetadataElement)
     ...
 
 ```

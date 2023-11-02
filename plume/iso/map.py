@@ -1724,7 +1724,18 @@ def wns(tag):
         return tag
     return '{{{}}}{}'.format(ISO_NS[l[0]], l[1])    
 
-def parse_xml(raw_xml):
+class MissingMetadataElement(Exception):
+    """Erreur renvoyée lorsque le XML fourni ne contient pas de métadonnées.
+    
+    C'est à dire lorsque l'élément ``gmd:MD_Metadata`` censé
+    contenir les métadonnées n'est pas présent.
+
+    """
+    
+    def __str__(self):
+        return 'Le XML ne contient pas de métadonnées'
+
+def parse_xml(raw_xml, strict=True):
     """Désérialise un XML contenant des métadonnées ISO 19115/19139.
 
     Parameters
@@ -1732,24 +1743,36 @@ def parse_xml(raw_xml):
     raw_xml : str
         Un XML présumé contenir des métadonnées ISO 19115/19139,
         englobées ou non dans une réponse de CSW.
+    strict : bool, default True
+        Si ``True`` (défaut), la fonction génère une erreur lorsque
+        le XML ne contient pas d'élément ``gmd:MD_Metadata``, sinon
+        elle renverra un élément ``gmd:MD_Metadata`` vide.
     
     Returns
     -------
     xml.etree.ElementTree.Element
-        Si un élément ``gmd:MD_Metadata`` a été trouvé
-        dans le XML, il est renvoyé. Sinon, la fonction 
-        renvoie un élément ``gmd:MD_Metadata`` vide.
+        L'élément ``gmd:MD_Metadata`` trouvé dans le XML.
+
+    Raises
+    ------
+    xml.etree.ElementTree.ParseError
+        En cas d'erreur lors de la désérialisation - par
+        exemple si `raw_xml` n'est pas un XML valide.
+    MissingMetadataElement
+        Si le XML ne contient pas d'élément ``gmd:MD_Metadata``
+        et que `strict` vaut ``True``.        
 
     """
-    try:
-        root = etree.fromstring(raw_xml)
-        if root.tag == wns('gmd:MD_Metadata'):
-            return root
-        else:
-            return root.find('./gmd:MD_Metadata', ISO_NS) \
-                or etree.Element(wns('gmd:MD_Metadata'))
-    except:
-        return etree.Element(wns('gmd:MD_Metadata')) 
+    root = etree.fromstring(raw_xml)
+    if root.tag == wns('gmd:MD_Metadata'):
+        return root
+    else:
+        elem = root.find('./gmd:MD_Metadata', ISO_NS)
+        if not elem:
+            if strict:
+                raise MissingMetadataElement()
+            return etree.Element(wns('gmd:MD_Metadata')) 
+        return elem
 
 def normalize_crs(crs_str):
     """Recherche un code de référentiel de coordonnées dans une chaîne de caractères et le normalise.

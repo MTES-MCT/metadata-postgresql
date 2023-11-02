@@ -1,5 +1,6 @@
 
 import unittest
+import xml.etree.ElementTree as etree
 
 from plume.rdf.utils import (
     abspath, data_from_file, DatasetId, owlthing_from_email,
@@ -9,7 +10,7 @@ from plume.iso.map import (
     find_iri, find_literal, parse_xml, ISO_NS, normalize_crs,
     IsoToDcat, normalize_language, find_values, normalize_decimal,
     date_or_datetime_to_literal, to_spatial_resolution_in_meters,
-    list_objects, list_subjects, remove_objects
+    list_objects, list_subjects, remove_objects, MissingMetadataElement
 )
 from plume.pg.template import LocalTemplatesCollection
 from plume.rdf.namespaces import (
@@ -50,6 +51,23 @@ class IsoMapTestCase(unittest.TestCase):
         for isoxml_name, isoxml in IsoMapTestCase.ALL.items():
             with self.subTest(file=f'{isoxml_name}.xml'):
                 self.assertIsNotNone(isoxml.find('gmd:identificationInfo', ISO_NS))
+
+    def test_parse_xml_exceptions(self):
+        """Génération d'erreurs appropriées à la désérialisation de XML invalides ou sans métadonnées."""
+        invalid_xml = 'Not XML syntax'
+        no_metada = '''<?xml version="1.0" encoding="UTF-8"?>
+            <csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" />
+            '''
+        with self.assertRaises(etree.ParseError):
+            parse_xml(invalid_xml)
+        with self.assertRaises(etree.ParseError):
+            parse_xml(invalid_xml, strict=False)
+        with self.assertRaises(MissingMetadataElement):
+            parse_xml(no_metada)
+        self.assertIsInstance(
+            parse_xml(no_metada, strict=False),
+            etree.Element
+        )
     
     def test_find_values(self):
         """Récupération de valeurs dans un XML."""
