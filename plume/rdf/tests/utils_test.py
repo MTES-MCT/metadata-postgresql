@@ -9,7 +9,8 @@ from plume.rdf.utils import (
     str_from_datetime, str_from_date, str_from_time, datetime_from_str, 
     date_from_str, time_from_str, str_from_decimal, decimal_from_str, 
     main_datatype, export_format_from_extension, export_formats, no_logging,
-    MetaCollection, almost_included, all_words_included, text_with_link
+    MetaCollection, almost_included, all_words_included, text_with_link,
+    langstring_from_str
 )
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
@@ -563,6 +564,13 @@ class UtilsTestCase(unittest.TestCase):
             '&amp;param2=http://espace.de/nommage&amp;param3=ok">'
             'https://sous.domaine.gouv.fr/applicatif/...</a>'
         )
+
+    def test_langstring_from_str(self):
+        """Contrôle des codes de langue."""
+        self.assertIsNone(langstring_from_str('abc', 'fr '))
+        self.assertIsNone(langstring_from_str('abc', ''))
+        self.assertIsNone(langstring_from_str('abc', '?'))
+        self.assertEqual(langstring_from_str('abc', 'fr'), Literal('abc', lang='fr'))
 
 if __name__ == '__main__':
     unittest.main()

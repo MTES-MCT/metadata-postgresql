@@ -75,6 +75,11 @@ FRA_URI = URIRef('http://publications.europa.eu/resource/authority/language/FRA'
 
 """
 
+LANGUAGE_REG = re.compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
+"""Expression régulière servant à contrôler la validité des tags de langue.
+
+"""
+
 class DatasetId(URIRef):
     """Identifiant de jeu de données.
     
@@ -580,6 +585,26 @@ def owlthing_from_tel(tel_str, add_fr_prefix=True):
                 'un IRI.'.format(f, tel_str))
     if tel:
         return URIRef('tel:' + tel)
+
+def langstring_from_str(value, value_language):
+    """Transforme une chaîne de caractères avec une langue associée en valeur littérale RDF.
+
+    Parameters
+    ----------
+    value : str
+        La valeur textuelle.
+    value_language : str
+        Le code correspondant à langue de la valeur.
+
+    Returns
+    -------
+    rdflib.term.Literal or None
+        La fonction renvoie ``None`` si `value_language`
+        n'est pas un code de langue valide.
+    
+    """
+    if value_language and re.match(LANGUAGE_REG, value_language):
+        return Literal(str(value), lang=value_language)
 
 def int_from_duration(duration):
     """Extrait un nombre entier et son unité d'un littéral représentant une durée.

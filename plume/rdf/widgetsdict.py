@@ -23,7 +23,7 @@ from plume.rdf.utils import (
     tel_from_owlthing, duration_from_int, int_from_duration, str_from_duration,
     str_from_datetime, str_from_date, str_from_time, datetime_from_str,
     date_from_str, time_from_str, decimal_from_str, str_from_decimal,
-    main_datatype
+    main_datatype, langstring_from_str
 )
 from plume.rdf.widgetkey import (
     WidgetKey, ValueKey, GroupOfPropertiesKey, GroupOfValuesKey,
@@ -1361,7 +1361,7 @@ class WidgetsDict(dict):
             return
         # type RDF.langString
         if widgetkey.value_language:
-            return Literal(str(value), lang=widgetkey.value_language)
+            return langstring_from_str(str(value), widgetkey.value_language)
         # type XSD.boolean
         elif widgetkey.datatype == XSD.boolean:
             return Literal(bool(value), datatype=XSD.boolean)
