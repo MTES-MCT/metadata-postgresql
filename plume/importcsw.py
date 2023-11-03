@@ -13,6 +13,8 @@ from plume.bibli_plume import ( returnIcon, returnVersion, displayMess, returnOb
 import os.path
 #
 from plume.rdf.metagraph import metagraph_from_iso
+from plume.iso.map import MissingMetadataElement
+
 from plume.iso import csw 
 from qgis.core import QgsNetworkContentFetcher
 #
@@ -358,19 +360,32 @@ class Ui_Dialog_ImportCSW(object):
              displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + '\n\nRéponse du serveur : « ' + raw_xml[2] + ' ».', Qgis.Warning, self.Dialog.durationBarInfo)
           else : 
              #NEW metagraph and OlD Metagraph
-             metagraph = metagraph_from_iso(raw_xml[0], old_metagraph, mOptions)                                           
-             
-             #Sauvegarde l'URL et l'ID si case cochée
-             if self.caseSave.isChecked() :
-                metagraph.linked_record = self.mZoneUrl.text(), self.mZoneUrlId.text()
+             try:
+                 metagraph = metagraph_from_iso( raw_xml[0], old_metagraph=old_metagraph, preserve=mOptions )
+                 #Sauvegarde l'URL et l'ID si case cochée
+                 if self.caseSave.isChecked() :
+                    metagraph.linked_record = self.mZoneUrl.text(), self.mZoneUrlId.text()
+                 self.Dialog.metagraph = metagraph
 
-             self.Dialog.metagraph = metagraph
+                 #Regénère l'IHM
+                 saveObjetTranslation(self.Dialog.translation)
+                 self.Dialog.generationALaVolee(returnObjetsMeta(self.Dialog))
 
-             #Regénère l'IHM
-             saveObjetTranslation(self.Dialog.translation)
-             self.Dialog.generationALaVolee(returnObjetsMeta(self.Dialog))
+                 self.close()
+             except MissingMetadataElement as err:
+                 # cas où le XML est valide mais ne contient pas de
+                 # métadonnées, sans doute parce que l'identifiant de la
+                 # fiche n'a pas été reconnu
+                 zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
+                 zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "XML does not contain metadata.", None)   #Le XML ne contient pas de métadonnées.
+                 displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, '« ' + zMess + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
+             except Exception as err:
+                 # autres erreurs, notamment les erreurs 
+                 # xml.etree.ElementTree.ParseError générées lorsque
+                 # le XML n'est pas valide
+                 zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
+                 displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, '« ' + str(err) + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
              
-          self.close()
        return
 
     #===============================              
@@ -386,6 +401,7 @@ class Ui_Dialog_ImportCSW(object):
         fetcher.finished.disconnect(evloop.quit)
         #-
         raw_xml = [ fetcher.contentAsString() ]
+
         #- Cas ou le serveur CSW ne renvoie rien https://github.com/MTES-MCT/metadata-postgresql/issues/146 
         if raw_xml[0] == "" :
            ret = fetcher.reply()

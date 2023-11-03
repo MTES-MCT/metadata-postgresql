@@ -53,7 +53,7 @@ class Ui_Dialog_plume(object):
         self.iface = qgis.utils.iface                                                          
         self.firstOpen = True                                 
         self.firstOpenConnect = True
-    
+
     @contextmanager
     #== Gestionnaire de contexte généraliste avec remise de l'IHM à vierge
     #== option None par défaut sinon "continue" pour ne pas remettre l'IHM à vierge
@@ -98,11 +98,13 @@ class Ui_Dialog_plume(object):
            if getattr(self, 'mConnectEnCours', False) : self.mConnectEnCours.close()
     #== Gestionnaire de contexte généraliste avec remise de l'IHM à vierge
  
-    def setupUi(self, Dialog, _dicTooltipExiste ):
+    def setupUi(self, Dialog, _dicTooltipExiste, _plume2ToolBar ):
         self.Dialog = Dialog
+
         Dialog.setObjectName("Dialog")
         self.zMessError_Transaction = "FIN TRANSACTION"
         self._dicTooltipExiste = _dicTooltipExiste
+        self._plume2ToolBar    = _plume2ToolBar
         #--
         mDic_LH = returnAndSaveDialogParam(self, "Load")
         self.mDic_LH = mDic_LH
@@ -899,6 +901,16 @@ class Ui_Dialog_plume(object):
         resizeIhm(self, self.Dialog.width(), self.Dialog.height())
 
     #==========================
+    def showEvent(self, event):
+        if self._plume2ToolBar != None : self._plume2ToolBar.setEnabled(False)
+        return
+
+    #==========================
+    def hideEvent(self, event):
+        if self._plume2ToolBar != None : self._plume2ToolBar.setEnabled(True)
+        return
+                    
+    #==========================
     def clickParamDisplayMessage(self):
         mDicAutre = {}
         mSettings = QgsSettings()
@@ -1565,6 +1577,7 @@ class MONDOCK(QDockWidget):
            iface.layerTreeView().clicked.disconnect(self.retrieveInfoLayerQgis)
         except:
            pass
+
         return
          
 # Window Versus Dock

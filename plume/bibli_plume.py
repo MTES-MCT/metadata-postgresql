@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import ( QMessageBox, QFileDialog, QWidget, QDockWidget, QT
 from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt, QFile, QSize, QEvent )
 
 from PyQt5.QtGui import ( QIcon, QKeySequence )
+
+from qgis.PyQt.QtWidgets import QApplication, QWidget
                      
 from qgis.core import ( QgsProject, QgsSettings, QgsDataSourceUri )
 from qgis.utils import iface

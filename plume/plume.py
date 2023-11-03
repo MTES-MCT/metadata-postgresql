@@ -52,9 +52,15 @@ class MainPlugin(object):
      self.menu.setTitle(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA") + "  (" + str(returnVersion()) + ")")
      _pathIcons = os.path.dirname(__file__) + "/icons/logo"
      menuIcon          = _pathIcons + "/plume.svg"
+     #For Menu in Extensions
      self.plume2 = QAction(QIcon(menuIcon),"PLUGIN METADATA (Metadata storage in PostGreSQL)" + "  (" + str(returnVersion()) + ")",self.iface.mainWindow())
      self.plume2.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA (Metadata storage in PostGreSQL) "))
      self.plume2.triggered.connect(self.clickIHMplume2)
+     #For icon in ToolBar
+     self.plume2ToolBar = QAction(QIcon(menuIcon),"PLUGIN METADATA (Metadata storage in PostGreSQL)" + "  (" + str(returnVersion()) + ")",self.iface.mainWindow())
+     self.plume2ToolBar.setText(QtWidgets.QApplication.translate("plume_main", "PLUGIN METADATA (Metadata storage in PostGreSQL) "))
+     self.plume2ToolBar.triggered.connect(self.clickIHMplume2ToolBar)
+
      #Construction du menu
      self.menu.setIcon(QIcon(menuIcon))
      self.menu.addAction(self.plume2)
@@ -72,7 +78,7 @@ class MainPlugin(object):
      self.toolBarName = QtWidgets.QApplication.translate("plume_main", "My tool bar PLUME")
      self.toolbar = self.iface.addToolBar(self.toolBarName)
      # Pour faire une action
-     self.toolbar.addAction(self.plume2)
+     self.toolbar.addAction(self.plume2ToolBar)
      #-
      #Management Click before open IHM 
      self.initializingDisplayPlume()
@@ -174,7 +180,11 @@ class MainPlugin(object):
       return
 
   def clickIHMplume2(self):
-      d = doplume_ui.Dialog(self.dicTooltipExiste)
+      d = doplume_ui.Dialog(self.dicTooltipExiste, None)
+      d.exec_()
+
+  def clickIHMplume2ToolBar(self):
+      d = doplume_ui.Dialog(self.dicTooltipExiste, self.plume2ToolBar)
       d.exec_()
 
   def unload(self):

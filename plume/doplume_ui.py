@@ -8,9 +8,9 @@ from .plume_ui import Ui_Dialog_plume
 from plume.bibli_plume import ( returnAndSaveDialogParam )
 
 class Dialog(QDialog, Ui_Dialog_plume):
-      def __init__(self, _dicTooltipExiste):
+      def __init__(self, _dicTooltipExiste, _plume2ToolBar):
           QDialog.__init__(self)
-          self.setupUi(self, _dicTooltipExiste)
+          self.setupUi(self, _dicTooltipExiste, _plume2ToolBar)
 
       def reject(self):
           try :
