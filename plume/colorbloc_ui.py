@@ -5,8 +5,8 @@ from plume import bibli_plume
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import ( QMenu, QAction, QTabWidget, QWidget, QGraphicsOpacityEffect, QCompleter, QColorDialog )
-from PyQt5.QtGui     import ( QFont, QPalette, QColor, QIcon )
-from PyQt5.QtCore    import ( Qt, QDate)
+from PyQt5.QtGui     import ( QFont, QPalette, QColor, QIcon, QRegularExpressionValidator )
+from PyQt5.QtCore    import ( Qt, QDate, QRegularExpression )
 from qgis.gui        import ( QgsDateTimeEdit, QgsOpacityWidget )
 
 from qgis.core import ( QgsSettings, QgsApplication )
@@ -804,6 +804,13 @@ class Ui_Dialog_ColorBloc(object):
         mZoneLangList.setObjectName("mZoneLangList")
         mZoneLangList.setText(",".join(self.langList))
         mZoneLangList.setToolTip(mLabelLangListToolTip)
+        
+        #- Validation de la zone de saisie
+        regLangList = '^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*(?:,[a-zA-Z]+(?:-[a-zA-Z0-9]+)*)*$'
+        QRegExp     = QRegularExpression( regLangList )
+        validator   = QRegularExpressionValidator( QRegExp, mZoneLangList )
+        mZoneLangList.setValidator(validator)
+
         self.layoutAdvanced.addWidget(mZoneLangList, 0, 1, Qt.AlignTop)
         #------ 
         #------   A voir plus tard
@@ -1977,7 +1984,10 @@ class Ui_Dialog_ColorBloc(object):
         mSettings.beginGroup("UserSettings")
         # liste des Paramétres UTILISATEURS
         mDicUserSettings = {}
-        mDicUserSettings["langList"]                = self.mZoneLangList.text().split(",")
+        # 1) Enlever les espaces
+        mDicUserSettings["langList"] = [ elem.strip(" -") for elem in self.mZoneLangList.text().split(",") if elem.strip() != "" ]   
+        self.mZoneLangList.setText(",".join(mDicUserSettings["langList"]))
+
         #mDicUserSettings["geoideJSON"]              = "true" if self.mZoneGeoideJSON.isChecked() else "false"
         #----
         mDicUserSettings["preferedTemplate"]        = self.mZonePreferedTemplate.text().strip()

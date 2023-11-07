@@ -377,15 +377,16 @@ class Ui_Dialog_ImportCSW(object):
                  # métadonnées, sans doute parce que l'identifiant de la
                  # fiche n'a pas été reconnu
                  zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
-                 zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "XML does not contain metadata.", None)   #Le XML ne contient pas de métadonnées.
-                 displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, '« ' + zMess + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
+                 zMess  = QtWidgets.QApplication.translate("ImportCSW_ui", "Import failed. The response from the CSW service does not contain metadata.", None) # Échec de l’import. La réponse du service CSW ne contient pas de métadonnées.
+                 zMess  += "\n\n" + QtWidgets.QApplication.translate("ImportCSW_ui", "Verify that the metadata record identifier provided is valid.", None)        # Vérifiez que l’identifiant de fiche de métadonnées renseigné est valide.
+                 displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
              except Exception as err:
                  # autres erreurs, notamment les erreurs 
                  # xml.etree.ElementTree.ParseError générées lorsque
                  # le XML n'est pas valide
                  zTitre = QtWidgets.QApplication.translate("ImportCSW_ui", "PLUME : Warning", None)
-                 displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, '« ' + str(err) + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
-             
+                 zMess  +=  QtWidgets.QApplication.translate("ImportCSW_ui", "Import failed.", None) # Échec de l’import.
+                 displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + '« ' + str(err) + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
        return
 
     #===============================              

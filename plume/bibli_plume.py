@@ -465,6 +465,16 @@ def importObjetMetagraph(self) :
     try:
        old_metagraph = self.metagraph
        metagraph  = metagraph_from_file(filepath, old_metagraph=old_metagraph)
+    except Exception as err:
+       zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
+       # autres erreurs, notamment les erreurs 
+       # xml.etree.ElementTree.ParseError générées lorsque
+       # le XML n'est pas valide
+       zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("bibli_plume", "Import failed.", None)  # Échec de l’import.
+       displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + QtWidgets.QApplication.translate("bibli_plume", "Error.", None) + ' « ' + str(err) + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
+
+       metagraph = None
     except:
        zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("bibli_plume", "PLUME failed to import your metadata record.", None) 
@@ -491,6 +501,16 @@ def importObjetMetagraphInspire(self) :
     try:
        old_metagraph = self.metagraph
        metagraph = metagraph_from_iso_file(filepath, old_metagraph=old_metagraph)
+    except Exception as err:
+       zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
+       # autres erreurs, notamment les erreurs 
+       # xml.etree.ElementTree.ParseError générées lorsque
+       # le XML n'est pas valide
+       zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
+       zMess  = QtWidgets.QApplication.translate("bibli_plume", "Import failed.", None)  # Échec de l’import.
+       displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + QtWidgets.QApplication.translate("bibli_plume", "Error.", None) + ' « ' + str(err) + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
+
+       metagraph = None
     except:
        zTitre = QtWidgets.QApplication.translate("bibli_plume", "PLUME : Warning", None)
        zMess  = QtWidgets.QApplication.translate("bibli_plume", "PLUME failed to import your metadata record.", None) 
@@ -1205,12 +1225,15 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
               mDicUserSettings[key] = mSettings.value(key)           
 
        #----       
-       #Pour les langues un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+       #Pour les langues un peu de robustesse car théo gérer dans la lecture du Qgis3.ini
+       # 1) Enlever les espaces
+       mDicUserSettings["langList"] = [ elem.strip(" -") for elem in mDicUserSettings["langList"] if elem.strip() != "" ]   
+       # 2) Si language n'est pas dans langList
        if mDicUserSettings["language"] not in mDicUserSettings["langList"] : 
           mDicUserSettings["langList"].append(mDicUserSettings["language"])
           # Je re sauvegarde langList  
           mSettings.setValue("langList", mDicUserSettings["langList"])
-       #Pour les langues un peu de robustesse car théo gérer dans le lecture du Qgis3.ini
+       #Pour les langues un peu de robustesse car théo gérer dans la lecture du Qgis3.ini
        
        mDicAutre = {**mDicAutre, **mDicUserSettings}          
        # liste des Paramétres UTILISATEURS
