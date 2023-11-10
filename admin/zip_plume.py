@@ -17,7 +17,7 @@ Pour créer l'archive dans un autre répertoire:
 """
 
 from pathlib import Path
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
 from plume.rdf.utils import abspath
 
@@ -58,7 +58,9 @@ def zip_plume(dest=None):
     if Path(plumezip).exists():
         Path(plumezip).unlink()
 
-    with ZipFile(plumezip, mode="a") as zhpy:
+    with ZipFile(
+        plumezip, mode="a", compression=ZIP_DEFLATED, compresslevel=9
+    ) as zhpy:
         p = [plume]
         
         while p:
