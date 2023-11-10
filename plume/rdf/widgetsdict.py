@@ -1271,38 +1271,43 @@ class WidgetsDict(dict):
         method = self[widgetkey]['compute method']
         if not method or result is None:
             return self.dictisize_actionsbook(ActionsBook())
-        WidgetKey.clear_actionsbook()
+        WidgetKey.clear_actionsbook(allow_ghosts=True)
         # on réinitialise ici le carnet d'actions. Ensuite il
         # sera complété au fur et à mesure et non réinitialisé
         # après chaque opération, grâce aux paramètres append_book
         # des méthodes d'actions sur les clés.
+        # on utilise le paramètre allow_ghosts car il est nécessaire
+        # à la méthode RootKey.clean
         if result and isinstance(widgetkey, (ValueKey, TranslationGroupKey)):
             result = result[:1]
             # pour une clé-valeur ou un groupe de traduction,
             # on ne garde que la première valeur calculée, même
             # s'il y en avait davantage
-        e_list = []
+        clean_results = []
         for r in result:
             parsed_values = method.parser.__call__(*r)
             if not isinstance(parsed_values, list):
-                parsed_values = [parsed_values]
+                if parsed_values:
+                    parsed_values = [parsed_values]
+                else:
+                    continue
             for parsed_value in parsed_values:
-                if parsed_value.value is not None or parsed_value.str_value is not None:
-                    e_list.append(parsed_value)
+                if parsed_value:
+                    clean_results.append(parsed_value)
         # on commence par préparer les clés dans lesquelles
         # seront ensuite intégrées les valeurs
         if isinstance(widgetkey, GroupOfValuesKey):
-            keys = widgetkey.shrink_expend(len(e_list),
+            keys = widgetkey.shrink_expend(len(clean_results),
                 sources=method.sources)
         else:
             keys = [widgetkey]
             widgetkey.value = None
-        e_list = e_list[:len(keys)]
+        clean_results = clean_results[:len(keys)]
         # puis on saisit les valeurs dans les clés
         done = []
-        for i in range(len(e_list)):
+        for i in range(len(clean_results)):
             k = keys[i]
-            e = e_list[i]
+            e = clean_results[i]
             if k.sources and e.value:
                 if not e.source:
                     e.source = Thesaurus.concept_source(e.value, k.sources)
@@ -1322,14 +1327,15 @@ class WidgetsDict(dict):
             if k.value is not None:
                 done.append(k)
         for k in keys:
-            # on supprime les clés qui n'ont finalement pas été utilisées
-            # car les valeurs qui auraient dû y être stockées n'ont pas
-            # passé la validation
+        # on supprime les clés qui n'ont finalement pas été utilisées
+        # car les valeurs qui auraient dû y être stockées n'ont pas
+        # passé la validation
             if not k in done:
                 k.drop(append_book=True)
                 # NB: la méthode est sans effet sur une clé qui n'a
                 # pas de bouton moins, par exemple parce que c'est
                 # la dernière du groupe.
+        self.root.clean(append_book=True)
         a = WidgetKey.unload_actionsbook()
         self.modified = True
         return self.dictisize_actionsbook(a)

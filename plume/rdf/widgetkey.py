@@ -1771,18 +1771,27 @@ class ObjectKey(WidgetKey):
                 # pour lui rendre sa visibilité si besoin
                 self.m_twin.m_twin = None
 
-    def drop(self, append_book=False):
-        """Supprime une clé d'un groupe de valeur ou de traduction.
+    def drop(self, append_book=False, drop_single_children=False):
+        """Supprime une clé-objet.
         
-        Utiliser cette méthode sur une clé sans bouton moins n'a pas d'effet,
-        et le carnet d'actions renvoyé est vide.
+        Utiliser cette méthode sur une clé masquée n'a pas d'effet.
+        Idem pour une clé qui n'est pas une clé-valeur en lecture seule
+        et n'appartient pas non plus à un groupe de valeurs / groupe de
+        traduction (ou qui, sauf paramétrage contraire, est la dernière
+        clé de ce groupe).
         
         Parameters
         ----------
         append_book : bool, default False
             Si ``True``, le carnet d'action n'est pas réinitialisé
-            avant exécution, mais complété avec les nouvelles
-            opérations réalisées.
+            ni avant ni après l'exécution, mais complété avec les 
+            nouvelles opérations réalisées.
+        drop_single_children : bool, default False
+            Lorsque ce paramètre vaut ``False``, la dernière clé
+            du groupe est ignorée par cette méthode (sauf si elle
+            est en lecture seule). La valeur de ce paramètre ne devrait
+            être modifiée qu'à des fins de test ou dans des cas très
+            spécifiques et finement testés.
         
         Returns
         -------
@@ -1790,12 +1799,36 @@ class ObjectKey(WidgetKey):
             Le carnet d'actions qui permettra de matérialiser
             la suppresssion de la clé.
         
+        Warnings
+        --------
+        Lorsque le paramètre `append_book` est utilisé pour enregistrer
+        les actions de matérialisation d'un ensemble d'opérations 
+        réalisées successivement sur les clés, dans l'idée de pouvoir
+        jouer ensuite ces actions en une seule fois, il importe de
+        commencer par réinitialiser le carnet d'actions avec la
+        méthode :py:meth:`WidgetKey.clear_actionsbook`. À défaut, le 
+        carnet d'actions est susceptible de ne pas être vide au début du
+        traitement. Quand `append_book` vaut ``False``, la réinitialisation
+        est systématique. 
+
         """
-        if not self.has_minus_button:
-            return ActionsBook()
         if not append_book:
             WidgetKey.clear_actionsbook()
-        self.kill()
+        if (
+            not self.is_hidden
+            and (
+                # clé d'un groupe de valeurs, et pas la dernière
+                isinstance(self.parent, GroupOfValuesKey)
+                    and (
+                        not self.is_single_child
+                        or drop_single_children
+                    )
+                # clé-valeur en mode lecture
+                or isinstance(self, ValueKey)
+                    and self.is_read_only
+            )
+        ):
+            self.kill()
         return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
     def switch_twin(self, value_source=None, append_book=False):
@@ -1813,7 +1846,7 @@ class ObjectKey(WidgetKey):
             source antérieure est conservée.
         append_book : bool, default False
             Si ``True``, le carnet d'action n'est pas réinitialisé
-            avant exécution, mais complété avec les nouvelles
+            avant et après exécution, mais complété avec les nouvelles
             opérations réalisées.
         
         Returns
@@ -1821,15 +1854,26 @@ class ObjectKey(WidgetKey):
         plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de répercuter
             le changement de source sur les widgets.
+
+        Warnings
+        --------
+        Lorsque le paramètre `append_book` est utilisé pour enregistrer
+        les actions de matérialisation d'un ensemble d'opérations 
+        réalisées successivement sur les clés, dans l'idée de pouvoir
+        jouer ensuite ces actions en une seule fois, il importe de
+        commencer par réinitialiser le carnet d'actions avec la
+        méthode :py:meth:`WidgetKey.clear_actionsbook`. À défaut, le 
+        carnet d'actions est susceptible de ne pas être vide au début du
+        traitement. Quand `append_book` vaut ``False``, la réinitialisation
+        est systématique. 
         
         """
-        if self.is_hidden:
-            return ActionsBook()
         if not append_book:
             WidgetKey.clear_actionsbook()
-        self.is_hidden_m = True
-        if isinstance(self.m_twin, ValueKey) and value_source:
-            self.m_twin.value_source = value_source
+        if not self.is_hidden:
+            self.is_hidden_m = True
+            if isinstance(self.m_twin, ValueKey) and value_source:
+                self.m_twin.value_source = value_source
         return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
 class GroupKey(WidgetKey):
@@ -4905,7 +4949,7 @@ class ValueKey(ObjectKey):
             La nouvelle langue à déclarer.
         append_book : bool, default False
             Si ``True``, le carnet d'action n'est pas réinitialisé
-            avant exécution, mais complété avec les nouvelles
+            avant et après exécution, mais complété avec les nouvelles
             opérations réalisées.
         
         Returns
@@ -4913,13 +4957,24 @@ class ValueKey(ObjectKey):
         plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de répercuter le changement
             de langue sur les widgets.
+
+        Warnings
+        --------
+        Lorsque le paramètre `append_book` est utilisé pour enregistrer
+        les actions de matérialisation d'un ensemble d'opérations 
+        réalisées successivement sur les clés, dans l'idée de pouvoir
+        jouer ensuite ces actions en une seule fois, il importe de
+        commencer par réinitialiser le carnet d'actions avec la
+        méthode :py:meth:`WidgetKey.clear_actionsbook`. À défaut, le 
+        carnet d'actions est susceptible de ne pas être vide au début du
+        traitement. Quand `append_book` vaut ``False``, la réinitialisation
+        est systématique. 
         
         """
-        if self.is_hidden:
-            return ActionsBook()
         if not append_book:
             WidgetKey.clear_actionsbook()
-        self.value_language = value_language
+        if not self.is_hidden:
+            self.value_language = value_language
         return WidgetKey.unload_actionsbook(preserve_book=append_book)
     
     def change_source(self, value_source, append_book=False):
@@ -4934,7 +4989,7 @@ class ValueKey(ObjectKey):
             La nouvelle source à déclarer.
         append_book : bool, default False
             Si ``True``, le carnet d'action n'est pas réinitialisé
-            avant exécution, mais complété avec les nouvelles
+            avant et après exécution, mais complété avec les nouvelles
             opérations réalisées.
         
         Returns
@@ -4942,13 +4997,24 @@ class ValueKey(ObjectKey):
         plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de répercuter le changement
             de source sur les widgets.
+
+        Warnings
+        --------
+        Lorsque le paramètre `append_book` est utilisé pour enregistrer
+        les actions de matérialisation d'un ensemble d'opérations 
+        réalisées successivement sur les clés, dans l'idée de pouvoir
+        jouer ensuite ces actions en une seule fois, il importe de
+        commencer par réinitialiser le carnet d'actions avec la
+        méthode :py:meth:`WidgetKey.clear_actionsbook`. À défaut, le 
+        carnet d'actions est susceptible de ne pas être vide au début du
+        traitement. Quand `append_book` vaut ``False``, la réinitialisation
+        est systématique. 
         
         """
-        if self.is_hidden:
-            return ActionsBook()
         if not append_book:
             WidgetKey.clear_actionsbook()
-        self.value_source = value_source
+        if not self.is_hidden:
+            self.value_source = value_source
         return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
     def change_unit(self, value_unit, append_book=False):
@@ -4963,7 +5029,7 @@ class ValueKey(ObjectKey):
             La nouvelle unité à déclarer.
         append_book : bool, default False
             Si ``True``, le carnet d'action n'est pas réinitialisé
-            avant exécution, mais complété avec les nouvelles
+            avant et après exécution, mais complété avec les nouvelles
             opérations réalisées.
         
         Returns
@@ -4971,13 +5037,24 @@ class ValueKey(ObjectKey):
         plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de répercuter le changement
             d'unité sur les widgets.
+
+        Warnings
+        --------
+        Lorsque le paramètre `append_book` est utilisé pour enregistrer
+        les actions de matérialisation d'un ensemble d'opérations 
+        réalisées successivement sur les clés, dans l'idée de pouvoir
+        jouer ensuite ces actions en une seule fois, il importe de
+        commencer par réinitialiser le carnet d'actions avec la
+        méthode :py:meth:`WidgetKey.clear_actionsbook`. À défaut, le 
+        carnet d'actions est susceptible de ne pas être vide au début du
+        traitement. Quand `append_book` vaut ``False``, la réinitialisation
+        est systématique. 
         
         """
-        if self.is_hidden:
-            return ActionsBook()
         if not append_book:
             WidgetKey.clear_actionsbook()
-        self.value_unit = value_unit
+        if not self.is_hidden:
+            self.value_unit = value_unit
         return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
     def _build_metagraph(self, metagraph):
@@ -5147,6 +5224,18 @@ class PlusButtonKey(WidgetKey):
             Si `key_type` est renseigné et que le groupe ne contient
             aucune clé du type considéré, ou si aucune clé n'a pu être
             dupliquée.
+
+        Warnings
+        --------
+        Lorsque le paramètre `append_book` est utilisé pour enregistrer
+        les actions de matérialisation d'un ensemble d'opérations 
+        réalisées successivement sur les clés, dans l'idée de pouvoir
+        jouer ensuite ces actions en une seule fois, il importe de
+        commencer par réinitialiser le carnet d'actions avec la
+        méthode :py:meth:`WidgetKey.clear_actionsbook`. À défaut, le 
+        carnet d'actions est susceptible de ne pas être vide au début du
+        traitement. Quand `append_book` vaut ``False``, la réinitialisation
+        est systématique. 
 
         """
         if not append_book:
@@ -5474,7 +5563,7 @@ class RootKey(GroupKey):
             widgetkey.copy(parent=refkey, empty=False)
         return WidgetKey.unload_actionsbook()
 
-    def clean(self):
+    def clean(self, append_book=False):
         """Balaie l'arbre de clés et supprime tous les groupes sans fille.
         
         Les groupes qui ne contiennent que des fantômes sont transformés
@@ -5491,12 +5580,29 @@ class RootKey(GroupKey):
         jumelle principale lorsqu'il n'y a pas de bouton de sélection
         de la source qui permettraient de les afficher.
         
+        Parameters
+        ----------
+        append_book : bool, default False
+            Si ``True``, le carnet d'action n'est pas réinitialisé
+            avant et après exécution, mais complété avec les nouvelles
+            opérations réalisées.
+
         Returns
         -------
         plume.rdf.actionsbook.ActionsBook
             Le carnet d'actions qui permettra de matérialiser les
             opérations réalisées.
         
+        Warnings
+        --------
+        Lorsque le paramètre `append_book` est utilisé pour enregistrer
+        les actions de matérialisation d'un ensemble d'opérations 
+        réalisées successivement sur les clés, dans l'idée de pouvoir
+        jouer ensuite ces actions en une seule fois, il est nécessaire
+        de commencer par réinitialiser le carnet d'actions avec la
+        méthode :py:meth:`WidgetKey.clear_actionsbook`, en spécifiant
+        ``allow_ghosts=True`` en argument.
+
         Notes
         -----
         Les suppressions et les fantômisations se traduisent par
@@ -5504,9 +5610,10 @@ class RootKey(GroupKey):
         du carnet d'actions.
         
         """
-        WidgetKey.clear_actionsbook(allow_ghosts=True)
+        if not append_book:
+            WidgetKey.clear_actionsbook(allow_ghosts=True)
         self._clean()
-        return WidgetKey.unload_actionsbook()
+        return WidgetKey.unload_actionsbook(preserve_book=append_book)
 
     def build_metagraph(self):
         """Traduit l'arbre de clés en graphe de métadonnées.

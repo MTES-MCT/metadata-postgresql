@@ -442,8 +442,286 @@ class WidgetKeyTestCase(unittest.TestCase):
         gp1 = GroupOfPropertiesKey(parent=gv)
         v1 = ValueKey(parent=gp1, predicate=DCAT.startDate)
         v2 = ValueKey(parent=gp1, predicate=DCAT.endDate)
-        actionsbook = gp1.drop()
+        actionsbook = gp1.drop(drop_single_children=True)
         self.assertListEqual(actionsbook.drop, [gp1, v1, v2])
+
+    def test_drop_multiple_keys(self):
+        """Suppression successive de plusieurs clés."""
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        gv = GroupOfValuesKey(parent=t, predicate=DCAT.keyword)
+        v1 = ValueKey(parent=gv, value=Literal('mot clé 1', lang='fr'))
+        v2 = ValueKey(parent=gv, value=Literal('mot clé 2', lang='fr'))
+        v3 = ValueKey(parent=gv, value=Literal('mot clé 3', lang='fr'))
+        v4 = ValueKey(parent=gv, value=Literal('mot clé 4', lang='fr'))
+        v5 = ValueKey(parent=gv, value=Literal('mot clé 5', lang='fr'))
+        self.assertListEqual(gv.children, [v1, v2, v3, v4, v5])
+        WidgetKey.clear_actionsbook()
+        self.assertListEqual(WidgetKey.actionsbook.drop, [])
+        self.assertFalse(v1.is_hidden)
+        self.assertTrue(v1.has_minus_button)
+        self.assertFalse(v1.is_single_child)
+
+        actionsbook = v1.drop(append_book=True)
+        self.assertListEqual(gv.children, [v2, v3, v4, v5])
+        self.assertListEqual(actionsbook.drop, [v1])
+        self.assertListEqual(WidgetKey.actionsbook.drop, [v1])
+
+        actionsbook = v2.drop(append_book=True)
+        self.assertListEqual(WidgetKey.actionsbook.drop, [v1, v2])
+        self.assertListEqual(actionsbook.drop, [v1, v2])
+
+        actionsbook = v3.drop()
+        self.assertListEqual(WidgetKey.actionsbook.drop, [])
+        self.assertListEqual(actionsbook.drop, [v3])
+
+        actionsbook = v4.drop(append_book=True)
+        self.assertListEqual(WidgetKey.actionsbook.drop, [v4])
+        self.assertListEqual(actionsbook.drop, [v4])
+        self.assertFalse(v5.is_hidden)
+        self.assertTrue(v5.has_minus_button)
+        self.assertTrue(v5.is_single_child)
+
+        actionsbook = v5.drop(append_book=True)
+        self.assertListEqual(WidgetKey.actionsbook.drop, [v4])
+        self.assertListEqual(actionsbook.drop, [v4])
+        actionsbook = v5.drop()
+        self.assertListEqual(WidgetKey.actionsbook.drop, [])
+        self.assertListEqual(actionsbook.drop, [])
+        actionsbook = v5.drop(drop_single_children=True)
+        self.assertListEqual(WidgetKey.actionsbook.drop, [])
+        self.assertListEqual(actionsbook.drop, [v5])
+
+        WidgetKey.clear_actionsbook()
+
+    def test_drop_multiple_groups_of_properties(self):
+        """Suppression successive de plusieurs groupes de propriétés."""
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        gv = GroupOfValuesKey(parent=t, rdfclass=DCT.PeriodOfTime,
+            predicate=DCT.temporal)
+        gp1 = GroupOfPropertiesKey(parent=gv)
+        v1 = ValueKey(parent=gp1, predicate=DCAT.startDate)
+        v2 = ValueKey(parent=gp1, predicate=DCAT.endDate)
+        gp2 = GroupOfPropertiesKey(parent=gv)
+        v3 = ValueKey(parent=gp2, predicate=DCAT.startDate)
+        v4 = ValueKey(parent=gp2, predicate=DCAT.endDate)
+        gp3 = GroupOfPropertiesKey(parent=gv)
+        v5 = ValueKey(parent=gp3, predicate=DCAT.startDate)
+        v6 = ValueKey(parent=gp3, predicate=DCAT.endDate)
+        WidgetKey.clear_actionsbook()
+
+        actionsbook = gp1.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [gp1, v1, v2])
+
+        actionsbook = gp2.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [gp1, v1, v2, gp2, v3, v4])
+
+        actionsbook = gp3.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [gp1, v1, v2, gp2, v3, v4])
+
+        self.assertListEqual(gv.children, [gp3])
+        self.assertListEqual(gp3.children, [v5, v6])
+
+        WidgetKey.clear_actionsbook()
+
+    def test_drop_multiple_keys_with_twins(self):
+        """Suppression successive de plusieurs clés, avec jumelles."""
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        g = GroupOfValuesKey(
+            parent=t,
+            predicate=DCT.conformsTo,
+            rdfclass=DCT.Standard,
+            sources=[
+                URIRef('http://www.opengis.net/def/crs/EPSG/0')
+            ]
+        )
+        b = PlusButtonKey(parent=g)
+        p1 = GroupOfPropertiesKey(parent=g)
+        v1 = ValueKey(
+            parent=g,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0'),
+            m_twin=p1,
+            is_hidden_m=True
+        )
+        v2 = ValueKey(
+            parent=g,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0')
+        )
+        p2 = GroupOfPropertiesKey(
+            parent=g,
+            m_twin=v2,
+            is_hidden_m=True
+        )
+        v3 = ValueKey(
+            parent=g,
+            value_source=URIRef('http://www.opengis.net/def/crs/EPSG/0')
+        )
+        p3 = GroupOfPropertiesKey(
+            parent=g,
+            m_twin=v3,
+            is_hidden_m=True
+        )
+        self.assertTrue(v1.is_hidden)
+        self.assertFalse(p1.is_hidden)
+        self.assertFalse(v2.is_hidden)
+        self.assertTrue(p2.is_hidden)
+        self.assertFalse(v3.is_hidden)
+        self.assertTrue(p3.is_hidden)
+        self.assertListEqual(g.children, [p1, v1, v2, p2, v3, p3])
+
+        WidgetKey.clear_actionsbook()
+
+        actionsbook = v1.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [])
+        self.assertListEqual(g.children, [p1, v1, v2, p2, v3, p3])
+
+        actionsbook = p1.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [p1, v1])
+        self.assertListEqual(g.children, [v2, p2, v3, p3])
+
+        actionsbook = p2.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [p1, v1])
+        self.assertListEqual(g.children, [v2, p2, v3, p3])
+
+        actionsbook = v2.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [p1, v1, v2, p2])
+        self.assertListEqual(g.children, [v3, p3])
+
+        actionsbook = v3.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [p1, v1, v2, p2])
+        self.assertListEqual(g.children, [v3, p3])
+
+        g.is_read_only = True
+        actionsbook = v3.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [p1, v1, v2, p2, v3, p3])
+        self.assertListEqual(g.children, [])
+
+        self.assertListEqual(actionsbook.move, [b])
+
+        WidgetKey.clear_actionsbook()
+
+    def test_drop_value_key(self):
+        """Suppression d'une clé valeur."""
+        r = RootKey()
+        t = TabKey(parent=r, label='Général')
+        vtitle = ValueKey(
+            parent=t, predicate=DCT.title,
+            value=Literal('Mon jeu de données', lang='fr'),
+            is_read_only=False
+            )
+        vdescr = ValueKey(
+            parent=t, predicate=DCT.description,
+            value=Literal("C'est un jeu de données.", lang='fr'),
+            is_read_only=True
+            )
+
+        # clé qui n'est pas en lecture seule
+        actionsbook = vtitle.drop()
+        self.assertListEqual(t.children, [vtitle, vdescr])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                self.assertListEqual(v, [])
+
+        # clé en lecture seule
+        actionsbook = vdescr.drop()
+        self.assertListEqual(t.children, [vtitle])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                if k == 'drop':
+                    self.assertListEqual(v, [vdescr])
+                else:
+                    self.assertListEqual(v, [])
+    
+    def test_clean_after_drop(self):
+        """Nettoyage de l'arbre des clés après des suppressions."""
+        r = RootKey()
+        tgeneral = TabKey(parent=r, label='Général')
+        vtitle = ValueKey(
+            parent=tgeneral, predicate=DCT.title,
+            value=Literal('Mon jeu de données', lang='fr'),
+            is_read_only=True
+            )
+        gkeywords = GroupOfValuesKey(parent=tgeneral, predicate=DCAT.keyword, is_read_only=True)
+        vkeyword1 = ValueKey(parent=gkeywords, value=Literal('mot clé 1', lang='fr'))
+        vkeyword2 = ValueKey(parent=gkeywords, value=Literal('mot clé 2', lang='fr'))
+        tothers = TabKey(parent=r, label='Autres')
+        grights = GroupOfPropertiesKey(
+            parent=tothers, rdfclass=DCT.RightsStatement,
+            predicate=DCT.rights
+            )
+        vrigthslabel = ValueKey(parent=grights, predicate=RDFS.label, is_read_only=True)
+        gaccessrights = GroupOfPropertiesKey(
+            parent=tothers, rdfclass=DCT.RightsStatement,
+            predicate=DCT.accessRights, is_ghost=True
+            )
+        vaccessrigthslabel = ValueKey(
+            parent=gaccessrights, predicate=RDFS.label, value='Accès public'
+        )
+
+        WidgetKey.clear_actionsbook(allow_ghosts=True)
+
+        actionsbook = vtitle.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [vtitle])
+        self.assertListEqual(actionsbook.move, [gkeywords])
+        self.assertListEqual(actionsbook.modified, [gkeywords])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                if not k in ('drop', 'move', 'modified'):
+                    self.assertListEqual(v, [])
+        
+        actionsbook = vkeyword1.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [vtitle, vkeyword1])
+        self.assertListEqual(actionsbook.move, [gkeywords, vkeyword2])
+        self.assertListEqual(actionsbook.modified, [gkeywords, vkeyword2])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                if not k in ('drop', 'move', 'modified'):
+                    self.assertListEqual(v, [])
+        
+        actionsbook = vkeyword2.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [vtitle, vkeyword1, vkeyword2])
+        self.assertListEqual(actionsbook.move, [gkeywords])
+        self.assertListEqual(actionsbook.modified, [gkeywords])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                if not k in ('drop', 'move', 'modified'):
+                    self.assertListEqual(v, [])
+
+        actionsbook = r.clean(append_book=True)
+        self.assertListEqual(actionsbook.drop, [vtitle, vkeyword1, vkeyword2, gkeywords, tgeneral])
+        self.assertListEqual(actionsbook.move, [tothers])
+        self.assertListEqual(actionsbook.modified, [tothers])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                if not k in ('drop', 'move', 'modified'):
+                    self.assertListEqual(v, [])
+        self.assertListEqual(r.children, [tothers])
+
+        actionsbook = vrigthslabel.drop(append_book=True)
+        self.assertListEqual(actionsbook.drop, [vtitle, vkeyword1, vkeyword2, gkeywords, tgeneral, vrigthslabel])
+        self.assertListEqual(actionsbook.move, [tothers])
+        self.assertListEqual(actionsbook.modified, [tothers])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                if not k in ('drop', 'move', 'modified'):
+                    self.assertListEqual(v, [])
+
+        actionsbook = r.clean(append_book=True)
+        self.assertListEqual(actionsbook.drop, [vtitle, vkeyword1, vkeyword2, gkeywords, tgeneral, vrigthslabel, grights, tothers])
+        for k, v in actionsbook.__dict__.items():
+            with self.subTest(actionsbook_attribute = k):
+                if not k in ('drop',):
+                    self.assertListEqual(v, [])
+        self.assertListEqual(r.children, [tothers])
+        self.assertTrue(tothers.is_hidden)
+        self.assertListEqual(tothers.children, [gaccessrights])
+        self.assertTrue(gaccessrights.is_hidden)
+        self.assertListEqual(gaccessrights.children, [vaccessrigthslabel])
+        self.assertTrue(vaccessrigthslabel.is_hidden)
+
+        WidgetKey.clear_actionsbook()
 
     def test_clean(self):
         """Suppression ou fantômisation a posteriori des groupes qui n'ont pas d'enfants ou que des fantômes.
@@ -802,29 +1080,25 @@ class WidgetKeyTestCase(unittest.TestCase):
         valkey3 = ValueKey(parent=rootkey, predicate=DCAT.temporalResolution,
             datatype=XSD.duration)
 
-        lattr = ('modified', 'show', 'show_minus_button', 'hide',
-            'hide_minus_button', 'create', 'move', 'languages', 'units',
-            'sources', 'thesaurus', 'drop', 'update')
-
         WidgetKey.clear_actionsbook()
         valkey1d = ValueKey(parent=groupkey1, rowspan=1)
         actionsbook = WidgetKey.unload_actionsbook()
         self.assertEqual(actionsbook.create, [valkey1d])
         self.assertEqual(actionsbook.move, [buttonkey1])
         self.assertEqual(actionsbook.modified, [buttonkey1])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'create', 'move'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
 
         actionsbook = valkey1a.switch_twin()
         self.assertEqual(actionsbook.show, [valkey1b])
         self.assertEqual(actionsbook.hide, [valkey1a])
         self.assertEqual(actionsbook.modified, [valkey1a, valkey1b])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'show', 'hide'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
 
         valkey2b = ValueKey(parent=groupkey2, rowspan=2, value_language='fr')
         actionsbook = WidgetKey.unload_actionsbook()
@@ -833,11 +1107,11 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.show_minus_button, [valkey2a])
         self.assertEqual(actionsbook.languages, [valkey2a])
         self.assertEqual(actionsbook.modified, [valkey2a, buttonkey2])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'create', 'move',
                     'show_minus_button', 'languages'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
 
         valkey2c = ValueKey(parent=groupkey2, rowspan=2, value_language='it')
         actionsbook = WidgetKey.unload_actionsbook()
@@ -846,11 +1120,11 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.hide, [buttonkey2])
         self.assertEqual(actionsbook.languages, [valkey2a, valkey2b])
         self.assertEqual(actionsbook.modified, [valkey2a, valkey2b, buttonkey2])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'create', 'move',
                     'hide', 'languages'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
 
         actionsbook = valkey2a.drop()
         self.assertEqual(actionsbook.drop, [valkey2a])
@@ -858,19 +1132,19 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.show, [buttonkey2])
         self.assertEqual(actionsbook.languages, [valkey2b, valkey2c])
         self.assertEqual(actionsbook.modified, [valkey2b, valkey2c, buttonkey2])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'drop', 'move', 'show',
                     'languages'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
 
         actionsbook = valkey2c.change_language('en')
         self.assertEqual(actionsbook.languages, [valkey2b, valkey2c])
         self.assertEqual(actionsbook.modified, [valkey2b, valkey2c])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'languages'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
 
         actionsbook = valkey2b.drop()
         self.assertEqual(actionsbook.drop, [valkey2b])
@@ -878,29 +1152,29 @@ class WidgetKeyTestCase(unittest.TestCase):
         self.assertEqual(actionsbook.hide_minus_button, [valkey2c])
         self.assertEqual(actionsbook.languages, [valkey2c])
         self.assertEqual(actionsbook.modified, [valkey2c, buttonkey2])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'drop', 'languages',
                     'hide_minus_button', 'move'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
 
         actionsbook = valkey3.change_unit('jours')
         self.assertEqual(actionsbook.units, [valkey3])
         self.assertEqual(actionsbook.modified, [valkey3])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'units'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
         
         valkey3.value = Literal('PT3H20M')
         actionsbook = WidgetKey.unload_actionsbook()
         self.assertEqual(actionsbook.update, [valkey3])
         self.assertEqual(actionsbook.units, [valkey3])
         self.assertEqual(actionsbook.modified, [valkey3])
-        for a in lattr:
+        for a, alist in actionsbook.__dict__.items():
             with self.subTest(actionsbook_attr = a):
                 if not a in ('modified', 'units', 'update'):
-                    self.assertFalse(getattr(actionsbook, a))
+                    self.assertFalse(alist)
         
 
 if __name__ == '__main__':

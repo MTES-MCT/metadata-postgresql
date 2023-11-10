@@ -3854,6 +3854,321 @@ class WidgetsDictTestCase(unittest.TestCase):
         metagraph = Metagraph().parse(data=metadata)
         self.assertTrue(isomorphic(metagraph,
             widgetsdict.build_metagraph(preserve_metadata_date=True)))
+        
+    def test_compute_theme_no_result_edit(self):
+        """Processus de calcul des métadonnées lorsqu'il n'y a pas de correspondance.
+        
+        Avec le mode ``'auto'`` pour le calcul automatique, pour un
+        dictionnaire en mode édition + traduction.
+        
+        """
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(''' 
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label) VALUES 
+                        (100, 'Some computing') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path, compute) VALUES
+                        (100, 'dct:conformsTo', ARRAY['auto']),
+                        (100, 'dcat:theme', ARRAY['auto', 'manual']),
+                        (100, 'dct:title', ARRAY['auto']) ;
+                    CREATE SCHEMA IF NOT EXISTS ghost ;
+                    CREATE TABLE ghost.some_ghost_table () ;
+                ''')
+                cur.execute(
+                    *query_get_categories('Some computing')
+                )
+                categories = cur.fetchall()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg ;
+                ''')
+        conn.close()
+        metagraph = Metagraph()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(
+            metagraph=metagraph, template=template, mode='edit', translation=True
+        )
+        gtheme = widgetsdict.root.search_from_path(DCAT.theme)
+        self.assertTrue(widgetsdict[gtheme]['has compute button'])
+        self.assertTrue(widgetsdict[gtheme]['auto compute'])
+        self.assertEqual(len(gtheme.children), 1)
+        self.assertIsNone(gtheme.children[0].value)
+
+        gtitle = widgetsdict.root.search_from_path(DCT.title)
+        self.assertFalse(widgetsdict[gtitle]['has compute button'])
+        self.assertTrue(widgetsdict[gtitle]['auto compute'])
+        self.assertEqual(len(gtitle.children), 1)
+        self.assertIsNone(gtitle.children[0].value)
+
+        gconforms = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertFalse(widgetsdict[gconforms]['has compute button'])
+        self.assertTrue(widgetsdict[gconforms]['auto compute'])
+        self.assertEqual(len(gconforms.children), 1)
+        self.assertIsNone(gconforms.children[0].value)
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = widgetsdict.computing_query(gtheme, 'ghost', 'some_ghost_table')
+                cur.execute(*query)
+                result_gtheme = cur.fetchall()
+                query = widgetsdict.computing_query(gtitle, 'ghost', 'some_ghost_table')
+                cur.execute(*query)
+                result_gtitle = cur.fetchall()
+                query = widgetsdict.computing_query(gconforms, 'ghost', 'some_ghost_table')
+                cur.execute(*query)
+                result_gconforms = cur.fetchall()
+                cur.execute('''
+                    DROP TABLE ghost.some_ghost_table ;
+                    DROP SCHEMA ghost ;
+                ''')
+        conn.close()
+        
+        widgetsdict[gtheme]['main widget'] = '<gtheme QGroupBox dcat:theme>'
+        widgetsdict[gtheme]['grid widget'] = '<gtheme QGridLayout dcat:theme>'
+        widgetsdict[gtheme]['compute widget'] = '<gtheme-compute QToolButton dcat:theme>'
+        widgetsdict[gtheme.button]['main widget'] = '<gtheme-plus-button QToolButton dcat:theme>'
+
+        vtheme = gtheme.children[0]
+        widgetsdict[vtheme]['main widget'] = '<vtheme QComboBox dcat:theme>'
+        widgetsdict[vtheme]['minus widget'] = '<vtheme-minus QToolButton dcat:theme>'
+        widgetsdict[vtheme]['switch source widget'] = '<vtheme-source QToolButton dcat:theme>'
+        widgetsdict[vtheme]['switch source menu'] = '<vtheme-source QMenu dcat:theme>'
+        widgetsdict[vtheme]['switch source actions'] = ['<vtheme-source QAction n°1', '<vtheme-source QAction n°2']
+
+        widgetsdict[gtitle]['main widget'] = '<gtitle QGroupBox dct:title>'
+        widgetsdict[gtitle]['grid widget'] = '<gtitle QGridLayout dct:title>'
+        widgetsdict[gtitle]['compute widget'] = '<gtitle-compute QToolButton dct:title>'
+        widgetsdict[gtitle.button]['main widget'] = '<gtitle-translation-button QToolButton dct:title>'
+
+        vtitle = gtitle.children[0]
+        widgetsdict[vtitle]['main widget'] = '<vtitle QComboBox dct:title>'
+        widgetsdict[vtitle]['minus widget'] = '<vtitle-minus QToolButton dct:title>'
+        widgetsdict[vtitle]['language widget'] = '<vtitle-language QToolButton dct:title>'
+        widgetsdict[vtitle]['language menu'] = '<vtitle-language QMenu dct:title>'
+        widgetsdict[vtitle]['language actions'] = ['<vtitle-language QAction n°1', '<vtitle-language QAction n°2']
+
+        widgetsdict[gconforms]['main widget'] = '<gconforms QGroupBox dct:conformsTo>'
+        widgetsdict[gconforms]['grid widget'] = '<gconforms QGridLayout dct:conformsTo>'
+        widgetsdict[gconforms]['compute widget'] = '<gconforms-compute QToolButton dct:conformsTo>'
+        widgetsdict[gconforms.button]['main widget'] = '<gconforms-plus-button QToolButton dct:conformsTo>'
+
+        vconforms = gconforms.children[0]
+        widgetsdict[vconforms]['main widget'] = '<vconforms QComboBox dct:conformsTo>'
+        widgetsdict[vconforms]['minus widget'] = '<vconforms-minus QToolButtondct:conformsTo>'
+        widgetsdict[vconforms]['switch source widget'] = '<vconforms-source QToolButton dct:conformsTo>'
+        widgetsdict[vconforms]['switch source menu'] = '<vconforms-source QMenu dct:conformsTo>'
+        widgetsdict[vconforms]['switch source actions'] = ['<vconforms-source QAction n°1', '<vconforms-source QAction n°2']
+        
+        # --- intégration ---
+        actionsdict = widgetsdict.computing_update(gtheme, result_gtheme)
+        self.assertListEqual(gtheme.children, [vtheme])
+        self.assertIsNone(vtheme.value)
+        self.assertTrue(widgetsdict[gtheme]['has compute button'])
+        self.assertTrue(widgetsdict[vtheme]['has minus button'])
+        self.assertTrue(widgetsdict[vtheme]['hide minus button'])
+        self.assertTrue(widgetsdict[vtheme]['multiple sources'])
+        self.assertFalse(widgetsdict[gtheme.button]['hidden'])
+        self.assertListEqual(actionsdict['value to update'], [vtheme])
+        # NB: la réinitialisation de la valeur même lorsqu'elle n'a pas
+        # été modifiée est une précaution technique
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if a != 'value to update':
+                    self.assertFalse(l)
+        
+        actionsdict = widgetsdict.computing_update(gtitle, result_gtitle)
+        self.assertListEqual(gtitle.children, [vtitle])
+        self.assertIsNone(vtitle.value)
+        self.assertFalse(widgetsdict[gtitle]['has compute button'])
+        self.assertTrue(widgetsdict[vtitle]['has minus button'])
+        self.assertTrue(widgetsdict[vtitle]['hide minus button'])
+        self.assertTrue(widgetsdict[vtitle]['authorized languages'])
+        self.assertFalse(widgetsdict[gtitle.button]['hidden'])
+        self.assertListEqual(actionsdict['value to update'], [vtitle])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if a != 'value to update':
+                    self.assertFalse(l)
+
+        actionsdict = widgetsdict.computing_update(gconforms, result_gconforms)
+        self.assertListEqual(gconforms.children, [vconforms])
+        self.assertIsNone(vconforms.value)
+        self.assertFalse(widgetsdict[gconforms]['has compute button'])
+        self.assertTrue(widgetsdict[vconforms]['has minus button'])
+        self.assertTrue(widgetsdict[vconforms]['hide minus button'])
+        self.assertFalse(widgetsdict[gconforms.button]['hidden'])
+        self.assertListEqual(actionsdict['value to update'], [vconforms])
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if a != 'value to update':
+                    self.assertFalse(l)
+
+    def test_compute_theme_no_result_read(self):
+        """Processus de calcul des métadonnées lorsqu'il n'y a pas de correspondance - en mode lecture.
+        
+        Avec le mode ``'auto'`` pour le calcul automatique, pour un
+        dictionnaire en mode lecture. Le principal enjeu est de vérifier
+        que les groupes vides sont correctement supprimés.
+        
+        """
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute(''' 
+                    INSERT INTO z_plume.meta_template (tpl_id, tpl_label) VALUES 
+                        (100, 'Some computing') ;
+                    INSERT INTO z_plume.meta_template_categories (tpl_id, shrcat_path, compute, template_order) VALUES
+                        (100, 'dct:conformsTo', ARRAY['auto'], 3),
+                        (100, 'dcat:theme', ARRAY['auto', 'manual'], 2),
+                        (100, 'dct:title', ARRAY['auto'], 1) ;
+                    CREATE SCHEMA IF NOT EXISTS ghost ;
+                    CREATE TABLE ghost.some_ghost_table () ;
+                ''')
+                cur.execute(
+                    *query_get_categories('Some computing')
+                )
+                categories = cur.fetchall()
+                cur.execute('''
+                    DROP EXTENSION plume_pg ;
+                    CREATE EXTENSION plume_pg ;
+                ''')
+        conn.close()
+        metagraph = Metagraph()
+        template = TemplateDict(categories)
+        widgetsdict = WidgetsDict(
+            metagraph=metagraph, template=template, mode='read'
+        )
+        gtheme = widgetsdict.root.search_from_path(DCAT.theme)
+        self.assertFalse(widgetsdict[gtheme]['has compute button'])
+        self.assertTrue(widgetsdict[gtheme]['auto compute'])
+        self.assertEqual(len(gtheme.children), 1)
+        self.assertIsNone(gtheme.children[0].value)
+        self.assertTrue(gtheme.button.is_hidden)
+        self.assertTrue(widgetsdict[gtheme.button]['hidden'])
+
+        vtitle = widgetsdict.root.search_from_path(DCT.title)
+        self.assertFalse(widgetsdict[vtitle]['has compute button'])
+        self.assertTrue(widgetsdict[vtitle]['auto compute'])
+        self.assertFalse(widgetsdict[vtitle]['has minus button'])
+        self.assertIsInstance(vtitle, ValueKey)
+        self.assertIsNone(vtitle.value)
+
+        gconforms = widgetsdict.root.search_from_path(DCT.conformsTo)
+        self.assertFalse(widgetsdict[gconforms]['has compute button'])
+        self.assertTrue(widgetsdict[gconforms]['auto compute'])
+        self.assertEqual(len(gconforms.children), 1)
+        self.assertIsNone(gconforms.children[0].value)
+
+        tab = widgetsdict.root.search_tab('Général')
+        self.assertListEqual(tab.children, [vtitle, gtheme, gconforms])
+        self.assertTrue(tab in widgetsdict.root.children)
+        
+        # --- requête ---
+        conn = psycopg2.connect(WidgetsDictTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                query = widgetsdict.computing_query(gtheme, 'ghost', 'some_ghost_table')
+                cur.execute(*query)
+                result_gtheme = cur.fetchall()
+                query = widgetsdict.computing_query(vtitle, 'ghost', 'some_ghost_table')
+                cur.execute(*query)
+                result_vtitle = cur.fetchall()
+                query = widgetsdict.computing_query(gconforms, 'ghost', 'some_ghost_table')
+                cur.execute(*query)
+                result_gconforms = cur.fetchall()
+                cur.execute('''
+                    DROP TABLE ghost.some_ghost_table ;
+                    DROP SCHEMA ghost ;
+                ''')
+        conn.close()
+        
+        widgetsdict[tab]['main widget'] = '<tab Général>'
+        widgetsdict[tab]['grid widget'] = '<tab QGridLayout Général>'
+        widgetsdict[gtheme]['main widget'] = '<gtheme QGroupBox dcat:theme>'
+        widgetsdict[gtheme]['grid widget'] = '<gtheme QGridLayout dcat:theme>'
+        vtheme = gtheme.children[0]
+        widgetsdict[vtheme]['main widget'] = '<vtheme QComboBox dcat:theme>'
+        widgetsdict[gtheme.button]['main widget'] = '<gtheme-plus-button QToolButton dcat:theme>'
+        widgetsdict[vtitle]['main widget'] = '<vtitle QComboBox dct:title>'
+        widgetsdict[gconforms]['main widget'] = '<gconforms QGroupBox dct:conformsTo>'
+        widgetsdict[gconforms]['grid widget'] = '<gconforms QGridLayout dct:conformsTo>'
+        vconforms = gconforms.children[0]
+        widgetsdict[vconforms]['main widget'] = '<vconforms QComboBox dct:conformsTo>'
+        widgetsdict[gconforms.button]['main widget'] = '<gconforms-plus-button QToolButton dct:conformsTo>'
+        
+        # --- intégration ---
+        actionsdict = widgetsdict.computing_update(gtheme, result_gtheme)
+        self.assertFalse(vtheme in widgetsdict)
+        self.assertFalse(gtheme in widgetsdict)
+        self.assertListEqual(tab.children, [vtitle, gconforms])
+        self.assertListEqual(
+            actionsdict['widgets to delete'], 
+            [
+                '<vtheme QComboBox dcat:theme>',
+                '<gtheme QGroupBox dcat:theme>',
+                '<gtheme-plus-button QToolButton dcat:theme>'
+            ]
+        )
+        self.assertListEqual(
+            actionsdict['grids to delete'], 
+            ['<gtheme QGridLayout dcat:theme>']
+        )
+        self.assertListEqual(
+            actionsdict['widgets to move'],
+            [('<tab QGridLayout Général>', '<gconforms QGroupBox dct:conformsTo>', 1, 0, 1, 6)]
+        )
+        # NB: la réinitialisation de la valeur même lorsqu'elle n'a pas
+        # été modifiée est une précaution technique
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('widgets to delete', 'widgets to move', 'grids to delete'):
+                    self.assertFalse(l)
+        
+        actionsdict = widgetsdict.computing_update(vtitle, result_vtitle)
+        self.assertFalse(vtitle in widgetsdict)
+        self.assertListEqual(tab.children, [gconforms])
+        self.assertListEqual(
+            actionsdict['widgets to delete'],
+            ['<vtitle QComboBox dct:title>']
+        )
+        self.assertListEqual(
+            actionsdict['widgets to move'],
+            [('<tab QGridLayout Général>', '<gconforms QGroupBox dct:conformsTo>', 0, 0, 1, 6)]
+        )
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('widgets to delete', 'widgets to move'):
+                    self.assertFalse(l)
+
+        actionsdict = widgetsdict.computing_update(gconforms, result_gconforms)
+        self.assertFalse(gconforms in widgetsdict)
+        self.assertFalse(vconforms in widgetsdict)
+        self.assertFalse(tab in widgetsdict)
+        self.assertListEqual(tab.children, [])
+        self.assertFalse(tab in widgetsdict.root.children)
+        self.assertListEqual(
+            actionsdict['widgets to delete'], 
+            [
+                '<vconforms QComboBox dct:conformsTo>',
+                '<gconforms QGroupBox dct:conformsTo>',
+                '<gconforms-plus-button QToolButton dct:conformsTo>',
+                '<tab Général>'
+            ]
+        )
+        self.assertListEqual(
+            actionsdict['grids to delete'], 
+            [
+                '<gconforms QGridLayout dct:conformsTo>',
+                '<tab QGridLayout Général>'
+            ]
+        )
+        for a, l in actionsdict.items():
+            with self.subTest(action = a):
+                if not a in ('widgets to delete', 'grids to delete'):
+                    self.assertFalse(l)
 
 if __name__ == '__main__':
     unittest.main()

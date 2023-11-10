@@ -95,6 +95,11 @@ class ComputationMethod():
 class ComputationResult():
     """Résultat d'un calcul de métadonnées, sous une forme adaptée pour l'alimentation du dictionnaire de widgets.
     
+    Un objet :py:class:`ComputationResult` a une valeur booléenne
+    positive si son attribut :py:attr:`ComputationResult.value` n'est
+    pas nul ou si son attribut :py:attr:`ComputationResult.str_value`
+    n'est pas nul et n'est pas une chaîne de caractères vide.
+
     Parameters
     ----------
     value : rdflib.term.URIRef or rdflib.term.Literal, optional
@@ -148,6 +153,9 @@ class ComputationResult():
         self.unit = unit if self.str_value else None
         self.language = language if self.str_value else None
         self.source = source
+
+    def __bool__(self):
+        return not self.value is None or not self.str_value in (None, '') 
 
 def default_parser(*result, **kwargs):
     """Fonction qui fera office de dé-sérialiseur par défaut.
