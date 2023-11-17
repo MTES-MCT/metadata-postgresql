@@ -7,7 +7,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtQuick 
 
 
-from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QMessageBox, 
+from PyQt5.QtWidgets import (QAction, QMenu , QMenuBar, QMessageBox, QFileDialog, QDialog,  
                              QDockWidget, QTreeView, QTabWidget, QWidget, QSizePolicy)
 
 from PyQt5.QtGui import ( QIcon, QKeySequence )
@@ -44,9 +44,8 @@ from contextlib import contextmanager
 import psycopg2
 from plume.pg import queries
 from plume.rdf.metagraph import copy_metagraph
-from plume.pg.template import LocalTemplatesCollection
+from plume.pg.template import LocalTemplatesCollection, TemplateQueryBuilder
 from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, LIBURLCSWDEFAUT, URLCSWDEFAUT, URLCSWIDDEFAUT)  
-
 
 class Ui_Dialog_plume(object):
     def __init__(self):
@@ -954,7 +953,46 @@ class Ui_Dialog_plume(object):
            d = docreatetemplate.Dialog(self, self.langList)
            d.exec_()
         return
-        
+
+    #==========================
+    def clickImportModele(self, WithWithout, mText):
+        #boite de dialogue Fichiers
+        InitDir = os.path.dirname(__file__) 
+        TypeList = "Modèle Plume (*.json)"
+        filepath = QFileDialog.getOpenFileName(self.Dialog, "Fichier de modèles de Plume :", InitDir, TypeList)[0]
+        if filepath == "" : return
+    
+        #----
+        #------ IMPORT 
+        try:
+          _no_update = False if WithWithout == "With" else True
+          builder = TemplateQueryBuilder(filepath, no_update=_no_update)
+          #---- 
+          with self.safe_pg_connection() :
+             conn = self.mConnectEnCours
+
+             with conn:
+                for query in builder.queries() :
+                    mKeySql = query
+                    if builder.waiting :
+                       result, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = "fetchone")
+                       builder.feedback(result)
+                    else :   
+                       result, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = None)
+
+             self.mConnectEnCours.close()
+
+          #---- 
+          zTitre = QtWidgets.QApplication.translate("createtemplate", "PLUME", None)
+          zMess  = QtWidgets.QApplication.translate("createtemplate", "Import of models successful.", None) 
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + str(filepath), Qgis.Info, self.Dialog.durationBarInfo)
+
+        except Exception as err:
+          zTitre = QtWidgets.QApplication.translate("createtemplate", "PLUME : Warning", None)
+          zMess  = QtWidgets.QApplication.translate("createtemplate", "PLUME failed to Import model.", None) 
+          displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + '« ' + str(err) + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
+        return 
+
     #==========================
     def clickAbout(self):
         d = doabout.Dialog()
@@ -1410,13 +1448,13 @@ class Ui_Dialog_plume(object):
         self.plumeExport.setPopupMode(self.plumeExport.InstantPopup)
         self.plumeExport.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         # -- QToolButton EXPORT MenuQToolButton                        
+
         #====================
         # [ == paramColor == ] afficher si ifActivateRightsToManageModels = False
         _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
         _ListValues = [ QtWidgets.QToolButton(), "Customization of the IHM", _iconSourcesParam, QtWidgets.QApplication.translate("plume_ui", "Customization of the IHM"), self.clickColorDialog, True, QSizePolicy.Fixed ]
         dicParamButton = dict(zip(_Listkeys, _ListValues))
         self.paramColor = self.genereButtonsToolBarWithDict( dicParamButton )
-
 
         #====================
         # [ == paramColor and Gestion des modèles == ] afficher si ifActivateRightsToManageModels = True
@@ -1426,8 +1464,8 @@ class Ui_Dialog_plume(object):
         self.paramColorModele = self.genereButtonsToolBarWithDict( dicParamButton )
         
         # -- QToolButton paramColor ? MenuQToolButton                        
-        _mObjetQMenu = QMenu()
-        _mObjetQMenu.setToolTipsVisible(True)
+        self.mObjetQMenu = QMenu()
+        self.mObjetQMenu.setToolTipsVisible(True)
         _editStyle = self.editStyle             #style saisie
         #------------
         #-- paramColor
@@ -1437,9 +1475,9 @@ class Ui_Dialog_plume(object):
         self.paramColorItem.setObjectName("Customization of the IHM")
         self.paramColorItem.setToolTip(mText)
         self.paramColorItem.triggered.connect(self.clickColorDialog)
-        _mObjetQMenu.addAction(self.paramColorItem)
+        self.mObjetQMenu.addAction(self.paramColorItem)
         #-- paramColor
-        _mObjetQMenu.addSeparator()
+        self.mObjetQMenu.addSeparator()
         #-- Gestion des modèles
         mText = QtWidgets.QApplication.translate("plume_ui", "Model management") 
         self.paramModeleItem = QAction("Model management",self.paramColorModele)
@@ -1447,17 +1485,43 @@ class Ui_Dialog_plume(object):
         self.paramModeleItem.setObjectName("Model management")
         self.paramModeleItem.setToolTip(mText)
         self.paramModeleItem.triggered.connect(self.clickCreateTemplate)
-        _mObjetQMenu.addAction(self.paramModeleItem)
+        self.mObjetQMenu.addAction(self.paramModeleItem)
+        self.mObjetQMenu.addSeparator()
+        #-- Gestion du sous menu pour les Imports
+        menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\import.svg") 
+        mText = QtWidgets.QApplication.translate("plume_ui", "Importing models") 
+        self.mObjetQSousMenu = QMenu(mText)
+        self.mObjetQSousMenu.setToolTipsVisible(True)
+        self.mObjetQSousMenu.setObjectName("Importing models")
+        self.mObjetQSousMenu.setToolTip(mText)
+        self.mObjetQMenu.addMenu(self.mObjetQSousMenu)
+        self.mObjetQMenu.addSeparator()
+        #-- Gestion des modèles Import
+        mText = QtWidgets.QApplication.translate("plume_ui", "Update category and tab tables") 
+        self.paramModeleImportItemWith = QAction("Update category and tab tables")
+        self.paramModeleImportItemWith.setText(mText)                              
+        self.paramModeleImportItemWith.setObjectName("Update category and tab tables")
+        self.paramModeleImportItemWith.setToolTip(mText)
+        self.paramModeleImportItemWith.triggered.connect(lambda : self.clickImportModele("With", QtWidgets.QApplication.translate("plume_ui", "Update category and tab tables")))
+        self.mObjetQSousMenu.addAction(self.paramModeleImportItemWith)
+        #-- Gestion des modèles Import                                                             
+        mText = QtWidgets.QApplication.translate("plume_ui", "Do not update category and tab tables") 
+        self.paramModeleImportItemWithout = QAction("Do not update category and tab tables")
+        self.paramModeleImportItemWithout.setText(mText)
+        self.paramModeleImportItemWithout.setObjectName("Do not update category and tab tables")
+        self.paramModeleImportItemWithout.setToolTip(mText)
+        self.paramModeleImportItemWithout.triggered.connect(lambda : self.clickImportModele("Without", QtWidgets.QApplication.translate("plume_ui", "Do not update category and tab tables")))
+        self.mObjetQSousMenu.addAction(self.paramModeleImportItemWithout)
         #-- Gestion des modèles
-        _mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
+        self.mObjetQMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
+        self.mObjetQSousMenu.setStyleSheet("QMenu {  font-family:" + self.policeQGroupBox  +"; border-style:" + _editStyle  + "; border-width: 0px;}")
         #------------
         self.paramColorModele.setPopupMode(self.paramColorModele.InstantPopup)
         self.paramColorModele.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        self.paramColorModele.setMenu(_mObjetQMenu)
+        self.paramColorModele.setMenu(self.mObjetQMenu)
         # -- QToolButton paramColor ? MenuQToolButton                        
         # [ == paramColor and Gestion des modèles == ] afficher si ifActivateRightsToManageModels = True
         #====================
-
 
         #====================
         # [ == templates == ]
@@ -1465,8 +1529,6 @@ class Ui_Dialog_plume(object):
         _ListValues = [ QtWidgets.QToolButton(), QtWidgets.QApplication.translate("plume_ui", "Template"), "CreateTemplate", _iconSourcesTemplate, QtWidgets.QApplication.translate("plume_ui", "Choose a form template."), self.clickCreateTemplate, True, QSizePolicy.Preferred, "QToolButton { font-family:" + self.policeQGroupBox  +";}" ]
         dicParamButton = dict(zip(_Listkeys, _ListValues))
         self.createTemplate = self.genereButtonsToolBarWithDict( dicParamButton )
-
-
         #====================
         # [ == plumeInterrogation == ]
         _Listkeys   = [ "typeWidget", "nameWidget", "iconWidget", "toolTipWidget", "actionWidget", "autoRaise", "qSizePolicy" ]
@@ -1503,6 +1565,7 @@ class Ui_Dialog_plume(object):
         self.plumeInterrogation.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.plumeInterrogation.setMenu(_mObjetQMenu)
         # -- QToolButton POINT ? MenuQToolButton                        
+
         # [ == plumeVerrou == ]
         self.mTextToolTipVerrouRead = QtWidgets.QApplication.translate("plume_ui", 'Lock the display on the current metadata card.') 
         self.mTextToolTipVerrouEdit = QtWidgets.QApplication.translate("plume_ui", 'Unlock the display.')                       

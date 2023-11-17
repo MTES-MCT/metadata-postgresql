@@ -66,6 +66,7 @@ def run(*names):
     
     """
     if not names:
+        
         modules = list(TESTS)
     else:
         names = [n.split('.')[-1] for n in names]

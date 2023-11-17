@@ -13,7 +13,6 @@ from qgis.core import ( QgsProject, QgsSettings, QgsDataSourceUri )
 from qgis.utils import iface
 
 from plume.config import (PLUME_VERSION)  
-from distutils.version import StrictVersion
 
 import platform
 
@@ -849,10 +848,7 @@ def executeSql(self, pointeur, _mKeySql, optionRetour = None) :
     zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
     pointeurBase = pointeur.cursor()
     try :
-      if isinstance(_mKeySql, tuple) :
-         pointeurBase.execute(*_mKeySql)
-      else :
-         pointeurBase.execute(*_mKeySql)
+      pointeurBase.execute(*_mKeySql)
       #--
       if optionRetour == None :
          result = None

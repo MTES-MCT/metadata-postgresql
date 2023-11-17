@@ -13,7 +13,7 @@ from plume.mapping_templates import ( load_mapping_read_meta_template_categories
 #
 from plume.pg import queries
 
-from qgis.core import ( QgsSettings, Qgis)
+from qgis.core import ( QgsSettings )
 import re
 import sys
 import json

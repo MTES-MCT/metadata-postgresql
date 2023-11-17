@@ -4,7 +4,7 @@
 import os.path
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import ( QMenu, QAction, QApplication, \
+from PyQt5.QtWidgets import ( QMenu, QAction, QApplication, QFileDialog, QMessageBox, \
                               QTreeWidget, QTabWidget, QWidget, QAbstractItemView, QTreeWidgetItemIterator, QTreeWidgetItem, QHeaderView, QGridLayout, QGraphicsOpacityEffect )
 from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt )
 from PyQt5.QtGui     import ( QStandardItemModel, QStandardItem, QIcon, QCursor )
@@ -19,6 +19,8 @@ from plume.rdf.thesaurus  import source_nb_values
 from plume.rdf.thesaurus  import source_examples
 #
 from plume.pg import queries
+from plume.pg.template import dump_template_data
+
 from qgis.core import Qgis
 import re
 import json
@@ -2255,8 +2257,9 @@ class TREEVIEWMODELE(QTreeWidget):
         self.setColumnCount(1)
         self.hideColumn (0)   # For hide ID
         self.setHeaderLabels(["Noms", "Libellés"])
-        self.setSelectionMode(QAbstractItemView.SingleSelection	)  
-        self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / delete a model", None)         #Click droit pour supprimer un Modèle
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)  
+        self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to delete a model", None)               #Click droit pour supprimer un Modèle
+        self.setToolTip(    QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / export a model", None))         #Click droit pour ajouter et exporter un Modèle
         return
 
     #===============================              
@@ -2266,6 +2269,7 @@ class TREEVIEWMODELE(QTreeWidget):
         self.groupBoxdisplayHelpFocusAttributsModele = _selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele
         self.zoneDisplayHelpFocusAttributsModele     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsModele
         self.listLangList                            = _selfCreateTemplate.listLangList
+        self.mTreeListeRessourceModele               = _selfCreateTemplate.mTreeListeRessourceModele
         
 
         self.mListTemplates          = _selfCreateTemplate.mListTemplates
@@ -2292,42 +2296,144 @@ class TREEVIEWMODELE(QTreeWidget):
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
         index = self.indexAt(point)
+        
+        #Retourne la liste des modèles et de leurs identifiants sélectionnés
+        _returnListeIdMODELE = self.returnListeIdMODELE()  
+        
         #if not index.isValid():
         #   return
+        self.treeMenu = QMenu(self)
         #-------
         if len(self.mListTemplates) == 0 : 
-           self.treeMenu = QMenu(self)
-           #-
            menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
            treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add model", None)  #Supprimer le modèle
            self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
-           self.treeMenu.addAction(self.treeAction_add)
            self.treeAction_add.setToolTip(treeAction_addTooltip)
            self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
+           self.treeMenu.addAction(self.treeAction_add)
            #-------
            self.treeMenu.exec_(self.mapToGlobal(point))        
         else :   
-
-           if index.data(0) != None : 
-              self.treeMenu = QMenu(self)
-              #-
-              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
-              treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add model", None)  #Supprimer le modèle
-              self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
-              self.treeMenu.addAction(self.treeAction_add)
-              self.treeAction_add.setToolTip(treeAction_addTooltip)
-              self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
-              #-
-              menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
-              treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model", None)  #Supprimer le modèle
-              self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
-              self.treeMenu.addAction(self.treeAction_del)
-              self.treeAction_del.setToolTip(treeAction_delTooltip)
-              self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
-              #-------
-              self.treeMenu.exec_(self.mapToGlobal(point))
+           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\buttons\\plus_button.svg")          
+           treeAction_addTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add model", None)  #Supprimer le modèle
+           self.treeAction_add = QAction(QtGui.QIcon(menuIcon), treeAction_addTooltip, self.treeMenu)
+           self.treeAction_add.setToolTip(treeAction_addTooltip)
+           self.treeAction_add.triggered.connect( self.ihmsPlumeAdd )
+           self.treeMenu.addAction(self.treeAction_add)
+           #-
+           
+           if index.data(0) != None :
+              if len(_returnListeIdMODELE) == 1 : 
+                 #-
+                 menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\delete.svg")          
+                 treeAction_delTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model", None)  #Supprimer le modèle
+                 self.treeAction_del = QAction(QtGui.QIcon(menuIcon), treeAction_delTooltip, self.treeMenu)
+                 self.treeAction_del.setToolTip(treeAction_delTooltip)
+                 self.treeAction_del.triggered.connect( self.ihmsPlumeDel )
+                 self.treeMenu.addAction(self.treeAction_del)
+                 #-
+                 self.treeMenu.addSeparator()
+                 #-
+                 menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\export.svg")          
+                 treeAction_export_templateTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Export model", None) 
+                 self.treeAction_export_template = QAction(QtGui.QIcon(menuIcon), treeAction_export_templateTooltip, self.treeMenu)
+                 self.treeAction_export_template.setToolTip(treeAction_export_templateTooltip)
+                 self.treeAction_export_template.triggered.connect( lambda : self.ihmsPlumeExportModel("One", _returnListeIdMODELE) )
+                 self.treeMenu.addAction(self.treeAction_export_template)
+                 #-------
+              elif len(_returnListeIdMODELE) > 1 : 
+                 #-
+                 self.treeMenu.addSeparator()
+                 #-
+                 menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\export.svg")          
+                 treeAction_export_templateTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Export models", None) if len(_returnListeIdMODELE) == 1 else  QtWidgets.QApplication.translate("CreateTemplate_ui", "Export models", None) 
+                 self.treeAction_export_template = QAction(QtGui.QIcon(menuIcon), treeAction_export_templateTooltip, self.treeMenu)
+                 self.treeAction_export_template.setToolTip(treeAction_export_templateTooltip)
+                 self.treeAction_export_template.triggered.connect( lambda : self.ihmsPlumeExportModel("Several", _returnListeIdMODELE) )
+                 self.treeMenu.addAction(self.treeAction_export_template)
+                 #-------
+           else :
+              self.treeMenu.addSeparator()
+           #-
+           menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\export.svg")          
+           treeAction_export_templateAllTooltip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Export all models", None)  
+           self.treeAction_export_templateAll = QAction(QtGui.QIcon(menuIcon), treeAction_export_templateAllTooltip, self.treeMenu)
+           self.treeAction_export_templateAll.setToolTip(treeAction_export_templateAllTooltip)
+           self.treeAction_export_templateAll.triggered.connect( lambda : self.ihmsPlumeExportModel("All") )
+           self.treeMenu.addAction(self.treeAction_export_templateAll)
+           #-------
+           self.treeMenu.exec_(self.mapToGlobal(point))
         return
+
+    #===============================              
+    def ihmsPlumeExportModel(self, param, _returnListeIdMODELE = None) :
+        # Param "One"     pour un seul export
+        # Param "Several" pour plusieurs exports
+        # Param "All"     pour tous
+
+        #boite de dialogue Fichiers
+        InitDir = os.path.dirname(__file__) 
+        TypeList = "Modèle Plume (*.json)"
+        fileName = QFileDialog.getSaveFileName(self, "Fichier des modèles de Plume :",InitDir,TypeList)[0]
+        if fileName == "" : return
+
+        _tpl_id = [ int(elem[0]) for elem in _returnListeIdMODELE ] if param in "One, Several" else []
         
+        #------
+        #------ DATA template_categories 
+        #=== Nécessaire pour récupérer les valeurs initiales et/ ou sauvegardées              
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+            mKeySql = queries.query_read_meta_template_categories()
+            template_categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+        #------
+        #------ DATA template 
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+            mKeySql = queries.query_read_meta_template()
+            templates, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+        #------
+        #------ DATA categories 
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+            mKeySql = queries.query_read_meta_categorie()
+            categories, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+        #------
+        #------ DATA Tab 
+        with self._selfCreateTemplate.Dialog.safe_pg_connection("continue") :
+            mKeySql = queries.query_read_meta_tab()
+            tabs, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self._selfCreateTemplate.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
+        #------
+        #------ EXPORT 
+        try:
+          dump_template_data(
+                 fileName,
+                 templates=templates,
+                 categories=categories,
+                 tabs=tabs,
+                 template_categories=template_categories,
+                 tpl_id=_tpl_id  
+             )
+
+          zTitre = QtWidgets.QApplication.translate("createtemplate", "PLUME", None)
+          zMess  = QtWidgets.QApplication.translate("createtemplate", "Export of models successful.", None) 
+          displayMess(self, (2 if self._selfCreateTemplate.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + str(fileName), Qgis.Info, self._selfCreateTemplate.Dialog.durationBarInfo)
+
+        except Exception as err:
+          zTitre = QtWidgets.QApplication.translate("createtemplate", "PLUME : Warning", None)
+          zMess  = QtWidgets.QApplication.translate("createtemplate", "PLUME failed to export model.", None) 
+          displayMess(self, (2 if self._selfCreateTemplate.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + '« ' + str(err) + ' »', Qgis.Warning, self._selfCreateTemplate.Dialog.durationBarInfo)
+        return 
+        
+    #===============================              
+    def returnListeIdMODELE(self) :
+        _returnListeIdMODELE = []
+        mIndex = 0
+        mListeSelected = self.mTreeListeRessourceModele.selectedItems()  
+        while mIndex < len(mListeSelected) :
+          mItemWidgetID  = mListeSelected[mIndex].data(0, QtCore.Qt.DisplayRole)       #Id
+          mItemWidgetLIB = mListeSelected[mIndex].data(1, QtCore.Qt.DisplayRole)       #Lib
+          _returnListeIdMODELE.append( (mItemWidgetID,mItemWidgetLIB) )
+          mIndex += 1
+        return _returnListeIdMODELE
+
     #===============================              
     def ihmsPlumeMODELE(self, item, column): 
         mItemClicModele = item.data(0, QtCore.Qt.DisplayRole)

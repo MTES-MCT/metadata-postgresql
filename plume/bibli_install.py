@@ -6,12 +6,16 @@ import time
 from qgis.core import ( QgsSettings, QgsApplication )
 from PyQt5 import QtCore, QtGui, QtWidgets 
 from plume.config import (PLUME_VERSION) 
-from plume.bibli_plume import ( getOsInfo )
 from PyQt5.QtWidgets import ( QMessageBox, QProgressDialog, QPushButton )
 from qgis.core import QgsSettings
 import qgis
 import os
+import platform
  
+#==================================================
+# Obtenir des informations sur le système d'exploitation
+def getOsInfo() : return ( platform.system(), platform.release() ) 
+#==================================================
 #==================================================
 def manageLibrary() :
     mVersionPlume = PLUME_VERSION
@@ -45,7 +49,6 @@ def manageLibrary() :
           import plume.rdf.rdflib
        except:
           update_lib = True
-
     #-- #issue 125                 
     if (mVersionPlume != mVersionPlumeBibli or mVersionPlume != mPython_version) or update_lib :
        mPath = os.path.dirname(__file__)
