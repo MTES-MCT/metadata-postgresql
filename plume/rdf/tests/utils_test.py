@@ -10,7 +10,7 @@ from plume.rdf.utils import (
     date_from_str, time_from_str, str_from_decimal, decimal_from_str, 
     main_datatype, export_format_from_extension, export_formats, no_logging,
     MetaCollection, almost_included, all_words_included, text_with_link,
-    langstring_from_str
+    langstring_from_str, flatten_values
 )
 from plume.rdf.namespaces import PlumeNamespaceManager, DCT, XSD, RDF
 
@@ -571,6 +571,13 @@ class UtilsTestCase(unittest.TestCase):
         self.assertIsNone(langstring_from_str('abc', ''))
         self.assertIsNone(langstring_from_str('abc', '?'))
         self.assertEqual(langstring_from_str('abc', 'fr'), Literal('abc', lang='fr'))
+
+    def test_flatten_values(self):
+        """Encode en JSON des dictionnaires imbriqués."""
+        self.assertListEqual(
+            flatten_values([1, 'abc', [1, 2, 3], {'d.1': 'x', 'd.2': False}]),
+            [1, 'abc', [1, 2, 3], '{"d.1": "x", "d.2": false}']
+        )
 
 if __name__ == '__main__':
     unittest.main()

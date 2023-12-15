@@ -1361,6 +1361,16 @@ class QueriesTestCase(unittest.TestCase):
                 )
                 cur.execute(*query)
                 result3 = cur.fetchone()
+                query = query_insert_or_update_meta_categorie(
+                    {
+                        'path': 'dct:title', 
+                        'origin': 'shared', 
+                        'compute': ['new'],
+                        'compute_params': {'flags': 'gi', 'pattern': '(t(?:\\s|\\w)+)[.]'}
+                    }
+                )
+                cur.execute(*query)
+                result4 = cur.fetchone()
                 cur.execute('''
                     DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg
                 ''')
@@ -1380,6 +1390,7 @@ class QueriesTestCase(unittest.TestCase):
         self.assertIsNotNone(result3)
         self.assertEqual(result3[0]['label'], 'Nom')
         self.assertEqual(result3[0]['description'], 'Nom Nom Nom')
+        self.assertEqual(result4[0]['compute_params'], {'flags': 'gi', 'pattern': '(t(?:\\s|\\w)+)[.]'})
 
     def test_query_read_enum_meta_special(self):
         """Récupération du type énuméré des champs 'special'.

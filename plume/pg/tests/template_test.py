@@ -993,6 +993,75 @@ class TemplateTestCase(unittest.TestCase):
             search_template(templates),
             'Bon modèle sans priorité'
             )
+        
+    def test_dump_load_template_with_json_field(self):
+        """Export et ré-import d'un modèle avec un attribut JSON."""
+        pfile = Path(abspath('pg/tests/export/template_data_json_temp.json'))
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM z_plume.meta_import_sample_template()')
+                cur.execute(r'''
+                    UPDATE z_plume.meta_categorie
+                        SET compute = ARRAY['new'],
+                            compute_params = '{"pattern": "(t(?:\\s|\\w)+)[.]", "flags": "gi"}'::jsonb
+                        WHERE path = 'dct:title' ;
+                    ''')
+                cur.execute(
+                    *query_read_meta_template()
+                )
+                templates = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_categorie()
+                )
+                categories = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_tab()
+                )
+                tabs = cur.fetchall()
+                cur.execute(
+                    *query_read_meta_template_categories()
+                )
+                template_categories = cur.fetchall()
+
+                cur.execute(
+                    "SELECT tpl_id FROM z_plume.meta_template WHERE tpl_label = 'Basique'"
+                )
+                tpl_id = cur.fetchone()[0]
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+
+        dump_template_data(
+            pfile,
+            templates=templates,
+            categories=categories,
+            tabs=tabs,
+            template_categories=template_categories,
+            tpl_id=tpl_id
+        )
+        builder = TemplateQueryBuilder(pfile)
+        pfile.unlink()
+
+        conn = psycopg2.connect(TemplateTestCase.connection_string)
+        with conn:
+            with conn.cursor() as cur:
+
+                for query in builder.queries():
+                    cur.execute(*query)
+                    if builder.waiting:
+                        result = cur.fetchone()[0]
+                        builder.feedback(result)
+                
+                cur.execute(r'''
+                    SELECT compute_params = '{"pattern": "(t(?:\\s|\\w)+)[.]", "flags": "gi"}'::jsonb
+                        FROM z_plume.meta_categorie
+                        WHERE path = 'dct:title' ;
+                    ''')
+                res = cur.fetchone()[0]
+
+                cur.execute('DROP EXTENSION plume_pg ; CREATE EXTENSION plume_pg')
+        conn.close()
+        self.assertTrue(res)
 
 if __name__ == '__main__':
     unittest.main()
