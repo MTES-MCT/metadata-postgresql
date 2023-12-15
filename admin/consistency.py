@@ -17,6 +17,7 @@ from plume.pg.tests.connection import ConnectionString
 from plume.pg import queries
 from plume.pg.template import dump_template_data
 from plume.rdf.utils import abspath, data_from_file
+from plume.config import SAMPLE_TEMPLATES
 from plume import __path__ as plume_path
 
 from plume import mapping_templates 
@@ -76,7 +77,7 @@ class ConsistencyTestCase(unittest.TestCase):
         cls.local_templates_data = json.loads(raw_data)
 
     def test_sample_templates_local_copies_check(self):
-        """Cohérence des modèles pré-configurés de PlumePg et de leurs copies locales."""
+        """Cohérence des modèles pré-configurés de PlumePg, de leurs copies locales et de la liste du fichier de configuration."""
         store_sample_templates(ConsistencyTestCase.pfile)
         raw_data = data_from_file(ConsistencyTestCase.pfile)
         new_local_templates_data = json.loads(raw_data)
@@ -87,6 +88,11 @@ class ConsistencyTestCase(unittest.TestCase):
             self.assertTrue(tpl_label in ConsistencyTestCase.local_templates_data, f'manquant en local : {tpl_label}')
         for tpl_label in ConsistencyTestCase.local_templates_data:
             self.assertTrue(tpl_label in new_local_templates_data, f'manquant dans PlumePg : {tpl_label}')
+
+        self.assertEqual(
+            sorted(SAMPLE_TEMPLATES),
+            sorted(list(ConsistencyTestCase.local_templates_data.keys()))
+        )
 
         for tpl_label in new_local_templates_data:
             # suppression des informations qui peuvent être différentes
