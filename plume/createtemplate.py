@@ -1258,6 +1258,10 @@ def genereAttributs(self,  mapping, zoneLayout, _keyAncetre_ModeleCategorie_Mode
          okCreateZone = True
          _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet" ]
          _ListValues = [ QtWidgets.QLineEdit(), "", "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QLineEdit {  font-family:" + self.policeQGroupBox  +";}" ]
+      elif dicLabelTooltip["type"] == "QTextEdit" :
+         okCreateZone = True
+         _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet", "fixedHeight" ]
+         _ListValues = [ QtWidgets.QTextEdit(), "", "zone_" + mattrib, mTextToolTip, QtCore.Qt.AlignRight, "QTextEdit {  font-family:" + self.policeQGroupBox  +";}", 3 ]
       elif dicLabelTooltip["type"] == "QCheckBox" :
          okCreateZone = True           
          _Listkeys   = [ "typeWidget", "textWidget", "nameWidget", "toolTipWidget", "aligneWidget", "styleSheet", "checked", "tristate" ]
@@ -1501,7 +1505,7 @@ def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBo
            # widget
            _type  = _mapping_template[ mObj.objectName()[5:] ]["type" ]
            if initialiseValueOrBlank == 0 :
-              __Val = ""
+              __Val = "" if mObj.objectName()[5:] != "tpl_label" else "Nouveau modèle" # Cas où on fait nouveau modèle pour intialiser le libellé à "Nouveau modèle"
            else :    
               if _blank == None :
                  __Val = _mapping_template_id_template[ mObj.objectName()[5:] ]

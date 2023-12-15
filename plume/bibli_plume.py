@@ -130,6 +130,8 @@ class GenereButtonsWithDictWithEvent() :
                if k == "textWidget"    : _button.setText(v)
                #-- StyleSheet
                if k == "styleSheet"    : _button.setStyleSheet(v)
+               #-- FixedHeight for QTextEdit
+               if k == "fixedHeight"    : _button.setFixedHeight(v * _button.fontMetrics().lineSpacing() + 5)
                #-- Tristate for QCheckBox
                if k == "tristate"      : _button.setTristate(v)
                #-- Raccourci
@@ -1116,7 +1118,7 @@ def returnAndSaveDialogParam(self, mAction, templateWidth = None, templateHeight
        mDicAutre["layerBeforeClickedWho"]     = valueDefautLayerBeforeClickedWho
        mDicAutre["layerBeforeClickedBrowser"] = valueDefautLayerBeforeClickedBrowser
        mDicAutre["versionPlumeBibli"]     = valueDefautVersion
-       mDicAutre["ifActivateRightsToManageModelsFlag"] = "false"
+       mDicAutre["ifActivateRightsToManageModelsFlag"] = "true"
        #---- for Tooltip
        mDicAutre["activeZoneNonSaisie"]          = "false"
        mDicAutre["activeTooltip"]                = "true"

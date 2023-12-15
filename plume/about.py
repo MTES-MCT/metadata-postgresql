@@ -22,7 +22,6 @@ class Ui_Dialog(object):
         myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.svg"
 
         self.Dialog.setObjectName("DialogConfirme")
-        #mLargDefaut, mHautDefaut = int(self.mDic_LH["dialogLargeurTemplate"]), int(self.mDic_LH["dialogHauteurTemplate"]) #900, 650    
         mLargDefaut, mHautDefaut = 900, 450
         self.Dialog.resize(mLargDefaut, mHautDefaut)
         self.lScreenDialog, self.hScreenDialog = int(self.Dialog.width()), int(self.Dialog.height())

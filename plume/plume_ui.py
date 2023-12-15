@@ -45,7 +45,7 @@ import psycopg2
 from plume.pg import queries
 from plume.rdf.metagraph import copy_metagraph
 from plume.pg.template import LocalTemplatesCollection, TemplateQueryBuilder
-from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, LIBURLCSWDEFAUT, URLCSWDEFAUT, URLCSWIDDEFAUT)  
+from plume.config import (VALUEDEFAUTFILEHELP, VALUEDEFAUTFILEHELPPDF, VALUEDEFAUTFILEHELPHTML, LIBURLCSWDEFAUT, URLCSWDEFAUT, URLCSWIDDEFAUT, SAMPLE_TEMPLATES)  
 
 class Ui_Dialog_plume(object):
     def __init__(self):
@@ -877,6 +877,13 @@ class Ui_Dialog_plume(object):
 
     #==========================
     def closeEvent(self, event):
+        #Supprimer les géométries fantômes
+        try :
+           for __keyObjet in self.dic_objetMap.keys() : 
+               self.dic_objetMap[__keyObjet].rubberBand.hide()
+        except:
+           pass
+ 
         try :
            self.navigateurTreeView.clicked.disconnect(self.retrieveInfoLayerBrowser)
         except:
@@ -907,6 +914,13 @@ class Ui_Dialog_plume(object):
     #==========================
     def hideEvent(self, event):
         if self._plume2ToolBar != None : self._plume2ToolBar.setEnabled(True)
+
+        #Supprimer les géométries fantômes
+        try :
+           for __keyObjet in self.dic_objetMap.keys() : 
+               self.dic_objetMap[__keyObjet].rubberBand.hide()
+        except:
+           pass
         return
                     
     #==========================
@@ -955,6 +969,25 @@ class Ui_Dialog_plume(object):
         return
 
     #==========================
+    def create_trigger_function(self, template_name):
+        return lambda: self.clickImportModelePreConfigure(template_name)
+
+    #==========================
+    def clickImportModelePreConfigure(self, template_name):
+
+        with self.safe_pg_connection():
+           mKeySql = queries.query_plume_pg_import_sample_template() if template_name == "All" else queries.query_plume_pg_import_sample_template(template_name) 
+           r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.mConnectEnCours, mKeySql, optionRetour = None)
+           self.mConnectEnCours.commit()
+           zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Information", None)
+           if template_name == "All" :
+              zMess  = QtWidgets.QApplication.translate("plume_ui", "Import of Plume's pre-configured metadata sheet templates (Basic, Classic, etc.) successfully.", None) 
+           else : 
+              zMess  = QtWidgets.QApplication.translate("plume_ui", 'Import of Plume\'s pre-configured metadata sheet templates (“{}”) successfully.', None).format(template_name) 
+           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess , Qgis.Info, self.Dialog.durationBarInfo)
+        return
+
+    #==========================
     def clickImportModele(self, WithWithout, mText):
         #boite de dialogue Fichiers
         InitDir = os.path.dirname(__file__) 
@@ -983,14 +1016,15 @@ class Ui_Dialog_plume(object):
              self.mConnectEnCours.close()
 
           #---- 
-          zTitre = QtWidgets.QApplication.translate("createtemplate", "PLUME", None)
-          zMess  = QtWidgets.QApplication.translate("createtemplate", "Import of models successful.", None) 
+          zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME", None)
+          zMess  = QtWidgets.QApplication.translate("plume_ui", "Import of models successful.", None) 
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + str(filepath), Qgis.Info, self.Dialog.durationBarInfo)
 
         except Exception as err:
-          zTitre = QtWidgets.QApplication.translate("createtemplate", "PLUME : Warning", None)
-          zMess  = QtWidgets.QApplication.translate("createtemplate", "PLUME failed to Import model.", None) 
+          zTitre = QtWidgets.QApplication.translate("plume_ui", "PLUME : Warning", None)
+          zMess  = QtWidgets.QApplication.translate("plume_ui", "PLUME failed to Import model.", None) 
           displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess + "\n\n" + '« ' + str(err) + ' »', Qgis.Warning, self.Dialog.durationBarInfo)
+
         return 
 
     #==========================
@@ -1487,6 +1521,30 @@ class Ui_Dialog_plume(object):
         self.paramModeleItem.triggered.connect(self.clickCreateTemplate)
         self.mObjetQMenu.addAction(self.paramModeleItem)
         self.mObjetQMenu.addSeparator()
+
+        #-- Gestion des modèles Import des modèles pré-configurés
+        mText = QtWidgets.QApplication.translate("plume_ui", "Import pre-configured templates") 
+        self.mObjetQSousMenuModeleImportPreConfigure = QMenu(mText)
+        self.mObjetQSousMenuModeleImportPreConfigure.setObjectName("Import pre-configured templates")
+        self.mObjetQMenu.addMenu(self.mObjetQSousMenuModeleImportPreConfigure)
+        #-- ITEMS == Gestion des modèles Import des modèles pré-configurés   ALL    ['Basique', 'Classique', 'Donnée externe', 'INSPIRE']
+        mText = QtWidgets.QApplication.translate("plume_ui", "All pre-configured templates") 
+        self.paramModeleImportPreConfigureTous = QAction("All pre-configured templates")
+        self.paramModeleImportPreConfigureTous.setText(mText)                              
+        self.paramModeleImportPreConfigureTous.setObjectName("All pre-configured templates")
+        self.paramModeleImportPreConfigureTous.triggered.connect( lambda : self.clickImportModelePreConfigure("All") )
+        self.mObjetQSousMenuModeleImportPreConfigure.addAction(self.paramModeleImportPreConfigureTous)
+        
+        #-- ITEMS == Gestion des modèles Import des modèles pré-configurés      ['Basique', 'Classique', 'Donnée externe', 'INSPIRE']
+        for template_name in SAMPLE_TEMPLATES :
+            mText = QtWidgets.QApplication.translate("plume_ui", '“{}” model').format(template_name)
+            itemPreConfigureTemplate_name = QAction(template_name, self.mObjetQSousMenuModeleImportPreConfigure)
+            itemPreConfigureTemplate_name.setText(mText)                              
+            itemPreConfigureTemplate_name.setObjectName(template_name)
+            trigger_function = self.create_trigger_function(template_name)
+            itemPreConfigureTemplate_name.triggered.connect(trigger_function)
+            self.mObjetQSousMenuModeleImportPreConfigure.addAction(itemPreConfigureTemplate_name)
+
         #-- Gestion du sous menu pour les Imports
         menuIcon = returnIcon(os.path.dirname(__file__) + "\\icons\\general\\import.svg") 
         mText = QtWidgets.QApplication.translate("plume_ui", "Importing models") 
@@ -1607,7 +1665,7 @@ class Ui_Dialog_plume(object):
            valueDefautFileHelp  = self.fileHelpHtml
         execPdf(valueDefautFileHelp)
         return
-
+        
 #==========================
 # Window Versus Dock
 class MONDOCK(QDockWidget):
@@ -1625,6 +1683,12 @@ class MONDOCK(QDockWidget):
 
     #==========================
     def closeEvent(self, event):
+        #Supprimer les géométries fantômes
+        try :
+           for __keyObjet in self.dic_objetMap.keys() : 
+               self.dic_objetMap[__keyObjet].rubberBand.hide()
+        except:
+           pass
 
         try :
            self.navigateurTreeView.clicked.disconnect(self.retrieveInfoLayerBrowser)
