@@ -22,6 +22,7 @@ import re
 from psycopg2 import sql
 from psycopg2.extras import Json
 
+from plume.rdf.utils import flatten_values
 from plume.rdf.exceptions import UnknownParameterValue, MissingParameter
 from plume.rdf.namespaces import PLUME
 from plume.config import PLUME_PG_MIN_VERSION, PLUME_PG_MAX_VERSION
@@ -1569,6 +1570,8 @@ def query_insert_or_update_any_table(
     else:
         raise TypeError("'data' devrait être un dictionnaire ou une liste")
 
+    values = flatten_values(values)
+
     return PgQueryWithArgs(
         query = sql.SQL(
             """
@@ -1660,6 +1663,8 @@ def query_update_any_table(schema_name, table_name, pk_name, data, columns=None)
         columns = [k for k in data.keys()]
     else:
         raise TypeError("'data' devrait être un dictionnaire ou une liste")
+    
+    values = flatten_values(values)
 
     pk_index = columns.index(pk_name)
     if pk_index is not None:

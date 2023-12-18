@@ -3,6 +3,7 @@
 """
 import re
 import logging
+import json
 from pathlib import Path
 from uuid import UUID, uuid4
 from html import escape
@@ -1450,6 +1451,26 @@ def all_words_included(included, including):
     included_words = included.split('-')
     including_words = including.split('-')
     return all(w in including_words for w in included_words)
+
+def flatten_values(values):
+    """Renvoie une copie de la liste en encodant en JSON les valeurs de type dictionnaire.
+
+    Parameters
+    ----------
+    values : list
+        Une liste de valeurs de types arbitraires.
+    
+    Returns
+    -------
+    list
+    
+    """
+    new_list = []
+    for value in values:
+        if isinstance(value, dict):
+            value = json.dumps(value, ensure_ascii=False)
+        new_list.append(value)
+    return new_list
 
 class MetaCollection(type):
     """Méta-classe gérant l'accès à une collection d'objets.
