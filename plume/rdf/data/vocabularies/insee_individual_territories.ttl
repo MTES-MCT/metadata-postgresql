@@ -14,7 +14,7 @@
 <http://id.insee.fr/geo/territoireFrancais/territoireDeLaRepubliqueFrancaise> a skos:Concept ;
     skos:inScheme <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> ;
     skos:prefLabel "Territoire de la République française"@fr ;
-    foaf:page <https://rdf.insee.fr/sparql/describe?uri=http%3A//id.insee.fr/geo/territoireFrancais/territoireDeLaRepubliqueFrancaise> .
+    foaf:page <https://rdf.insee.fr/sparql/?query=DESCRIBE%20%3Chttp%3A//id.insee.fr/geo/territoireFrancais/territoireDeLaRepubliqueFrancaise%3E> .
 
 <http://registre.data.developpement-durable.gouv.fr/plume/InseeIndividualTerritory> a skos:ConceptScheme ;
     skos:prefLabel "Singular Territory (INSEE)"@en,
