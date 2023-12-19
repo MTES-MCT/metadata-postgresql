@@ -1,74 +1,89 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/APROF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Application profile"@en,
-        "Profil d'application"@fr .
+        "Profil d'application"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/APROF> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/CODE_LIST> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Code list"@en,
-        "Liste de codes"@fr .
+        "Liste de codes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/CODE_LIST> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/DIRECTORY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Directory"@en,
-        "Annuaire"@fr .
+        "Annuaire"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/DIRECTORY> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/GEOSPATIAL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Geospatial data"@en,
-        "Données géospatiales"@fr .
+        "Données géospatiales"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/GEOSPATIAL> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/GLOSSARY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Glossary"@en,
-        "Glossaire"@fr .
+        "Glossaire"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/GLOSSARY> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/MAPPING> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Mapping"@en,
-        "Table de correspondance"@fr .
+        "Table de correspondance"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/MAPPING> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/ONTOLOGY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Ontology"@en,
-        "Ontologie"@fr .
+        "Ontologie"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/ONTOLOGY> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/SCHEMA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Schema"@en,
-        "Schéma ou gabarit"@fr .
+        "Schéma ou gabarit"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/SCHEMA> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/STATISTICAL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Statistical data"@en,
-        "Données statistiques"@fr .
+        "Données statistiques"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/STATISTICAL> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/STYLES> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Style sheets"@en,
-        "Feuille de style"@fr .
+        "Feuille de style"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/STYLES> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Synthetic data"@en,
-        "Données fictives"@fr .
+        "Données fictives"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/SYNTHETIC_DATA> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/TAXONOMY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Taxonomy"@en,
-        "Taxonomie"@fr .
+        "Taxonomie"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/TAXONOMY> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/TEST_DATA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Test data"@en,
-        "Données de test"@fr .
+        "Données de test"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/TEST_DATA> .
 
 <http://publications.europa.eu/resource/authority/dataset-type/THESAURUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/dataset-type> ;
     skos:prefLabel "Thesaurus"@en,
-        "Thésaurus"@fr .
+        "Thésaurus"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/dataset-type/THESAURUS> .
 
 <http://publications.europa.eu/resource/authority/dataset-type> a skos:ConceptScheme ;
     skos:prefLabel "Dataset type (EU)"@en,

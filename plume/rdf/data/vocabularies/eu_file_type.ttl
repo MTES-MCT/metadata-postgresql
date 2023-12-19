@@ -1,736 +1,920 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/file-type/7Z> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "7z"@en .
+    skos:prefLabel "7z"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/7Z> .
 
 <http://publications.europa.eu/resource/authority/file-type/AAC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "AAC"@en .
+    skos:prefLabel "AAC"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/AAC> .
 
 <http://publications.europa.eu/resource/authority/file-type/AKN4EU> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "AKN4EU file"@en .
+    skos:prefLabel "AKN4EU file"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/AKN4EU> .
 
 <http://publications.europa.eu/resource/authority/file-type/AKN4EU_ZIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "AKN4EU ZIP"@en .
+    skos:prefLabel "AKN4EU ZIP"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/AKN4EU_ZIP> .
 
 <http://publications.europa.eu/resource/authority/file-type/APK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "APK"@en .
+    skos:prefLabel "APK"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/APK> .
 
 <http://publications.europa.eu/resource/authority/file-type/APPX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "AppX"@en .
+    skos:prefLabel "AppX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/APPX> .
 
 <http://publications.europa.eu/resource/authority/file-type/ARC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ARC"@en .
+    skos:prefLabel "ARC"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ARC> .
 
 <http://publications.europa.eu/resource/authority/file-type/ARC_GZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ARC GZ"@en .
+    skos:prefLabel "ARC GZ"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ARC_GZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/ARJ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ARJ"@en .
+    skos:prefLabel "ARJ"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ARJ> .
 
 <http://publications.europa.eu/resource/authority/file-type/ATOM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Atom Feed"@en .
+    skos:prefLabel "Atom Feed"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ATOM> .
 
 <http://publications.europa.eu/resource/authority/file-type/AZW> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Amazon Kindle eBook"@en .
+    skos:prefLabel "Amazon Kindle eBook"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/AZW> .
 
 <http://publications.europa.eu/resource/authority/file-type/BIN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Binary Data"@en .
+    skos:prefLabel "Binary Data"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/BIN> .
 
 <http://publications.europa.eu/resource/authority/file-type/BITS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "BITS XML"@en .
+    skos:prefLabel "BITS XML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/BITS> .
 
 <http://publications.europa.eu/resource/authority/file-type/BMP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Bitmap Image File"@en .
+    skos:prefLabel "Bitmap Image File"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/BMP> .
 
 <http://publications.europa.eu/resource/authority/file-type/BWF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "BWF"@en .
+    skos:prefLabel "BWF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/BWF> .
 
 <http://publications.europa.eu/resource/authority/file-type/BZIP2> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "bzip2"@en .
+    skos:prefLabel "bzip2"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/BZIP2> .
 
 <http://publications.europa.eu/resource/authority/file-type/CSS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "CSS"@en .
+    skos:prefLabel "CSS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/CSS> .
 
 <http://publications.europa.eu/resource/authority/file-type/CSV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "CSV"@en .
+    skos:prefLabel "CSV"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/CSV> .
 
 <http://publications.europa.eu/resource/authority/file-type/DBF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "DBF"@en .
+    skos:prefLabel "DBF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DBF> .
 
 <http://publications.europa.eu/resource/authority/file-type/DCR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "DCR File"@en .
+    skos:prefLabel "DCR File"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DCR> .
 
 <http://publications.europa.eu/resource/authority/file-type/DEB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "deb"@en .
+    skos:prefLabel "deb"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DEB> .
 
 <http://publications.europa.eu/resource/authority/file-type/DGN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "DGN"@en .
+    skos:prefLabel "DGN"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DGN> .
 
 <http://publications.europa.eu/resource/authority/file-type/DMG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "DMG"@en .
+    skos:prefLabel "DMG"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DMG> .
 
 <http://publications.europa.eu/resource/authority/file-type/DMP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Oracle Dump"@en .
+    skos:prefLabel "Oracle Dump"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DMP> .
 
 <http://publications.europa.eu/resource/authority/file-type/DOC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Word DOC"@en .
+    skos:prefLabel "Word DOC"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DOC> .
 
 <http://publications.europa.eu/resource/authority/file-type/DOCX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Word DOCX"@en .
+    skos:prefLabel "Word DOCX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DOCX> .
 
 <http://publications.europa.eu/resource/authority/file-type/DTD_SGML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SGML DTD"@en .
+    skos:prefLabel "SGML DTD"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DTD_SGML> .
 
 <http://publications.europa.eu/resource/authority/file-type/DTD_XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XML DTD"@en .
+    skos:prefLabel "XML DTD"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DTD_XML> .
 
 <http://publications.europa.eu/resource/authority/file-type/DWG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "DWG"@en .
+    skos:prefLabel "DWG"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DWG> .
 
 <http://publications.europa.eu/resource/authority/file-type/DXF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "DXF"@en .
+    skos:prefLabel "DXF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/DXF> .
 
 <http://publications.europa.eu/resource/authority/file-type/E00> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "E00"@en .
+    skos:prefLabel "E00"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/E00> .
 
 <http://publications.europa.eu/resource/authority/file-type/EAR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "EAR"@en .
+    skos:prefLabel "EAR"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/EAR> .
 
 <http://publications.europa.eu/resource/authority/file-type/ECW> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ECW"@en .
+    skos:prefLabel "ECW"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ECW> .
 
 <http://publications.europa.eu/resource/authority/file-type/EPS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Encapsulated Postscript"@en .
+    skos:prefLabel "Encapsulated Postscript"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/EPS> .
 
 <http://publications.europa.eu/resource/authority/file-type/EPUB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "EPUB"@en .
+    skos:prefLabel "EPUB"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/EPUB> .
 
 <http://publications.europa.eu/resource/authority/file-type/ETSI_XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ETSI signature validation report"@en .
+    skos:prefLabel "ETSI signature validation report"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ETSI_XML> .
 
 <http://publications.europa.eu/resource/authority/file-type/EXE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "EXE"@en .
+    skos:prefLabel "EXE"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/EXE> .
 
 <http://publications.europa.eu/resource/authority/file-type/FMX2> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Formex 2"@en .
+    skos:prefLabel "Formex 2"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/FMX2> .
 
 <http://publications.europa.eu/resource/authority/file-type/FMX3> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Formex 3"@en .
+    skos:prefLabel "Formex 3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/FMX3> .
 
 <http://publications.europa.eu/resource/authority/file-type/FMX4> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Formex 4"@en .
+    skos:prefLabel "Formex 4"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/FMX4> .
 
 <http://publications.europa.eu/resource/authority/file-type/FMX4_ZIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "FMX4 ZIP"@en .
+    skos:prefLabel "FMX4 ZIP"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/FMX4_ZIP> .
 
 <http://publications.europa.eu/resource/authority/file-type/GDB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Esri File Geodatabase"@en .
+    skos:prefLabel "Esri File Geodatabase"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GDB> .
 
 <http://publications.europa.eu/resource/authority/file-type/GEOJSON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "GeoJSON"@en .
+    skos:prefLabel "GeoJSON"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GEOJSON> .
 
 <http://publications.europa.eu/resource/authority/file-type/GIF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "GIF"@en .
+    skos:prefLabel "GIF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GIF> .
 
 <http://publications.europa.eu/resource/authority/file-type/GML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "GML"@en .
+    skos:prefLabel "GML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GML> .
 
 <http://publications.europa.eu/resource/authority/file-type/GMZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Zipped GML"@en .
+    skos:prefLabel "Zipped GML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GMZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/GPKG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "GeoPackage"@en .
+    skos:prefLabel "GeoPackage"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GPKG> .
 
 <http://publications.europa.eu/resource/authority/file-type/GRID> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Esri binary grid"@en .
+    skos:prefLabel "Esri binary grid"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GRID> .
 
 <http://publications.europa.eu/resource/authority/file-type/GRID_ASCII> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Esri ASCII grid"@en .
+    skos:prefLabel "Esri ASCII grid"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GRID_ASCII> .
 
 <http://publications.europa.eu/resource/authority/file-type/GZIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "GNU zip"@en .
+    skos:prefLabel "GNU zip"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/GZIP> .
 
 <http://publications.europa.eu/resource/authority/file-type/HDF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "HDF"@en .
+    skos:prefLabel "HDF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/HDF> .
 
 <http://publications.europa.eu/resource/authority/file-type/HDT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "HDT"@en .
+    skos:prefLabel "HDT"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/HDT> .
 
 <http://publications.europa.eu/resource/authority/file-type/HTML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "HTML"@en .
+    skos:prefLabel "HTML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/HTML> .
 
 <http://publications.europa.eu/resource/authority/file-type/HTML5> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "HTML5"@en .
+    skos:prefLabel "HTML5"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/HTML5> .
 
 <http://publications.europa.eu/resource/authority/file-type/HTML_SIMPL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "HTML simplified"@en .
+    skos:prefLabel "HTML simplified"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/HTML_SIMPL> .
 
 <http://publications.europa.eu/resource/authority/file-type/ICS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ICalendar"@en .
+    skos:prefLabel "ICalendar"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ICS> .
 
 <http://publications.europa.eu/resource/authority/file-type/IMMC_XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "IMMC XML message"@en .
+    skos:prefLabel "IMMC XML message"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/IMMC_XML> .
 
 <http://publications.europa.eu/resource/authority/file-type/INDD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "INDD"@en .
+    skos:prefLabel "INDD"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/INDD> .
 
 <http://publications.europa.eu/resource/authority/file-type/IPA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "IPA"@en .
+    skos:prefLabel "IPA"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/IPA> .
 
 <http://publications.europa.eu/resource/authority/file-type/ISO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ISO image"@en .
+    skos:prefLabel "ISO image"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ISO> .
 
 <http://publications.europa.eu/resource/authority/file-type/ISO_ZIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Zipped ISO image"@en .
+    skos:prefLabel "Zipped ISO image"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ISO_ZIP> .
 
 <http://publications.europa.eu/resource/authority/file-type/JAR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "JAR"@en .
+    skos:prefLabel "JAR"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/JAR> .
 
 <http://publications.europa.eu/resource/authority/file-type/JATS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "JATS XML"@en .
+    skos:prefLabel "JATS XML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/JATS> .
 
 <http://publications.europa.eu/resource/authority/file-type/JPEG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "JPEG"@en .
+    skos:prefLabel "JPEG"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/JPEG> .
 
 <http://publications.europa.eu/resource/authority/file-type/JPEG2000> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "JPEG 2000"@en .
+    skos:prefLabel "JPEG 2000"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/JPEG2000> .
 
 <http://publications.europa.eu/resource/authority/file-type/JS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "JavaScript"@en .
+    skos:prefLabel "JavaScript"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/JS> .
 
 <http://publications.europa.eu/resource/authority/file-type/JSON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "JSON"@en .
+    skos:prefLabel "JSON"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/JSON> .
 
 <http://publications.europa.eu/resource/authority/file-type/JSON_LD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "JSON-LD"@en .
+    skos:prefLabel "JSON-LD"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/JSON_LD> .
 
 <http://publications.europa.eu/resource/authority/file-type/KML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "KML"@en .
+    skos:prefLabel "KML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/KML> .
 
 <http://publications.europa.eu/resource/authority/file-type/KMZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "KMZ"@en .
+    skos:prefLabel "KMZ"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/KMZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/LAS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "LASer file"@en .
+    skos:prefLabel "LASer file"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/LAS> .
 
 <http://publications.europa.eu/resource/authority/file-type/LAZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Compressed LAS file"@en .
+    skos:prefLabel "Compressed LAS file"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/LAZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/LEG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "LEG"@en .
+    skos:prefLabel "LEG"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/LEG> .
 
 <http://publications.europa.eu/resource/authority/file-type/LHA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "LHA"@en .
+    skos:prefLabel "LHA"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/LHA> .
 
 <http://publications.europa.eu/resource/authority/file-type/LZIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "lzip"@en .
+    skos:prefLabel "lzip"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/LZIP> .
 
 <http://publications.europa.eu/resource/authority/file-type/LZMA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "lzma"@en .
+    skos:prefLabel "lzma"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/LZMA> .
 
 <http://publications.europa.eu/resource/authority/file-type/LZO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "lzo"@en .
+    skos:prefLabel "lzo"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/LZO> .
 
 <http://publications.europa.eu/resource/authority/file-type/MAP_PRVW> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ArcGIS Map Preview"@en .
+    skos:prefLabel "ArcGIS Map Preview"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MAP_PRVW> .
 
 <http://publications.europa.eu/resource/authority/file-type/MAP_SRVC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ArcGIS Map Service"@en .
+    skos:prefLabel "ArcGIS Map Service"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MAP_SRVC> .
 
 <http://publications.europa.eu/resource/authority/file-type/MBOX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MBOX"@en .
+    skos:prefLabel "MBOX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MBOX> .
 
 <http://publications.europa.eu/resource/authority/file-type/MDB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MDB"@en .
+    skos:prefLabel "MDB"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MDB> .
 
 <http://publications.europa.eu/resource/authority/file-type/METS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "METS XML"@en .
+    skos:prefLabel "METS XML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/METS> .
 
 <http://publications.europa.eu/resource/authority/file-type/METS_ZIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "METS package"@en .
+    skos:prefLabel "METS package"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/METS_ZIP> .
 
 <http://publications.europa.eu/resource/authority/file-type/MHTML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MHTML"@en .
+    skos:prefLabel "MHTML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MHTML> .
 
 <http://publications.europa.eu/resource/authority/file-type/MOBI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Mobipocket eBook"@en .
+    skos:prefLabel "Mobipocket eBook"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MOBI> .
 
 <http://publications.europa.eu/resource/authority/file-type/MOP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MOP"@en .
+    skos:prefLabel "MOP"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MOP> .
 
 <http://publications.europa.eu/resource/authority/file-type/MPEG2> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MPEG-2"@en .
+    skos:prefLabel "MPEG-2"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MPEG2> .
 
 <http://publications.europa.eu/resource/authority/file-type/MPEG4> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MPEG-4"@en .
+    skos:prefLabel "MPEG-4"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MPEG4> .
 
 <http://publications.europa.eu/resource/authority/file-type/MPEG4_AVC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MPEG-4 AVC"@en .
+    skos:prefLabel "MPEG-4 AVC"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MPEG4_AVC> .
 
 <http://publications.europa.eu/resource/authority/file-type/MRSID> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MrSID"@en .
+    skos:prefLabel "MrSID"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MRSID> .
 
 <http://publications.europa.eu/resource/authority/file-type/MSG_HTTP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "HTTP Message"@en .
+    skos:prefLabel "HTTP Message"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MSG_HTTP> .
 
 <http://publications.europa.eu/resource/authority/file-type/MSI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MSI"@en .
+    skos:prefLabel "MSI"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MSI> .
 
 <http://publications.europa.eu/resource/authority/file-type/MXD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MXD"@en .
+    skos:prefLabel "MXD"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/MXD> .
 
 <http://publications.europa.eu/resource/authority/file-type/N3> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "N3"@en .
+    skos:prefLabel "N3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/N3> .
 
 <http://publications.europa.eu/resource/authority/file-type/NETCDF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "NetCDF"@en .
+    skos:prefLabel "NetCDF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/NETCDF> .
 
 <http://publications.europa.eu/resource/authority/file-type/OCTET> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Octet Stream"@en .
+    skos:prefLabel "Octet Stream"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/OCTET> .
 
 <http://publications.europa.eu/resource/authority/file-type/ODB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "OpenDocument Database"@en .
+    skos:prefLabel "OpenDocument Database"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ODB> .
 
 <http://publications.europa.eu/resource/authority/file-type/ODC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "OpenDocument Chart"@en .
+    skos:prefLabel "OpenDocument Chart"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ODC> .
 
 <http://publications.europa.eu/resource/authority/file-type/ODF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ODF"@en .
+    skos:prefLabel "ODF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ODF> .
 
 <http://publications.europa.eu/resource/authority/file-type/ODG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "OpenDocument Image"@en .
+    skos:prefLabel "OpenDocument Image"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ODG> .
 
 <http://publications.europa.eu/resource/authority/file-type/ODP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ODP"@en .
+    skos:prefLabel "ODP"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ODP> .
 
 <http://publications.europa.eu/resource/authority/file-type/ODS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ODS"@en .
+    skos:prefLabel "ODS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ODS> .
 
 <http://publications.europa.eu/resource/authority/file-type/ODT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ODT"@en .
+    skos:prefLabel "ODT"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ODT> .
 
 <http://publications.europa.eu/resource/authority/file-type/OVF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "OVF"@en .
+    skos:prefLabel "OVF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/OVF> .
 
 <http://publications.europa.eu/resource/authority/file-type/OWL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "OWL"@en .
+    skos:prefLabel "OWL"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/OWL> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF"@en .
+    skos:prefLabel "PDF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDF> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDF1X> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF1X"@en .
+    skos:prefLabel "PDF1X"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDF1X> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFA1A> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/A-1a"@en .
+    skos:prefLabel "PDF/A-1a"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFA1A> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFA1B> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/A-1b"@en .
+    skos:prefLabel "PDF/A-1b"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFA1B> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFA2A> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/A-2a"@en .
+    skos:prefLabel "PDF/A-2a"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFA2A> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFA2B> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/A-2b"@en .
+    skos:prefLabel "PDF/A-2b"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFA2B> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFA3> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDFA-3"@en .
+    skos:prefLabel "PDFA-3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFA3> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFUA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/UA"@en .
+    skos:prefLabel "PDF/UA"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFUA> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/X"@en .
+    skos:prefLabel "PDF/X"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFX> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFX1A> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/X-1a"@en .
+    skos:prefLabel "PDF/X-1a"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFX1A> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFX2A> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/X-2a"@en .
+    skos:prefLabel "PDF/X-2a"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFX2A> .
 
 <http://publications.europa.eu/resource/authority/file-type/PDFX4> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PDF/X-4"@en .
+    skos:prefLabel "PDF/X-4"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PDFX4> .
 
 <http://publications.europa.eu/resource/authority/file-type/PL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Perl script"@en .
+    skos:prefLabel "Perl script"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PL> .
 
 <http://publications.europa.eu/resource/authority/file-type/PNG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PNG"@en .
+    skos:prefLabel "PNG"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PNG> .
 
 <http://publications.europa.eu/resource/authority/file-type/PPS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PowerPoint Slide Show"@en .
+    skos:prefLabel "PowerPoint Slide Show"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PPS> .
 
 <http://publications.europa.eu/resource/authority/file-type/PPSX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PowerPoint PPSX"@en .
+    skos:prefLabel "PowerPoint PPSX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PPSX> .
 
 <http://publications.europa.eu/resource/authority/file-type/PPT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PowerPoint PPT"@en .
+    skos:prefLabel "PowerPoint PPT"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PPT> .
 
 <http://publications.europa.eu/resource/authority/file-type/PPTX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PowerPoint PPTX"@en .
+    skos:prefLabel "PowerPoint PPTX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PPTX> .
 
 <http://publications.europa.eu/resource/authority/file-type/PS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PS"@en .
+    skos:prefLabel "PS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PS> .
 
 <http://publications.europa.eu/resource/authority/file-type/PSD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PSD"@en .
+    skos:prefLabel "PSD"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PSD> .
 
 <http://publications.europa.eu/resource/authority/file-type/PWP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "PWP"@en .
+    skos:prefLabel "PWP"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/PWP> .
 
 <http://publications.europa.eu/resource/authority/file-type/QGS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "QGS"@en .
+    skos:prefLabel "QGS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/QGS> .
 
 <http://publications.europa.eu/resource/authority/file-type/RAR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RAR"@en .
+    skos:prefLabel "RAR"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RAR> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDF"@en .
+    skos:prefLabel "RDF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDF> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDFA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDFa"@en .
+    skos:prefLabel "RDFa"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDFA> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDF_N_QUADS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDF N-Quads"@en .
+    skos:prefLabel "RDF N-Quads"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDF_N_QUADS> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDF_N_TRIPLES> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDF N-Triples"@en .
+    skos:prefLabel "RDF N-Triples"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDF_N_TRIPLES> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDF_TRIG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDF TriG"@en .
+    skos:prefLabel "RDF TriG"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDF_TRIG> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDF_TRIX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDF TriX"@en .
+    skos:prefLabel "RDF TriX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDF_TRIX> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDF Turtle"@en .
+    skos:prefLabel "RDF Turtle"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDF_TURTLE> .
 
 <http://publications.europa.eu/resource/authority/file-type/RDF_XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RDF XML"@en .
+    skos:prefLabel "RDF XML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RDF_XML> .
 
 <http://publications.europa.eu/resource/authority/file-type/REST> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Esri REST"@en .
+    skos:prefLabel "Esri REST"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/REST> .
 
 <http://publications.europa.eu/resource/authority/file-type/RPM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RPM"@en .
+    skos:prefLabel "RPM"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RPM> .
 
 <http://publications.europa.eu/resource/authority/file-type/RSS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RSS feed"@en .
+    skos:prefLabel "RSS feed"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RSS> .
 
 <http://publications.europa.eu/resource/authority/file-type/RTF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "RTF"@en .
+    skos:prefLabel "RTF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/RTF> .
 
 <http://publications.europa.eu/resource/authority/file-type/SB3> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "sb3"@en .
+    skos:prefLabel "sb3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SB3> .
 
 <http://publications.europa.eu/resource/authority/file-type/SCHEMA_XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XML schema"@en .
+    skos:prefLabel "XML schema"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SCHEMA_XML> .
 
 <http://publications.europa.eu/resource/authority/file-type/SDMX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SDMX"@en .
+    skos:prefLabel "SDMX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SDMX> .
 
 <http://publications.europa.eu/resource/authority/file-type/SGML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SGML"@en .
+    skos:prefLabel "SGML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SGML> .
 
 <http://publications.europa.eu/resource/authority/file-type/SHP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Esri Shapefile"@en .
+    skos:prefLabel "Esri Shapefile"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SHP> .
 
 <http://publications.europa.eu/resource/authority/file-type/SKOS_XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SKOS"@en .
+    skos:prefLabel "SKOS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SKOS_XML> .
 
 <http://publications.europa.eu/resource/authority/file-type/SPARQLQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SPARQL"@en .
+    skos:prefLabel "SPARQL"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SPARQLQ> .
 
 <http://publications.europa.eu/resource/authority/file-type/SPARQLQRES> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SPARQL results"@en .
+    skos:prefLabel "SPARQL results"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SPARQLQRES> .
 
 <http://publications.europa.eu/resource/authority/file-type/SQL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SQL"@en .
+    skos:prefLabel "SQL"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SQL> .
 
 <http://publications.europa.eu/resource/authority/file-type/SVG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SVG"@en .
+    skos:prefLabel "SVG"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SVG> .
 
 <http://publications.europa.eu/resource/authority/file-type/SWM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "SWM"@en .
+    skos:prefLabel "SWM"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/SWM> .
 
 <http://publications.europa.eu/resource/authority/file-type/TAB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MapInfo TAB file"@en .
+    skos:prefLabel "MapInfo TAB file"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TAB> .
 
 <http://publications.europa.eu/resource/authority/file-type/TAB_RSTR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "MapInfo TAB raster file"@en .
+    skos:prefLabel "MapInfo TAB raster file"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TAB_RSTR> .
 
 <http://publications.europa.eu/resource/authority/file-type/TAR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "TAR"@en .
+    skos:prefLabel "TAR"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TAR> .
 
 <http://publications.europa.eu/resource/authority/file-type/TAR_GZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "TAR GZ"@en .
+    skos:prefLabel "TAR GZ"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TAR_GZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/TAR_XZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "TAR XZ"@en .
+    skos:prefLabel "TAR XZ"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TAR_XZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/TIFF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "TIFF"@en .
+    skos:prefLabel "TIFF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TIFF> .
 
 <http://publications.europa.eu/resource/authority/file-type/TIFF_FX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "TIFF FX"@en .
+    skos:prefLabel "TIFF FX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TIFF_FX> .
 
 <http://publications.europa.eu/resource/authority/file-type/TMX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "TMX"@en .
+    skos:prefLabel "TMX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TMX> .
 
 <http://publications.europa.eu/resource/authority/file-type/TSV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "TSV"@en .
+    skos:prefLabel "TSV"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TSV> .
 
 <http://publications.europa.eu/resource/authority/file-type/TXT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Plain text"@en .
+    skos:prefLabel "Plain text"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/TXT> .
 
 <http://publications.europa.eu/resource/authority/file-type/WAR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "WAR"@en .
+    skos:prefLabel "WAR"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WAR> .
 
 <http://publications.europa.eu/resource/authority/file-type/WARC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "WARC"@en .
+    skos:prefLabel "WARC"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WARC> .
 
 <http://publications.europa.eu/resource/authority/file-type/WARC_GZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "WARC GZ"@en .
+    skos:prefLabel "WARC GZ"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WARC_GZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/WCS_SRVC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "WCS"@en .
+    skos:prefLabel "WCS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WCS_SRVC> .
 
 <http://publications.europa.eu/resource/authority/file-type/WFS_SRVC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "WFS"@en .
+    skos:prefLabel "WFS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WFS_SRVC> .
 
 <http://publications.europa.eu/resource/authority/file-type/WIM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "WIM"@en .
+    skos:prefLabel "WIM"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WIM> .
 
 <http://publications.europa.eu/resource/authority/file-type/WMS_SRVC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "WMS"@en .
+    skos:prefLabel "WMS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WMS_SRVC> .
 
 <http://publications.europa.eu/resource/authority/file-type/WORLD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "World file"@en .
+    skos:prefLabel "World file"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/WORLD> .
 
 <http://publications.europa.eu/resource/authority/file-type/XHTML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XHTML"@en .
+    skos:prefLabel "XHTML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XHTML> .
 
 <http://publications.europa.eu/resource/authority/file-type/XHTML_SIMPL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XHTML simplified"@en .
+    skos:prefLabel "XHTML simplified"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XHTML_SIMPL> .
 
 <http://publications.europa.eu/resource/authority/file-type/XLIFF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XLIFF"@en .
+    skos:prefLabel "XLIFF"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XLIFF> .
 
 <http://publications.europa.eu/resource/authority/file-type/XLS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Excel XLS"@en .
+    skos:prefLabel "Excel XLS"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XLS> .
 
 <http://publications.europa.eu/resource/authority/file-type/XLSB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XLSB"@en .
+    skos:prefLabel "XLSB"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XLSB> .
 
 <http://publications.europa.eu/resource/authority/file-type/XLSM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XLSM"@en .
+    skos:prefLabel "XLSM"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XLSM> .
 
 <http://publications.europa.eu/resource/authority/file-type/XLSX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Excel XLSX"@en .
+    skos:prefLabel "Excel XLSX"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XLSX> .
 
 <http://publications.europa.eu/resource/authority/file-type/XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XML"@en .
+    skos:prefLabel "XML"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XML> .
 
 <http://publications.europa.eu/resource/authority/file-type/XSLFO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XSL-FO"@en .
+    skos:prefLabel "XSL-FO"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XSLFO> .
 
 <http://publications.europa.eu/resource/authority/file-type/XSLT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XSLT"@en .
+    skos:prefLabel "XSLT"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XSLT> .
 
 <http://publications.europa.eu/resource/authority/file-type/XYZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "XYZ Chemical File"@en .
+    skos:prefLabel "XYZ Chemical File"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XYZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/XZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "xz"@en .
+    skos:prefLabel "xz"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/XZ> .
 
 <http://publications.europa.eu/resource/authority/file-type/Z> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "Z"@en .
+    skos:prefLabel "Z"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/Z> .
 
 <http://publications.europa.eu/resource/authority/file-type/ZIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/file-type> ;
-    skos:prefLabel "ZIP"@en .
+    skos:prefLabel "ZIP"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/file-type/ZIP> .
 
 <http://publications.europa.eu/resource/authority/file-type> a skos:ConceptScheme ;
     skos:prefLabel "File type (EU)"@en,

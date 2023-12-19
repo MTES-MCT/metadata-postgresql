@@ -1,69 +1,83 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/data-theme/AGRI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Agriculture, fisheries, forestry and food"@en,
-        "Agriculture, pêche, sylviculture et alimentation"@fr .
+        "Agriculture, pêche, sylviculture et alimentation"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/AGRI> .
 
 <http://publications.europa.eu/resource/authority/data-theme/ECON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Economy and finance"@en,
-        "Économie et finances"@fr .
+        "Économie et finances"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/ECON> .
 
 <http://publications.europa.eu/resource/authority/data-theme/EDUC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Education, culture and sport"@en,
-        "Éducation, culture et sport"@fr .
+        "Éducation, culture et sport"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/EDUC> .
 
 <http://publications.europa.eu/resource/authority/data-theme/ENER> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Energy"@en,
-        "Énergie"@fr .
+        "Énergie"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/ENER> .
 
 <http://publications.europa.eu/resource/authority/data-theme/ENVI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Environment"@en,
-        "Environnement"@fr .
+        "Environnement"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/ENVI> .
 
 <http://publications.europa.eu/resource/authority/data-theme/GOVE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Government and public sector"@en,
-        "Gouvernement et secteur public"@fr .
+        "Gouvernement et secteur public"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/GOVE> .
 
 <http://publications.europa.eu/resource/authority/data-theme/HEAL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Health"@en,
-        "Santé"@fr .
+        "Santé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/HEAL> .
 
 <http://publications.europa.eu/resource/authority/data-theme/INTR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "International issues"@en,
-        "Questions internationales"@fr .
+        "Questions internationales"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/INTR> .
 
 <http://publications.europa.eu/resource/authority/data-theme/JUST> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Justice, legal system and public safety"@en,
-        "Justice, système juridique et sécurité publique"@fr .
+        "Justice, système juridique et sécurité publique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/JUST> .
 
 <http://publications.europa.eu/resource/authority/data-theme/REGI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Regions and cities"@en,
-        "Régions et villes"@fr .
+        "Régions et villes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/REGI> .
 
 <http://publications.europa.eu/resource/authority/data-theme/SOCI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Population and society"@en,
-        "Population et société"@fr .
+        "Population et société"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/SOCI> .
 
 <http://publications.europa.eu/resource/authority/data-theme/TECH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Science and technology"@en,
-        "Science et technologie"@fr .
+        "Science et technologie"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/TECH> .
 
 <http://publications.europa.eu/resource/authority/data-theme/TRAN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-theme> ;
     skos:prefLabel "Transport"@en,
-        "Transports"@fr .
+        "Transports"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-theme/TRAN> .
 
 <http://publications.europa.eu/resource/authority/data-theme> a skos:ConceptScheme ;
     skos:prefLabel "Data theme (EU)"@en,

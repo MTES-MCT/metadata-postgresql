@@ -1,1994 +1,2393 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/language/0D0> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Valencian"@en,
-        "valencien"@fr .
+        "valencien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/0D0> .
 
 <http://publications.europa.eu/resource/authority/language/0E0> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Montenegrin"@en,
-        "monténégrin"@fr .
+        "monténégrin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/0E0> .
 
 <http://publications.europa.eu/resource/authority/language/ADS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Adamorobe Sign Language"@en,
-        "langue des signes d’Adamorobe"@fr .
+        "langue des signes d’Adamorobe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ADS> .
 
 <http://publications.europa.eu/resource/authority/language/AED> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Argentine Sign Language"@en,
-        "langue des signes argentine"@fr .
+        "langue des signes argentine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AED> .
 
 <http://publications.europa.eu/resource/authority/language/AEN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Armenian Sign Language"@en,
-        "langue des signes arménienne"@fr .
+        "langue des signes arménienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AEN> .
 
 <http://publications.europa.eu/resource/authority/language/AFA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Afro-Asiatic languages"@en,
-        "langues afro-asiatiques"@fr .
+        "langues afro-asiatiques"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AFA> .
 
 <http://publications.europa.eu/resource/authority/language/AFG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Afghan Sign Language"@en,
-        "langue des signes afghane"@fr .
+        "langue des signes afghane"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AFG> .
 
 <http://publications.europa.eu/resource/authority/language/AFR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Afrikaans"@en,
-        "afrikaans"@fr .
+        "afrikaans"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AFR> .
 
 <http://publications.europa.eu/resource/authority/language/ALG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Algonquian languages"@en,
-        "langues algonquiennes"@fr .
+        "langues algonquiennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ALG> .
 
 <http://publications.europa.eu/resource/authority/language/AMH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Amharic"@en,
-        "amharique"@fr .
+        "amharique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AMH> .
 
 <http://publications.europa.eu/resource/authority/language/APA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Apache languages"@en,
-        "langues apaches"@fr .
+        "langues apaches"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/APA> .
 
 <http://publications.europa.eu/resource/authority/language/ARA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Arabic"@en,
-        "arabe"@fr .
+        "arabe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ARA> .
 
 <http://publications.europa.eu/resource/authority/language/ARO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Araona"@en,
-        "araona"@fr .
+        "araona"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ARO> .
 
 <http://publications.europa.eu/resource/authority/language/ART> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Artificial languages"@en,
-        "langues artificielles"@fr .
+        "langues artificielles"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ART> .
 
 <http://publications.europa.eu/resource/authority/language/ASE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "American Sign Language"@en,
-        "langue des signes américaine"@fr .
+        "langue des signes américaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ASE> .
 
 <http://publications.europa.eu/resource/authority/language/ASF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Australian Sign Language"@en,
-        "langue des signes australienne"@fr .
+        "langue des signes australienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ASF> .
 
 <http://publications.europa.eu/resource/authority/language/ASP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Algerian Sign Language"@en,
-        "langue des signes algérienne"@fr .
+        "langue des signes algérienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ASP> .
 
 <http://publications.europa.eu/resource/authority/language/ASQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Austrian Sign Language"@en,
-        "langue des signes autrichienne"@fr .
+        "langue des signes autrichienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ASQ> .
 
 <http://publications.europa.eu/resource/authority/language/ASW> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Australian Aborigines Sign Language"@en,
-        "langue des signes aborigène australienne"@fr .
+        "langue des signes aborigène australienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ASW> .
 
 <http://publications.europa.eu/resource/authority/language/ATH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Athapascan languages"@en,
-        "langues athapascanes"@fr .
+        "langues athapascanes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ATH> .
 
 <http://publications.europa.eu/resource/authority/language/AUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Australian languages"@en,
-        "langues australiennes"@fr .
+        "langues australiennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AUS> .
 
 <http://publications.europa.eu/resource/authority/language/AYM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Aymara"@en,
-        "aymara"@fr .
+        "aymara"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AYM> .
 
 <http://publications.europa.eu/resource/authority/language/AYO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ayoreo"@en,
-        "ayoreo"@fr .
+        "ayoreo"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AYO> .
 
 <http://publications.europa.eu/resource/authority/language/AZE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Azerbaijani"@en,
-        "azéri"@fr .
+        "azéri"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/AZE> .
 
 <http://publications.europa.eu/resource/authority/language/BAD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Banda languages"@en,
-        "langues banda"@fr .
+        "langues banda"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BAD> .
 
 <http://publications.europa.eu/resource/authority/language/BAI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bamileke languages"@en,
-        "langues bamilékées"@fr .
+        "langues bamilékées"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BAI> .
 
 <http://publications.europa.eu/resource/authority/language/BAT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Baltic languages"@en,
-        "langues baltes"@fr .
+        "langues baltes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BAT> .
 
 <http://publications.europa.eu/resource/authority/language/BEL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Belarusian"@en,
-        "biélorusse"@fr .
+        "biélorusse"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BEL> .
 
 <http://publications.europa.eu/resource/authority/language/BEN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bengali"@en,
-        "bengalî"@fr .
+        "bengalî"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BEN> .
 
 <http://publications.europa.eu/resource/authority/language/BER> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Berber languages"@en,
-        "langues berbères"@fr .
+        "langues berbères"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BER> .
 
 <http://publications.europa.eu/resource/authority/language/BFI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "British Sign Language"@en,
-        "langue des signes britannique"@fr .
+        "langue des signes britannique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BFI> .
 
 <http://publications.europa.eu/resource/authority/language/BFK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ban Khor Sign Language"@en,
-        "langue des signes de Ban Khor"@fr .
+        "langue des signes de Ban Khor"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BFK> .
 
 <http://publications.europa.eu/resource/authority/language/BIS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bislama"@en,
-        "bichelamar"@fr .
+        "bichelamar"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BIS> .
 
 <http://publications.europa.eu/resource/authority/language/BNT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bantu languages"@en,
-        "langues bantoues"@fr .
+        "langues bantoues"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BNT> .
 
 <http://publications.europa.eu/resource/authority/language/BOD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tibetan"@en,
-        "tibétain"@fr .
+        "tibétain"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BOD> .
 
 <http://publications.europa.eu/resource/authority/language/BOG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bamako Sign Language"@en,
-        "langue des signes de Bamako"@fr .
+        "langue des signes de Bamako"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BOG> .
 
 <http://publications.europa.eu/resource/authority/language/BOS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bosnian"@en,
-        "bosnien"@fr .
+        "bosnien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BOS> .
 
 <http://publications.europa.eu/resource/authority/language/BQN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bulgarian Sign Language"@en,
-        "langue des signes bulgare"@fr .
+        "langue des signes bulgare"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BQN> .
 
 <http://publications.europa.eu/resource/authority/language/BQY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bengkala Sign Language"@en,
-        "langue des signes de Bengkala"@fr .
+        "langue des signes de Bengkala"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BQY> .
 
 <http://publications.europa.eu/resource/authority/language/BRE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Breton"@en,
-        "breton"@fr .
+        "breton"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BRE> .
 
 <http://publications.europa.eu/resource/authority/language/BRG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Baure"@en,
-        "baure"@fr .
+        "baure"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BRG> .
 
 <http://publications.europa.eu/resource/authority/language/BTK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Batak languages"@en,
-        "langues batak"@fr .
+        "langues batak"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BTK> .
 
 <http://publications.europa.eu/resource/authority/language/BUL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bulgarian"@en,
-        "bulgare"@fr .
+        "bulgare"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BUL> .
 
 <http://publications.europa.eu/resource/authority/language/BVL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Bolivian Sign Language"@en,
-        "langue des signes bolivienne"@fr .
+        "langue des signes bolivienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BVL> .
 
 <http://publications.europa.eu/resource/authority/language/BZS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Brazilian Sign Language"@en,
-        "langue des signes brésilienne"@fr .
+        "langue des signes brésilienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/BZS> .
 
 <http://publications.europa.eu/resource/authority/language/CAI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Central American Indian languages"@en,
-        "langues indiennes d'Amérique centrale"@fr .
+        "langues indiennes d'Amérique centrale"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAI> .
 
 <http://publications.europa.eu/resource/authority/language/CAL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Carolinian"@en,
-        "carolinien"@fr .
+        "carolinien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAL> .
 
 <http://publications.europa.eu/resource/authority/language/CAO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chacobo"@en,
-        "chácobo"@fr .
+        "chácobo"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAO> .
 
 <http://publications.europa.eu/resource/authority/language/CAS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chimane"@en,
-        "chimane"@fr .
+        "chimane"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAS> .
 
 <http://publications.europa.eu/resource/authority/language/CAT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Catalan"@en,
-        "catalan"@fr .
+        "catalan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAT> .
 
 <http://publications.europa.eu/resource/authority/language/CAU> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Caucasian languages"@en,
-        "langues caucasiennes"@fr .
+        "langues caucasiennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAU> .
 
 <http://publications.europa.eu/resource/authority/language/CAV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Cavineña"@en,
-        "cavineña"@fr .
+        "cavineña"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAV> .
 
 <http://publications.europa.eu/resource/authority/language/CAW> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kallawaya"@en,
-        "kallawaya"@fr .
+        "kallawaya"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAW> .
 
 <http://publications.europa.eu/resource/authority/language/CAX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chiquitano"@en,
-        "chiquitano"@fr .
+        "chiquitano"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAX> .
 
 <http://publications.europa.eu/resource/authority/language/CAZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Canichana"@en,
-        "canichana"@fr .
+        "canichana"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CAZ> .
 
 <http://publications.europa.eu/resource/authority/language/CDS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chadian Sign Language"@en,
-        "langue des signes tchadienne"@fr .
+        "langue des signes tchadienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CDS> .
 
 <http://publications.europa.eu/resource/authority/language/CEL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Celtic languages"@en,
-        "langues celtiques"@fr .
+        "langues celtiques"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CEL> .
 
 <http://publications.europa.eu/resource/authority/language/CES> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Czech"@en,
-        "tchèque"@fr .
+        "tchèque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CES> .
 
 <http://publications.europa.eu/resource/authority/language/CHA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chamorro"@en,
-        "chamorro"@fr .
+        "chamorro"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CHA> .
 
 <http://publications.europa.eu/resource/authority/language/CHN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chinook jargon"@en,
-        "jargon chinook"@fr .
+        "jargon chinook"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CHN> .
 
 <http://publications.europa.eu/resource/authority/language/CKB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Central Kurdish"@en,
-        "sorani"@fr .
+        "sorani"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CKB> .
 
 <http://publications.europa.eu/resource/authority/language/CMC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chamic languages"@en,
-        "langues chames"@fr .
+        "langues chames"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CMC> .
 
 <http://publications.europa.eu/resource/authority/language/CMN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mandarin Chinese"@en,
-        "mandarin"@fr .
+        "mandarin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CMN> .
 
 <http://publications.europa.eu/resource/authority/language/CNR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Montenegrin"@en,
-        "monténégrin"@fr .
+        "monténégrin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CNR> .
 
 <http://publications.europa.eu/resource/authority/language/COR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Cornish"@en,
-        "cornique"@fr .
+        "cornique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/COR> .
 
 <http://publications.europa.eu/resource/authority/language/COS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Corsican"@en,
-        "corse"@fr .
+        "corse"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/COS> .
 
 <http://publications.europa.eu/resource/authority/language/CRS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Seselwa Creole French"@en,
-        "créole seychellois"@fr .
+        "créole seychellois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CRS> .
 
 <http://publications.europa.eu/resource/authority/language/CSB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kashubian"@en,
-        "kachoube"@fr .
+        "kachoube"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSB> .
 
 <http://publications.europa.eu/resource/authority/language/CSC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Catalan Sign Language"@en,
-        "langue des signes catalane"@fr .
+        "langue des signes catalane"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSC> .
 
 <http://publications.europa.eu/resource/authority/language/CSD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chiangmai Sign Language"@en,
-        "langue des signes de Chiangmai"@fr .
+        "langue des signes de Chiangmai"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSD> .
 
 <http://publications.europa.eu/resource/authority/language/CSE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Czech Sign Language"@en,
-        "langue des signes tchèque"@fr .
+        "langue des signes tchèque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSE> .
 
 <http://publications.europa.eu/resource/authority/language/CSF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Cuban Sign Language"@en,
-        "langue des signes cubaine"@fr .
+        "langue des signes cubaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSF> .
 
 <http://publications.europa.eu/resource/authority/language/CSG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chilean Sign Language"@en,
-        "langue des signes chilienne"@fr .
+        "langue des signes chilienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSG> .
 
 <http://publications.europa.eu/resource/authority/language/CSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chinese Sign Language"@en,
-        "langue des signes chinoise"@fr .
+        "langue des signes chinoise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSL> .
 
 <http://publications.europa.eu/resource/authority/language/CSN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Colombian Sign Language"@en,
-        "langue des signes colombienne"@fr .
+        "langue des signes colombienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSN> .
 
 <http://publications.europa.eu/resource/authority/language/CSQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Croatian Sign Language"@en,
-        "langue des signes croate"@fr .
+        "langue des signes croate"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSQ> .
 
 <http://publications.europa.eu/resource/authority/language/CSR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Costa Rican Sign Language"@en,
-        "langue des signes costaricienne"@fr .
+        "langue des signes costaricienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CSR> .
 
 <http://publications.europa.eu/resource/authority/language/CUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Cushitic languages"@en,
-        "langues couchitiques"@fr .
+        "langues couchitiques"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CUS> .
 
 <http://publications.europa.eu/resource/authority/language/CYB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Cayubaba"@en,
-        "cayubaba"@fr .
+        "cayubaba"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CYB> .
 
 <http://publications.europa.eu/resource/authority/language/CYM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Welsh"@en,
-        "gallois"@fr .
+        "gallois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/CYM> .
 
 <http://publications.europa.eu/resource/authority/language/DAN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Danish"@en,
-        "danois"@fr .
+        "danois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DAN> .
 
 <http://publications.europa.eu/resource/authority/language/DAY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Land Dayak languages"@en,
-        "langues dayak des terres"@fr .
+        "langues dayak des terres"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DAY> .
 
 <http://publications.europa.eu/resource/authority/language/DEU> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "German"@en,
-        "allemand"@fr .
+        "allemand"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DEU> .
 
 <http://publications.europa.eu/resource/authority/language/DIV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Dhivehi"@en,
-        "divehi"@fr .
+        "divehi"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DIV> .
 
 <http://publications.europa.eu/resource/authority/language/DOQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Dominican Sign Language"@en,
-        "langue des signes dominicaine"@fr .
+        "langue des signes dominicaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DOQ> .
 
 <http://publications.europa.eu/resource/authority/language/DRA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Dravidian languages"@en,
-        "langues dravidiennes"@fr .
+        "langues dravidiennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DRA> .
 
 <http://publications.europa.eu/resource/authority/language/DSB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Lower Sorbian"@en,
-        "bas-sorabe"@fr .
+        "bas-sorabe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DSB> .
 
 <http://publications.europa.eu/resource/authority/language/DSE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Dutch Sign Language"@en,
-        "langue des signes néerlandaise"@fr .
+        "langue des signes néerlandaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DSE> .
 
 <http://publications.europa.eu/resource/authority/language/DSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Danish Sign Language"@en,
-        "langue des signes danoise"@fr .
+        "langue des signes danoise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DSL> .
 
 <http://publications.europa.eu/resource/authority/language/DZO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Dzongkha"@en,
-        "dzongkha"@fr .
+        "dzongkha"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/DZO> .
 
 <http://publications.europa.eu/resource/authority/language/ECS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ecuadorian Sign Language"@en,
-        "langue des signes équatorienne"@fr .
+        "langue des signes équatorienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ECS> .
 
 <http://publications.europa.eu/resource/authority/language/ELL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Greek"@en,
-        "grec"@fr .
+        "grec"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ELL> .
 
 <http://publications.europa.eu/resource/authority/language/ENG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "English"@en,
-        "anglais"@fr .
+        "anglais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ENG> .
 
 <http://publications.europa.eu/resource/authority/language/EPO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Esperanto"@en,
-        "espéranto"@fr .
+        "espéranto"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/EPO> .
 
 <http://publications.europa.eu/resource/authority/language/ESE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ese Ejja"@en,
-        "ese ’ejja"@fr .
+        "ese ’ejja"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ESE> .
 
 <http://publications.europa.eu/resource/authority/language/ESL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Egyptian Sign Language"@en,
-        "langue des signes égyptienne"@fr .
+        "langue des signes égyptienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ESL> .
 
 <http://publications.europa.eu/resource/authority/language/ESN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Salvadoran Sign Language"@en,
-        "langue des signes salvadorienne"@fr .
+        "langue des signes salvadorienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ESN> .
 
 <http://publications.europa.eu/resource/authority/language/ESO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Estonian Sign Language"@en,
-        "langue des signes estonienne"@fr .
+        "langue des signes estonienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ESO> .
 
 <http://publications.europa.eu/resource/authority/language/EST> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Estonian"@en,
-        "estonien"@fr .
+        "estonien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/EST> .
 
 <http://publications.europa.eu/resource/authority/language/ETH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ethiopian Sign Language"@en,
-        "langue des signes éthiopienne"@fr .
+        "langue des signes éthiopienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ETH> .
 
 <http://publications.europa.eu/resource/authority/language/EUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Basque"@en,
-        "basque"@fr .
+        "basque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/EUS> .
 
 <http://publications.europa.eu/resource/authority/language/EWE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ewe"@en,
-        "éwé"@fr .
+        "éwé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/EWE> .
 
 <http://publications.europa.eu/resource/authority/language/FAO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Faroese"@en,
-        "féringien"@fr .
+        "féringien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FAO> .
 
 <http://publications.europa.eu/resource/authority/language/FAS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Persian"@en,
-        "persan"@fr .
+        "persan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FAS> .
 
 <http://publications.europa.eu/resource/authority/language/FCS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Quebec Sign Language"@en,
-        "langue des signes québécoise"@fr .
+        "langue des signes québécoise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FCS> .
 
 <http://publications.europa.eu/resource/authority/language/FIJ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Fijian"@en,
-        "fidjien"@fr .
+        "fidjien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FIJ> .
 
 <http://publications.europa.eu/resource/authority/language/FIL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Filipino"@en,
-        "philippin"@fr .
+        "philippin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FIL> .
 
 <http://publications.europa.eu/resource/authority/language/FIN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Finnish"@en,
-        "finnois"@fr .
+        "finnois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FIN> .
 
 <http://publications.europa.eu/resource/authority/language/FIU> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Finno-Ugrian languages"@en,
-        "langues finno-ougriennes"@fr .
+        "langues finno-ougriennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FIU> .
 
 <http://publications.europa.eu/resource/authority/language/FRA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "French"@en,
-        "français"@fr .
+        "français"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FRA> .
 
 <http://publications.europa.eu/resource/authority/language/FRY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Frisian"@en,
-        "frison"@fr .
+        "frison"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FRY> .
 
 <http://publications.europa.eu/resource/authority/language/FSE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Finnish Sign Language"@en,
-        "langue des signes finnoise"@fr .
+        "langue des signes finnoise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FSE> .
 
 <http://publications.europa.eu/resource/authority/language/FSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "French Sign Language"@en,
-        "langue des signes française"@fr .
+        "langue des signes française"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FSL> .
 
 <http://publications.europa.eu/resource/authority/language/FSS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Finland-Swedish Sign Language"@en,
-        "langue des signes finno-suédoise"@fr .
+        "langue des signes finno-suédoise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FSS> .
 
 <http://publications.europa.eu/resource/authority/language/FUR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Friulan"@en,
-        "frioulan"@fr .
+        "frioulan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/FUR> .
 
 <http://publications.europa.eu/resource/authority/language/GEM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Germanic languages"@en,
-        "langues germaniques"@fr .
+        "langues germaniques"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GEM> .
 
 <http://publications.europa.eu/resource/authority/language/GLA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Scottish Gaelic"@en,
-        "gaélique écossais"@fr .
+        "gaélique écossais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GLA> .
 
 <http://publications.europa.eu/resource/authority/language/GLE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Irish"@en,
-        "irlandais"@fr .
+        "irlandais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GLE> .
 
 <http://publications.europa.eu/resource/authority/language/GLG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Galician"@en,
-        "galicien"@fr .
+        "galicien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GLG> .
 
 <http://publications.europa.eu/resource/authority/language/GLV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Manx"@en,
-        "mannois"@fr .
+        "mannois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GLV> .
 
 <http://publications.europa.eu/resource/authority/language/GRN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Guarani"@en,
-        "guarani"@fr .
+        "guarani"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GRN> .
 
 <http://publications.europa.eu/resource/authority/language/GSE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ghanaian Sign Language"@en,
-        "langue des signes ghanéenne"@fr .
+        "langue des signes ghanéenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GSE> .
 
 <http://publications.europa.eu/resource/authority/language/GSG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "German Sign Language"@en,
-        "langue des signes allemande"@fr .
+        "langue des signes allemande"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GSG> .
 
 <http://publications.europa.eu/resource/authority/language/GSM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Guatemalan Sign Language"@en,
-        "langue des signes guatémaltèque"@fr .
+        "langue des signes guatémaltèque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GSM> .
 
 <http://publications.europa.eu/resource/authority/language/GSS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Greek Sign Language"@en,
-        "langue des signes grecque"@fr .
+        "langue des signes grecque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GSS> .
 
 <http://publications.europa.eu/resource/authority/language/GUG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Paraguayan Guaraní"@en,
-        "guarani paraguayen"@fr .
+        "guarani paraguayen"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GUG> .
 
 <http://publications.europa.eu/resource/authority/language/GUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Guinean Sign Language"@en,
-        "langue des signes guinéenne"@fr .
+        "langue des signes guinéenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GUS> .
 
 <http://publications.europa.eu/resource/authority/language/GYR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Guarayu"@en,
-        "guarayo"@fr .
+        "guarayo"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/GYR> .
 
 <http://publications.europa.eu/resource/authority/language/HAB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hanoi Sign Language"@en,
-        "langue des signes de Hanoï"@fr .
+        "langue des signes de Hanoï"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HAB> .
 
 <http://publications.europa.eu/resource/authority/language/HAF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Haiphong Sign Language"@en,
-        "langue des signes de Haïphong"@fr .
+        "langue des signes de Haïphong"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HAF> .
 
 <http://publications.europa.eu/resource/authority/language/HAT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Haitian"@en,
-        "créole haïtien"@fr .
+        "créole haïtien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HAT> .
 
 <http://publications.europa.eu/resource/authority/language/HBS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Serbo-Croatian"@en,
-        "serbo-croate"@fr .
+        "serbo-croate"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HBS> .
 
 <http://publications.europa.eu/resource/authority/language/HCA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Andaman Creole Hindi"@en,
-        "hindi créole des îles Andaman"@fr .
+        "hindi créole des îles Andaman"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HCA> .
 
 <http://publications.europa.eu/resource/authority/language/HDS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Honduran Sign Language"@en,
-        "langue des signes hondurienne"@fr .
+        "langue des signes hondurienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HDS> .
 
 <http://publications.europa.eu/resource/authority/language/HEB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hebrew"@en,
-        "hébreu"@fr .
+        "hébreu"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HEB> .
 
 <http://publications.europa.eu/resource/authority/language/HIF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Fiji Hindi"@en,
-        "hindi des Fidji"@fr .
+        "hindi des Fidji"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HIF> .
 
 <http://publications.europa.eu/resource/authority/language/HIN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hindi"@en,
-        "hindi"@fr .
+        "hindi"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HIN> .
 
 <http://publications.europa.eu/resource/authority/language/HKS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hong Kong Sign Language"@en,
-        "langue des signes de Hong Kong"@fr .
+        "langue des signes de Hong Kong"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HKS> .
 
 <http://publications.europa.eu/resource/authority/language/HMO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hiri Motu"@en,
-        "hiri motou"@fr .
+        "hiri motou"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HMO> .
 
 <http://publications.europa.eu/resource/authority/language/HOS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ho Chi Minh City Sign Language"@en,
-        "langue des signes d'Hô-Chi-Minh-Ville"@fr .
+        "langue des signes d'Hô-Chi-Minh-Ville"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HOS> .
 
 <http://publications.europa.eu/resource/authority/language/HPS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hawai'i Pidgin Sign Language"@en,
-        "langue des signes hawaïenne pigdin"@fr .
+        "langue des signes hawaïenne pigdin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HPS> .
 
 <http://publications.europa.eu/resource/authority/language/HRV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Croatian"@en,
-        "croate"@fr .
+        "croate"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HRV> .
 
 <http://publications.europa.eu/resource/authority/language/HSB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Upper Sorbian"@en,
-        "haut-sorabe"@fr .
+        "haut-sorabe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HSB> .
 
 <http://publications.europa.eu/resource/authority/language/HSH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hungarian Sign Language"@en,
-        "langue des signes hongroise"@fr .
+        "langue des signes hongroise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HSH> .
 
 <http://publications.europa.eu/resource/authority/language/HSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hausa Sign Language"@en,
-        "langue des signes haoussa"@fr .
+        "langue des signes haoussa"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HSL> .
 
 <http://publications.europa.eu/resource/authority/language/HUN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Hungarian"@en,
-        "hongrois"@fr .
+        "hongrois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HUN> .
 
 <http://publications.europa.eu/resource/authority/language/HYE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Armenian"@en,
-        "arménien"@fr .
+        "arménien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/HYE> .
 
 <http://publications.europa.eu/resource/authority/language/IBO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Igbo"@en,
-        "igbo"@fr .
+        "igbo"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/IBO> .
 
 <http://publications.europa.eu/resource/authority/language/ICL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Icelandic Sign Language"@en,
-        "langue des signes islandaise"@fr .
+        "langue des signes islandaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ICL> .
 
 <http://publications.europa.eu/resource/authority/language/IGN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ignaciano"@en,
-        "ignaciano"@fr .
+        "ignaciano"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/IGN> .
 
 <http://publications.europa.eu/resource/authority/language/IJO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ijo languages"@en,
-        "langues ijo"@fr .
+        "langues ijo"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/IJO> .
 
 <http://publications.europa.eu/resource/authority/language/INA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Interlingua"@en,
-        "interlingua"@fr .
+        "interlingua"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/INA> .
 
 <http://publications.europa.eu/resource/authority/language/INC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Indic languages"@en,
-        "langues indo-aryennes"@fr .
+        "langues indo-aryennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/INC> .
 
 <http://publications.europa.eu/resource/authority/language/IND> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Indonesian"@en,
-        "indonésien"@fr .
+        "indonésien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/IND> .
 
 <http://publications.europa.eu/resource/authority/language/INE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Indo-European languages"@en,
-        "langues indo-européennes"@fr .
+        "langues indo-européennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/INE> .
 
 <http://publications.europa.eu/resource/authority/language/INL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Indonesian Sign Language"@en,
-        "langue des signes indonésienne"@fr .
+        "langue des signes indonésienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/INL> .
 
 <http://publications.europa.eu/resource/authority/language/INS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Indian Sign Language"@en,
-        "langue des signes indienne"@fr .
+        "langue des signes indienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/INS> .
 
 <http://publications.europa.eu/resource/authority/language/IRA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Iranian languages"@en,
-        "langues iraniennes"@fr .
+        "langues iraniennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/IRA> .
 
 <http://publications.europa.eu/resource/authority/language/IRO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Iroquoian languages"@en,
-        "langues iroquoises"@fr .
+        "langues iroquoises"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/IRO> .
 
 <http://publications.europa.eu/resource/authority/language/ISE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Italian Sign Language"@en,
-        "langue des signes italienne"@fr .
+        "langue des signes italienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ISE> .
 
 <http://publications.europa.eu/resource/authority/language/ISG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Irish Sign Language"@en,
-        "langue des signes irlandaise"@fr .
+        "langue des signes irlandaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ISG> .
 
 <http://publications.europa.eu/resource/authority/language/ISL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Icelandic"@en,
-        "islandais"@fr .
+        "islandais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ISL> .
 
 <http://publications.europa.eu/resource/authority/language/ISR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Israeli Sign Language"@en,
-        "langue des signes israélienne"@fr .
+        "langue des signes israélienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ISR> .
 
 <http://publications.europa.eu/resource/authority/language/ITA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Italian"@en,
-        "italien"@fr .
+        "italien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ITA> .
 
 <http://publications.europa.eu/resource/authority/language/ITE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Itene"@en,
-        "moré"@fr .
+        "moré"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ITE> .
 
 <http://publications.europa.eu/resource/authority/language/ITO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Itonama"@en,
-        "itonama"@fr .
+        "itonama"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ITO> .
 
 <http://publications.europa.eu/resource/authority/language/JCS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Jamaican Country Sign Language"@en,
-        "langue des signes jamaïcaine rurale"@fr .
+        "langue des signes jamaïcaine rurale"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/JCS> .
 
 <http://publications.europa.eu/resource/authority/language/JHS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Jhankot Sign Language"@en,
-        "langue des signes de Jhankot"@fr .
+        "langue des signes de Jhankot"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/JHS> .
 
 <http://publications.europa.eu/resource/authority/language/JOS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Jordanian Sign Language"@en,
-        "langue des signes jordanienne"@fr .
+        "langue des signes jordanienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/JOS> .
 
 <http://publications.europa.eu/resource/authority/language/JPN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Japanese"@en,
-        "japonais"@fr .
+        "japonais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/JPN> .
 
 <http://publications.europa.eu/resource/authority/language/JSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Japanese Sign Language"@en,
-        "langue des signes japonaise"@fr .
+        "langue des signes japonaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/JSL> .
 
 <http://publications.europa.eu/resource/authority/language/JUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Jumla Sign Language"@en,
-        "langue des signes de Jumla"@fr .
+        "langue des signes de Jumla"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/JUS> .
 
 <http://publications.europa.eu/resource/authority/language/KAL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Greenlandic"@en,
-        "groenlandais"@fr .
+        "groenlandais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KAL> .
 
 <http://publications.europa.eu/resource/authority/language/KAR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Karen languages"@en,
-        "langues karens"@fr .
+        "langues karens"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KAR> .
 
 <http://publications.europa.eu/resource/authority/language/KAT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Georgian"@en,
-        "géorgien"@fr .
+        "géorgien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KAT> .
 
 <http://publications.europa.eu/resource/authority/language/KAZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kazakh"@en,
-        "kazakh"@fr .
+        "kazakh"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KAZ> .
 
 <http://publications.europa.eu/resource/authority/language/KGI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Selangor Sign Language"@en,
-        "langue des signes de Selangor"@fr .
+        "langue des signes de Selangor"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KGI> .
 
 <http://publications.europa.eu/resource/authority/language/KHI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Khoisan languages"@en,
-        "langues khoïsan"@fr .
+        "langues khoïsan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KHI> .
 
 <http://publications.europa.eu/resource/authority/language/KHM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Khmer"@en,
-        "khmer"@fr .
+        "khmer"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KHM> .
 
 <http://publications.europa.eu/resource/authority/language/KIN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kinyarwanda"@en,
-        "kinyarwanda"@fr .
+        "kinyarwanda"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KIN> .
 
 <http://publications.europa.eu/resource/authority/language/KIR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kyrgyz"@en,
-        "kirghiz"@fr .
+        "kirghiz"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KIR> .
 
 <http://publications.europa.eu/resource/authority/language/KMR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Northern Kurdish"@en,
-        "kurmandji"@fr .
+        "kurmandji"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KMR> .
 
 <http://publications.europa.eu/resource/authority/language/KON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kikongo"@en,
-        "kikongo"@fr .
+        "kikongo"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KON> .
 
 <http://publications.europa.eu/resource/authority/language/KOR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Korean"@en,
-        "coréen"@fr .
+        "coréen"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KOR> .
 
 <http://publications.europa.eu/resource/authority/language/KRO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kru languages"@en,
-        "langues krou"@fr .
+        "langues krou"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KRO> .
 
 <http://publications.europa.eu/resource/authority/language/KUR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kurdish"@en,
-        "kurde"@fr .
+        "kurde"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KUR> .
 
 <http://publications.europa.eu/resource/authority/language/KVK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Korean Sign Language"@en,
-        "langue des signes coréenne"@fr .
+        "langue des signes coréenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KVK> .
 
 <http://publications.europa.eu/resource/authority/language/KXD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Brunei Malay"@en,
-        "malais du Brunei"@fr .
+        "malais du Brunei"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/KXD> .
 
 <http://publications.europa.eu/resource/authority/language/LAO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Lao"@en,
-        "lao"@fr .
+        "lao"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LAO> .
 
 <http://publications.europa.eu/resource/authority/language/LAT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Latin"@en,
-        "latin"@fr .
+        "latin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LAT> .
 
 <http://publications.europa.eu/resource/authority/language/LAV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Latvian"@en,
-        "letton"@fr .
+        "letton"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LAV> .
 
 <http://publications.europa.eu/resource/authority/language/LBS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Libyan Sign Language"@en,
-        "langue des signes libyenne"@fr .
+        "langue des signes libyenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LBS> .
 
 <http://publications.europa.eu/resource/authority/language/LEC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Leco"@en,
-        "leko"@fr .
+        "leko"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LEC> .
 
 <http://publications.europa.eu/resource/authority/language/LIN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Lingala"@en,
-        "lingala"@fr .
+        "lingala"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LIN> .
 
 <http://publications.europa.eu/resource/authority/language/LIT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Lithuanian"@en,
-        "lituanien"@fr .
+        "lituanien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LIT> .
 
 <http://publications.europa.eu/resource/authority/language/LLS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Lithuanian Sign Language"@en,
-        "langue des signes lituanienne"@fr .
+        "langue des signes lituanienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LLS> .
 
 <http://publications.europa.eu/resource/authority/language/LSG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Lyons Sign Language"@en,
-        "langue des signes lyonnaise"@fr .
+        "langue des signes lyonnaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LSG> .
 
 <http://publications.europa.eu/resource/authority/language/LSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Latvian Sign Language"@en,
-        "langue des signes lettone"@fr .
+        "langue des signes lettone"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LSL> .
 
 <http://publications.europa.eu/resource/authority/language/LSO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Laotian Sign Language"@en,
-        "langue des signes laotienne"@fr .
+        "langue des signes laotienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LSO> .
 
 <http://publications.europa.eu/resource/authority/language/LSP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Panamanian Sign Language"@en,
-        "langue des signes panaméenne"@fr .
+        "langue des signes panaméenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LSP> .
 
 <http://publications.europa.eu/resource/authority/language/LST> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Trinidad and Tobago Sign Language"@en,
-        "langue des signes trinidadienne"@fr .
+        "langue des signes trinidadienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LST> .
 
 <http://publications.europa.eu/resource/authority/language/LTZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Luxembourgish"@en,
-        "luxembourgeois"@fr .
+        "luxembourgeois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LTZ> .
 
 <http://publications.europa.eu/resource/authority/language/LUA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Luba-Lulua"@en,
-        "tshiluba"@fr .
+        "tshiluba"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/LUA> .
 
 <http://publications.europa.eu/resource/authority/language/MAH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Marshallese"@en,
-        "marshallais"@fr .
+        "marshallais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MAH> .
 
 <http://publications.europa.eu/resource/authority/language/MAN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Manding"@en,
-        "mandingue"@fr .
+        "mandingue"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MAN> .
 
 <http://publications.europa.eu/resource/authority/language/MAP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Austronesian languages"@en,
-        "langues austronésiennes"@fr .
+        "langues austronésiennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MAP> .
 
 <http://publications.europa.eu/resource/authority/language/MDL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Maltese Sign Language"@en,
-        "langue des signes maltaise"@fr .
+        "langue des signes maltaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MDL> .
 
 <http://publications.europa.eu/resource/authority/language/MFS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mexican Sign Language"@en,
-        "langue des signes mexicaine"@fr .
+        "langue des signes mexicaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MFS> .
 
 <http://publications.europa.eu/resource/authority/language/MIN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Minangkabau"@en,
-        "minangkabau"@fr .
+        "minangkabau"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MIN> .
 
 <http://publications.europa.eu/resource/authority/language/MIS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Uncoded languages"@en,
-        "langues non codées"@fr .
+        "langues non codées"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MIS> .
 
 <http://publications.europa.eu/resource/authority/language/MKD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Macedonian"@en,
-        "macédonien"@fr .
+        "macédonien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MKD> .
 
 <http://publications.europa.eu/resource/authority/language/MKH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mon-Khmer languages"@en,
-        "langues môn-khmer"@fr .
+        "langues môn-khmer"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MKH> .
 
 <http://publications.europa.eu/resource/authority/language/MLG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Malagasy"@en,
-        "malgache"@fr .
+        "malgache"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MLG> .
 
 <http://publications.europa.eu/resource/authority/language/MLT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Maltese"@en,
-        "maltais"@fr .
+        "maltais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MLT> .
 
 <http://publications.europa.eu/resource/authority/language/MNK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mandinka"@en,
-        "mandinka"@fr .
+        "mandinka"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MNK> .
 
 <http://publications.europa.eu/resource/authority/language/MNO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Manobo languages"@en,
-        "langues manobo"@fr .
+        "langues manobo"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MNO> .
 
 <http://publications.europa.eu/resource/authority/language/MOL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Moldavian"@en,
-        "moldave"@fr .
+        "moldave"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MOL> .
 
 <http://publications.europa.eu/resource/authority/language/MON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mongolian"@en,
-        "mongol"@fr .
+        "mongol"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MON> .
 
 <http://publications.europa.eu/resource/authority/language/MPD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Machinere"@en,
-        "yine"@fr .
+        "yine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MPD> .
 
 <http://publications.europa.eu/resource/authority/language/MRE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Martha's Vineyard Sign Language"@en,
-        "langue des signes de Martha's Vineyard"@fr .
+        "langue des signes de Martha's Vineyard"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MRE> .
 
 <http://publications.europa.eu/resource/authority/language/MRI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Māori"@en,
-        "māori"@fr .
+        "māori"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MRI> .
 
 <http://publications.europa.eu/resource/authority/language/MSA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Malaysian"@en,
-        "malaisien"@fr .
+        "malaisien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MSA> .
 
 <http://publications.europa.eu/resource/authority/language/MSD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yucatec Maya Sign Language"@en,
-        "langue des signes maya yucatèque"@fr .
+        "langue des signes maya yucatèque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MSD> .
 
 <http://publications.europa.eu/resource/authority/language/MSR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mongolian Sign Language"@en,
-        "langue des signes mongole"@fr .
+        "langue des signes mongole"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MSR> .
 
 <http://publications.europa.eu/resource/authority/language/MTP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Wichí Lhamtés Nocten"@en,
-        "wichí"@fr .
+        "wichí"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MTP> .
 
 <http://publications.europa.eu/resource/authority/language/MUL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Multiple languages"@en,
-        "langues multiples"@fr .
+        "langues multiples"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MUL> .
 
 <http://publications.europa.eu/resource/authority/language/MUN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Munda languages"@en,
-        "langues mounda"@fr .
+        "langues mounda"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MUN> .
 
 <http://publications.europa.eu/resource/authority/language/MYA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Burmese"@en,
-        "birman"@fr .
+        "birman"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MYA> .
 
 <http://publications.europa.eu/resource/authority/language/MYN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mayan languages"@en,
-        "langues mayas"@fr .
+        "langues mayas"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MYN> .
 
 <http://publications.europa.eu/resource/authority/language/MZC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Madagascar Sign Language"@en,
-        "langue des signes malgache"@fr .
+        "langue des signes malgache"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MZC> .
 
 <http://publications.europa.eu/resource/authority/language/MZG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Monastic Sign Language"@en,
-        "langue des signes monastique"@fr .
+        "langue des signes monastique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MZG> .
 
 <http://publications.europa.eu/resource/authority/language/MZP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Movima"@en,
-        "movima"@fr .
+        "movima"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MZP> .
 
 <http://publications.europa.eu/resource/authority/language/MZY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Mozambican Sign Language"@en,
-        "langue des signes mozambicaine"@fr .
+        "langue des signes mozambicaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/MZY> .
 
 <http://publications.europa.eu/resource/authority/language/NAH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nahuatl languages"@en,
-        "langues nahuatl"@fr .
+        "langues nahuatl"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NAH> .
 
 <http://publications.europa.eu/resource/authority/language/NAI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "North American Indian languages"@en,
-        "langues indiennes d'Amérique du Nord"@fr .
+        "langues indiennes d'Amérique du Nord"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NAI> .
 
 <http://publications.europa.eu/resource/authority/language/NAU> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nauruan"@en,
-        "nauri"@fr .
+        "nauri"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NAU> .
 
 <http://publications.europa.eu/resource/authority/language/NBL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Southhern Ndebele"@en,
-        "ndébélé du Transvaal"@fr .
+        "ndébélé du Transvaal"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NBL> .
 
 <http://publications.europa.eu/resource/authority/language/NBS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Namibian Sign Language"@en,
-        "langue des signes namibienne"@fr .
+        "langue des signes namibienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NBS> .
 
 <http://publications.europa.eu/resource/authority/language/NCS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nicaraguan Sign Language"@en,
-        "langue des signes nicaraguayenne"@fr .
+        "langue des signes nicaraguayenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NCS> .
 
 <http://publications.europa.eu/resource/authority/language/NEP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nepali"@en,
-        "népalais"@fr .
+        "népalais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NEP> .
 
 <http://publications.europa.eu/resource/authority/language/NIC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Niger-Kordofanian languages"@en,
-        "langues nigéro-congolaises"@fr .
+        "langues nigéro-congolaises"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NIC> .
 
 <http://publications.europa.eu/resource/authority/language/NIU> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Niuean"@en,
-        "niué"@fr .
+        "niué"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NIU> .
 
 <http://publications.europa.eu/resource/authority/language/NLD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Dutch"@en,
-        "néerlandais"@fr .
+        "néerlandais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NLD> .
 
 <http://publications.europa.eu/resource/authority/language/NNO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Norwegian Nynorsk"@en,
-        "norvégien nynorsk"@fr .
+        "norvégien nynorsk"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NNO> .
 
 <http://publications.europa.eu/resource/authority/language/NOB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Norwegian Bokmål"@en,
-        "norvégien bokmål"@fr .
+        "norvégien bokmål"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NOB> .
 
 <http://publications.europa.eu/resource/authority/language/NOR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Norwegian"@en,
-        "norvégien"@fr .
+        "norvégien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NOR> .
 
 <http://publications.europa.eu/resource/authority/language/NSI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nigerian Sign Language"@en,
-        "langue des signes nigériane"@fr .
+        "langue des signes nigériane"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NSI> .
 
 <http://publications.europa.eu/resource/authority/language/NSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Norwegian Sign Language"@en,
-        "langue des signes norvégienne"@fr .
+        "langue des signes norvégienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NSL> .
 
 <http://publications.europa.eu/resource/authority/language/NSO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Northern Sotho"@en,
-        "sotho du Nord"@fr .
+        "sotho du Nord"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NSO> .
 
 <http://publications.europa.eu/resource/authority/language/NSP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nepalese Sign Language"@en,
-        "langue des signes népalaise"@fr .
+        "langue des signes népalaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NSP> .
 
 <http://publications.europa.eu/resource/authority/language/NSR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Maritime Sign Language"@en,
-        "langue des signes maritime"@fr .
+        "langue des signes maritime"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NSR> .
 
 <http://publications.europa.eu/resource/authority/language/NUB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nubian languages"@en,
-        "langues nubiennes"@fr .
+        "langues nubiennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NUB> .
 
 <http://publications.europa.eu/resource/authority/language/NYA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chewa"@en,
-        "chewa"@fr .
+        "chewa"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NYA> .
 
 <http://publications.europa.eu/resource/authority/language/NZS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "New Zealand Sign Language"@en,
-        "langue des signes néo-zélandaise"@fr .
+        "langue des signes néo-zélandaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/NZS> .
 
 <http://publications.europa.eu/resource/authority/language/OCI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Occitan"@en,
-        "occitan"@fr .
+        "occitan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/OCI> .
 
 <http://publications.europa.eu/resource/authority/language/OSS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ossetic"@en,
-        "ossète"@fr .
+        "ossète"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/OSS> .
 
 <http://publications.europa.eu/resource/authority/language/OTO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Otomian languages"@en,
-        "langues otomi"@fr .
+        "langues otomi"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/OTO> .
 
 <http://publications.europa.eu/resource/authority/language/PAA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Papuan languages"@en,
-        "langues papoues"@fr .
+        "langues papoues"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PAA> .
 
 <http://publications.europa.eu/resource/authority/language/PAN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Punjabi"@en,
-        "pendjabi"@fr .
+        "pendjabi"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PAN> .
 
 <http://publications.europa.eu/resource/authority/language/PAP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Papiamento"@en,
-        "papiamento"@fr .
+        "papiamento"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PAP> .
 
 <http://publications.europa.eu/resource/authority/language/PAU> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Palauan"@en,
-        "paluan"@fr .
+        "paluan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PAU> .
 
 <http://publications.europa.eu/resource/authority/language/PCP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Pacahuara"@en,
-        "pacahuara"@fr .
+        "pacahuara"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PCP> .
 
 <http://publications.europa.eu/resource/authority/language/PHI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Philippine languages"@en,
-        "langues philippines"@fr .
+        "langues philippines"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PHI> .
 
 <http://publications.europa.eu/resource/authority/language/PIH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Pitcairn-Norfolk"@en,
-        "pitcairnais"@fr .
+        "pitcairnais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PIH> .
 
 <http://publications.europa.eu/resource/authority/language/PKS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Pakistan Sign Language"@en,
-        "langue des signes pakistanaise"@fr .
+        "langue des signes pakistanaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PKS> .
 
 <http://publications.europa.eu/resource/authority/language/POL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Polish"@en,
-        "polonais"@fr .
+        "polonais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/POL> .
 
 <http://publications.europa.eu/resource/authority/language/POR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Portuguese"@en,
-        "portugais"@fr .
+        "portugais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/POR> .
 
 <http://publications.europa.eu/resource/authority/language/PRA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Prakrit languages"@en,
-        "langues prâkrit"@fr .
+        "langues prâkrit"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PRA> .
 
 <http://publications.europa.eu/resource/authority/language/PRL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Peruvian Sign Language"@en,
-        "langue des signes péruvienne"@fr .
+        "langue des signes péruvienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PRL> .
 
 <http://publications.europa.eu/resource/authority/language/PRS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Dari"@en,
-        "dari"@fr .
+        "dari"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PRS> .
 
 <http://publications.europa.eu/resource/authority/language/PRZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Providencia Sign Language"@en,
-        "langue des signes de Providencia"@fr .
+        "langue des signes de Providencia"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PRZ> .
 
 <http://publications.europa.eu/resource/authority/language/PSC> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Persian Sign Language"@en,
-        "langue des signes perse"@fr .
+        "langue des signes perse"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSC> .
 
 <http://publications.europa.eu/resource/authority/language/PSD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Plains Indian Sign Language"@en,
-        "langue des signes des Indiens des Plaines"@fr .
+        "langue des signes des Indiens des Plaines"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSD> .
 
 <http://publications.europa.eu/resource/authority/language/PSG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Penang Sign Language"@en,
-        "langue des signes de Penang"@fr .
+        "langue des signes de Penang"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSG> .
 
 <http://publications.europa.eu/resource/authority/language/PSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Puerto Rican Sign Language"@en,
-        "langue des signes portoricaine"@fr .
+        "langue des signes portoricaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSL> .
 
 <http://publications.europa.eu/resource/authority/language/PSM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Pauserna"@en,
-        "pauserna"@fr .
+        "pauserna"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSM> .
 
 <http://publications.europa.eu/resource/authority/language/PSO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Polish Sign Language"@en,
-        "langue des signes polonaise"@fr .
+        "langue des signes polonaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSO> .
 
 <http://publications.europa.eu/resource/authority/language/PSP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Philippine Sign Language"@en,
-        "langue des signes philippine"@fr .
+        "langue des signes philippine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSP> .
 
 <http://publications.europa.eu/resource/authority/language/PSR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Portuguese Sign Language"@en,
-        "langue des signes portugaise"@fr .
+        "langue des signes portugaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PSR> .
 
 <http://publications.europa.eu/resource/authority/language/PUQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Puquina"@en,
-        "puquina"@fr .
+        "puquina"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PUQ> .
 
 <http://publications.europa.eu/resource/authority/language/PUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Pashto"@en,
-        "pachto"@fr .
+        "pachto"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/PUS> .
 
 <http://publications.europa.eu/resource/authority/language/QUE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Quechua"@en,
-        "quéchua"@fr .
+        "quéchua"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/QUE> .
 
 <http://publications.europa.eu/resource/authority/language/RAR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Rarotongan"@en,
-        "maori des îles Cook"@fr .
+        "maori des îles Cook"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/RAR> .
 
 <http://publications.europa.eu/resource/authority/language/REY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Reyesano"@en,
-        "reyesano"@fr .
+        "reyesano"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/REY> .
 
 <http://publications.europa.eu/resource/authority/language/RMS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Romanian Sign Language"@en,
-        "langue des signes roumaine"@fr .
+        "langue des signes roumaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/RMS> .
 
 <http://publications.europa.eu/resource/authority/language/ROA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Romance languages"@en,
-        "langues romanes"@fr .
+        "langues romanes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ROA> .
 
 <http://publications.europa.eu/resource/authority/language/ROH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Romansh"@en,
-        "romanche"@fr .
+        "romanche"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ROH> .
 
 <http://publications.europa.eu/resource/authority/language/ROM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Romani"@en,
-        "romani"@fr .
+        "romani"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ROM> .
 
 <http://publications.europa.eu/resource/authority/language/RON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Romanian"@en,
-        "roumain"@fr .
+        "roumain"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/RON> .
 
 <http://publications.europa.eu/resource/authority/language/RSI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Rennellese Sign Language"@en,
-        "langue des signes de Rennellese"@fr .
+        "langue des signes de Rennellese"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/RSI> .
 
 <http://publications.europa.eu/resource/authority/language/RSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Russian Sign Language"@en,
-        "langue des signes russe"@fr .
+        "langue des signes russe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/RSL> .
 
 <http://publications.europa.eu/resource/authority/language/RUN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kirundi"@en,
-        "rundi"@fr .
+        "rundi"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/RUN> .
 
 <http://publications.europa.eu/resource/authority/language/RUS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Russian"@en,
-        "russe"@fr .
+        "russe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/RUS> .
 
 <http://publications.europa.eu/resource/authority/language/SAG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sango"@en,
-        "sango"@fr .
+        "sango"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SAG> .
 
 <http://publications.europa.eu/resource/authority/language/SAI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "South American Indian languages"@en,
-        "langues indiennes d'Amérique du Sud"@fr .
+        "langues indiennes d'Amérique du Sud"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SAI> .
 
 <http://publications.europa.eu/resource/authority/language/SAL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Salishan languages"@en,
-        "langues salishennes"@fr .
+        "langues salishennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SAL> .
 
 <http://publications.europa.eu/resource/authority/language/SCO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Scots"@en,
-        "scots"@fr .
+        "scots"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SCO> .
 
 <http://publications.europa.eu/resource/authority/language/SDH> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Southern Kurdish"@en,
-        "kurde du Sud"@fr .
+        "kurde du Sud"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SDH> .
 
 <http://publications.europa.eu/resource/authority/language/SDL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Saudi Arabian Sign Language"@en,
-        "langue des signes saoudienne"@fr .
+        "langue des signes saoudienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SDL> .
 
 <http://publications.europa.eu/resource/authority/language/SEM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Semitic languages"@en,
-        "langues sémitiques"@fr .
+        "langues sémitiques"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SEM> .
 
 <http://publications.europa.eu/resource/authority/language/SFS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "South African Sign Language"@en,
-        "langue des signes sud-africaine"@fr .
+        "langue des signes sud-africaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SFS> .
 
 <http://publications.europa.eu/resource/authority/language/SGG> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Swiss-German Sign Language"@en,
-        "langue des signes suisse alémanique"@fr .
+        "langue des signes suisse alémanique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SGG> .
 
 <http://publications.europa.eu/resource/authority/language/SGN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sign Languages"@en,
-        "langues des signes"@fr .
+        "langues des signes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SGN> .
 
 <http://publications.europa.eu/resource/authority/language/SGX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sierra Leonean Sign Language"@en,
-        "langue des signes sierra-léonaise"@fr .
+        "langue des signes sierra-léonaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SGX> .
 
 <http://publications.europa.eu/resource/authority/language/SIN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sinhala"@en,
-        "cingalais"@fr .
+        "cingalais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SIN> .
 
 <http://publications.europa.eu/resource/authority/language/SIO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Siouan languages"@en,
-        "langues sioux"@fr .
+        "langues sioux"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SIO> .
 
 <http://publications.europa.eu/resource/authority/language/SIP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sikkimese"@en,
-        "sikkimais"@fr .
+        "sikkimais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SIP> .
 
 <http://publications.europa.eu/resource/authority/language/SIT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sino-Tibetan languages"@en,
-        "langues sino-tibétaines"@fr .
+        "langues sino-tibétaines"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SIT> .
 
 <http://publications.europa.eu/resource/authority/language/SJE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Pite Sami"@en,
-        "same de Pite"@fr .
+        "same de Pite"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SJE> .
 
 <http://publications.europa.eu/resource/authority/language/SLA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Slavic languages"@en,
-        "langues slaves"@fr .
+        "langues slaves"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SLA> .
 
 <http://publications.europa.eu/resource/authority/language/SLF> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Swiss-Italian Sign Language"@en,
-        "langue des signes suisse italienne"@fr .
+        "langue des signes suisse italienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SLF> .
 
 <http://publications.europa.eu/resource/authority/language/SLK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Slovak"@en,
-        "slovaque"@fr .
+        "slovaque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SLK> .
 
 <http://publications.europa.eu/resource/authority/language/SLS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Singapore Sign Language"@en,
-        "langue des signes de Singapour"@fr .
+        "langue des signes de Singapour"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SLS> .
 
 <http://publications.europa.eu/resource/authority/language/SLV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Slovenian"@en,
-        "slovène"@fr .
+        "slovène"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SLV> .
 
 <http://publications.europa.eu/resource/authority/language/SME> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Northern Sami"@en,
-        "same du Nord"@fr .
+        "same du Nord"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SME> .
 
 <http://publications.europa.eu/resource/authority/language/SMI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sami languages"@en,
-        "langues sames"@fr .
+        "langues sames"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SMI> .
 
 <http://publications.europa.eu/resource/authority/language/SMO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Samoan"@en,
-        "samoan"@fr .
+        "samoan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SMO> .
 
 <http://publications.europa.eu/resource/authority/language/SOM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Somali"@en,
-        "somali"@fr .
+        "somali"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SOM> .
 
 <http://publications.europa.eu/resource/authority/language/SON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Songhai languages"@en,
-        "langues songhai"@fr .
+        "langues songhai"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SON> .
 
 <http://publications.europa.eu/resource/authority/language/SOT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Southern Sotho"@en,
-        "sotho du Sud"@fr .
+        "sotho du Sud"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SOT> .
 
 <http://publications.europa.eu/resource/authority/language/SPA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Spanish"@en,
-        "espagnol"@fr .
+        "espagnol"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SPA> .
 
 <http://publications.europa.eu/resource/authority/language/SQI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Albanian"@en,
-        "albanais"@fr .
+        "albanais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SQI> .
 
 <http://publications.europa.eu/resource/authority/language/SQS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sri Lankan Sign Language"@en,
-        "langue des signes sri-lankaise"@fr .
+        "langue des signes sri-lankaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SQS> .
 
 <http://publications.europa.eu/resource/authority/language/SRP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Serbian"@en,
-        "serbe"@fr .
+        "serbe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SRP> .
 
 <http://publications.europa.eu/resource/authority/language/SRQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sirionó"@en,
-        "siriono"@fr .
+        "siriono"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SRQ> .
 
 <http://publications.europa.eu/resource/authority/language/SSA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Nilo-Saharan languages"@en,
-        "langues nilo-sahariennes"@fr .
+        "langues nilo-sahariennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SSA> .
 
 <http://publications.europa.eu/resource/authority/language/SSP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Spanish Sign Language"@en,
-        "langue des signes espagnole"@fr .
+        "langue des signes espagnole"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SSP> .
 
 <http://publications.europa.eu/resource/authority/language/SSR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Swiss-French Sign Language"@en,
-        "langue des signes suisse romande"@fr .
+        "langue des signes suisse romande"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SSR> .
 
 <http://publications.europa.eu/resource/authority/language/SSW> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Swazi"@en,
-        "swati"@fr .
+        "swati"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SSW> .
 
 <http://publications.europa.eu/resource/authority/language/SVK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Slovakian Sign Language"@en,
-        "langue des signes slovaque"@fr .
+        "langue des signes slovaque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SVK> .
 
 <http://publications.europa.eu/resource/authority/language/SWA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Swahili"@en,
-        "kiswahili"@fr .
+        "kiswahili"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SWA> .
 
 <http://publications.europa.eu/resource/authority/language/SWB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Comorian"@en,
-        "comorien"@fr .
+        "comorien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SWB> .
 
 <http://publications.europa.eu/resource/authority/language/SWE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Swedish"@en,
-        "suédois"@fr .
+        "suédois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SWE> .
 
 <http://publications.europa.eu/resource/authority/language/SWL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Swedish Sign Language"@en,
-        "langue des signes suédoise"@fr .
+        "langue des signes suédoise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SWL> .
 
 <http://publications.europa.eu/resource/authority/language/SYY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Al-Sayyid Bedouin Sign Language"@en,
-        "langue des signes bédouine d'Al-Sayyid"@fr .
+        "langue des signes bédouine d'Al-Sayyid"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/SYY> .
 
 <http://publications.europa.eu/resource/authority/language/TAI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tai languages"@en,
-        "langues tai"@fr .
+        "langues tai"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TAI> .
 
 <http://publications.europa.eu/resource/authority/language/TAM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tamil"@en,
-        "tamoul"@fr .
+        "tamoul"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TAM> .
 
 <http://publications.europa.eu/resource/authority/language/TET> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tetum"@en,
-        "tétoum"@fr .
+        "tétoum"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TET> .
 
 <http://publications.europa.eu/resource/authority/language/TGK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tajik"@en,
-        "tadjik"@fr .
+        "tadjik"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TGK> .
 
 <http://publications.europa.eu/resource/authority/language/THA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Thai"@en,
-        "thaï"@fr .
+        "thaï"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/THA> .
 
 <http://publications.europa.eu/resource/authority/language/TIR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tigrinya"@en,
-        "tigrigna"@fr .
+        "tigrigna"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TIR> .
 
 <http://publications.europa.eu/resource/authority/language/TKL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tokelauan"@en,
-        "tokelau"@fr .
+        "tokelau"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TKL> .
 
 <http://publications.europa.eu/resource/authority/language/TNA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tacana"@en,
-        "tacana"@fr .
+        "tacana"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TNA> .
 
 <http://publications.europa.eu/resource/authority/language/TNO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Toromono"@en,
-        "toromona"@fr .
+        "toromona"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TNO> .
 
 <http://publications.europa.eu/resource/authority/language/TON> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tongan"@en,
-        "tongien"@fr .
+        "tongien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TON> .
 
 <http://publications.europa.eu/resource/authority/language/TPI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tok Pisin"@en,
-        "tok pisin"@fr .
+        "tok pisin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TPI> .
 
 <http://publications.europa.eu/resource/authority/language/TPJ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tapieté"@en,
-        "tapieté"@fr .
+        "tapieté"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TPJ> .
 
 <http://publications.europa.eu/resource/authority/language/TRN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Trinitario"@en,
-        "trinitario"@fr .
+        "trinitario"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TRN> .
 
 <http://publications.europa.eu/resource/authority/language/TSE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tunisian Sign Language"@en,
-        "langue des signes tunisienne"@fr .
+        "langue des signes tunisienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TSE> .
 
 <http://publications.europa.eu/resource/authority/language/TSM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Turkish Sign Language"@en,
-        "langue des signes turque"@fr .
+        "langue des signes turque"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TSM> .
 
 <http://publications.europa.eu/resource/authority/language/TSN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tswana"@en,
-        "tswana"@fr .
+        "tswana"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TSN> .
 
 <http://publications.europa.eu/resource/authority/language/TSO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tsonga"@en,
-        "tsonga"@fr .
+        "tsonga"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TSO> .
 
 <http://publications.europa.eu/resource/authority/language/TSQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Thai Sign Language"@en,
-        "langue des signes thaï"@fr .
+        "langue des signes thaï"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TSQ> .
 
 <http://publications.europa.eu/resource/authority/language/TSS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Taiwanese Sign Language"@en,
-        "langue des signes taïwanaise"@fr .
+        "langue des signes taïwanaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TSS> .
 
 <http://publications.europa.eu/resource/authority/language/TSY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tebul Sign Language"@en,
-        "langue des signes de Tebul"@fr .
+        "langue des signes de Tebul"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TSY> .
 
 <http://publications.europa.eu/resource/authority/language/TUK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Turkmen"@en,
-        "turkmène"@fr .
+        "turkmène"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TUK> .
 
 <http://publications.europa.eu/resource/authority/language/TUP> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tupi languages"@en,
-        "langues tupi"@fr .
+        "langues tupi"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TUP> .
 
 <http://publications.europa.eu/resource/authority/language/TUR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Turkish"@en,
-        "turc"@fr .
+        "turc"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TUR> .
 
 <http://publications.europa.eu/resource/authority/language/TUT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Altaic languages"@en,
-        "langues altaïques"@fr .
+        "langues altaïques"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TUT> .
 
 <http://publications.europa.eu/resource/authority/language/TVL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tuvaluan"@en,
-        "tuvaluan"@fr .
+        "tuvaluan"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TVL> .
 
 <http://publications.europa.eu/resource/authority/language/TZA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Tanzanian Sign Language"@en,
-        "langue des signes tanzanienne"@fr .
+        "langue des signes tanzanienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/TZA> .
 
 <http://publications.europa.eu/resource/authority/language/UGN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ugandan Sign Language"@en,
-        "langue des signes ougandaise"@fr .
+        "langue des signes ougandaise"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/UGN> .
 
 <http://publications.europa.eu/resource/authority/language/UGY> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Uruguayan Sign Language"@en,
-        "langue des signes uruguayenne"@fr .
+        "langue des signes uruguayenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/UGY> .
 
 <http://publications.europa.eu/resource/authority/language/UKL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ukrainian Sign Language"@en,
-        "langue des signes ukrainienne"@fr .
+        "langue des signes ukrainienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/UKL> .
 
 <http://publications.europa.eu/resource/authority/language/UKR> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Ukrainian"@en,
-        "ukrainien"@fr .
+        "ukrainien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/UKR> .
 
 <http://publications.europa.eu/resource/authority/language/UKS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Urubú-Kaapor Sign Language"@en,
-        "langue des signes urubú-ka'apór"@fr .
+        "langue des signes urubú-ka'apór"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/UKS> .
 
 <http://publications.europa.eu/resource/authority/language/UND> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Undetermined"@en,
-        "indéterminé"@fr .
+        "indéterminé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/UND> .
 
 <http://publications.europa.eu/resource/authority/language/URD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Urdu"@en,
-        "ourdou"@fr .
+        "ourdou"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/URD> .
 
 <http://publications.europa.eu/resource/authority/language/URE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Uru"@en,
-        "uru"@fr .
+        "uru"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/URE> .
 
 <http://publications.europa.eu/resource/authority/language/UZB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Uzbek"@en,
-        "ouzbek"@fr .
+        "ouzbek"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/UZB> .
 
 <http://publications.europa.eu/resource/authority/language/VEN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Venda"@en,
-        "venda"@fr .
+        "venda"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/VEN> .
 
 <http://publications.europa.eu/resource/authority/language/VIE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Vietnamese"@en,
-        "vietnamien"@fr .
+        "vietnamien"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/VIE> .
 
 <http://publications.europa.eu/resource/authority/language/VLS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Flemish"@en,
-        "flamand"@fr .
+        "flamand"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/VLS> .
 
 <http://publications.europa.eu/resource/authority/language/VSI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Moldovan Sign Language"@en,
-        "langue des signes moldave"@fr .
+        "langue des signes moldave"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/VSI> .
 
 <http://publications.europa.eu/resource/authority/language/VSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Venezuelan Sign Language"@en,
-        "langue des signes vénézuélienne"@fr .
+        "langue des signes vénézuélienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/VSL> .
 
 <http://publications.europa.eu/resource/authority/language/VSV> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Valencian Sign Language"@en,
-        "langue des signes valencienne"@fr .
+        "langue des signes valencienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/VSV> .
 
 <http://publications.europa.eu/resource/authority/language/WAK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Wakashan languages"@en,
-        "langues wakashennes"@fr .
+        "langues wakashennes"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/WAK> .
 
 <http://publications.europa.eu/resource/authority/language/WEN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Sorbian languages"@en,
-        "langues sorabe"@fr .
+        "langues sorabe"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/WEN> .
 
 <http://publications.europa.eu/resource/authority/language/WLN> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Walloon"@en,
-        "wallon"@fr .
+        "wallon"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/WLN> .
 
 <http://publications.europa.eu/resource/authority/language/WOL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Wolof"@en,
-        "wolof"@fr .
+        "wolof"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/WOL> .
 
 <http://publications.europa.eu/resource/authority/language/XHO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Xhosa"@en,
-        "xhosa"@fr .
+        "xhosa"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/XHO> .
 
 <http://publications.europa.eu/resource/authority/language/XKI> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Kenyan Sign Language"@en,
-        "langue des signes kényane"@fr .
+        "langue des signes kényane"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/XKI> .
 
 <http://publications.europa.eu/resource/authority/language/XML> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Malaysian Sign Language"@en,
-        "langue des signes malaisienne"@fr .
+        "langue des signes malaisienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/XML> .
 
 <http://publications.europa.eu/resource/authority/language/XMS> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Moroccan Sign Language"@en,
-        "langue des signes marocaine"@fr .
+        "langue des signes marocaine"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/XMS> .
 
 <http://publications.europa.eu/resource/authority/language/YAA> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yaminava"@en,
-        "yaminahua"@fr .
+        "yaminahua"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/YAA> .
 
 <http://publications.europa.eu/resource/authority/language/YID> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yiddish"@en,
-        "yiddish"@fr .
+        "yiddish"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/YID> .
 
 <http://publications.europa.eu/resource/authority/language/YPK> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yupik languages"@en,
-        "langues yupik"@fr .
+        "langues yupik"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/YPK> .
 
 <http://publications.europa.eu/resource/authority/language/YSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yugoslavian Sign Language"@en,
-        "langue des signes yougoslave"@fr .
+        "langue des signes yougoslave"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/YSL> .
 
 <http://publications.europa.eu/resource/authority/language/YUE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yue Chinese"@en,
-        "cantonais"@fr .
+        "cantonais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/YUE> .
 
 <http://publications.europa.eu/resource/authority/language/YUQ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yuqui"@en,
-        "yuki"@fr .
+        "yuki"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/YUQ> .
 
 <http://publications.europa.eu/resource/authority/language/YUZ> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Yuracare"@en,
-        "yuracaré"@fr .
+        "yuracaré"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/YUZ> .
 
 <http://publications.europa.eu/resource/authority/language/ZHO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Chinese"@en,
-        "chinois"@fr .
+        "chinois"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ZHO> .
 
 <http://publications.europa.eu/resource/authority/language/ZIB> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Zimbabwean Sign Language"@en,
-        "langue des signes zimbabwéenne"@fr .
+        "langue des signes zimbabwéenne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ZIB> .
 
 <http://publications.europa.eu/resource/authority/language/ZLM> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Malay"@en,
-        "malais"@fr .
+        "malais"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ZLM> .
 
 <http://publications.europa.eu/resource/authority/language/ZND> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Zande languages"@en,
-        "langues zandé"@fr .
+        "langues zandé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ZND> .
 
 <http://publications.europa.eu/resource/authority/language/ZSL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Zambian Sign Language"@en,
-        "langue des signes zambienne"@fr .
+        "langue des signes zambienne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ZSL> .
 
 <http://publications.europa.eu/resource/authority/language/ZUL> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "Zulu"@en,
-        "zoulou"@fr .
+        "zoulou"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ZUL> .
 
 <http://publications.europa.eu/resource/authority/language/ZXX> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/language> ;
     skos:prefLabel "No linguistic content"@en,
-        "pas de contenu linguistique"@fr .
+        "pas de contenu linguistique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/language/ZXX> .
 
 <http://publications.europa.eu/resource/authority/language> a skos:ConceptScheme ;
     skos:prefLabel "Language (EU)"@en,

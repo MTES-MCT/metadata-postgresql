@@ -1,24 +1,29 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
     skos:prefLabel "Downloadable file"@en,
-        "Fichier téléchargeable"@fr .
+        "Fichier téléchargeable"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/distribution-type/DOWNLOADABLE_FILE> .
 
 <http://publications.europa.eu/resource/authority/distribution-type/FEED_INFO> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
     skos:prefLabel "Information feed"@en,
-        "Fil d'information (RSS, etc.)"@fr .
+        "Fil d'information (RSS, etc.)"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/distribution-type/FEED_INFO> .
 
 <http://publications.europa.eu/resource/authority/distribution-type/VISUALIZATION> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
     skos:prefLabel "Visualization"@en,
-        "Visualisation"@fr .
+        "Visualisation"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/distribution-type/VISUALIZATION> .
 
 <http://publications.europa.eu/resource/authority/distribution-type/WEB_SERVICE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/distribution-type> ;
     skos:prefLabel "Web service/API"@en,
-        "Service web/API"@fr .
+        "Service web/API"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/distribution-type/WEB_SERVICE> .
 
 <http://publications.europa.eu/resource/authority/distribution-type> a skos:ConceptScheme ;
     skos:prefLabel "Distribution type (EU)"@en,

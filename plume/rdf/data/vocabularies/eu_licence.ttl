@@ -1,544 +1,628 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/licence/0BSD> a skos:Concept ;
     skos:altLabel "0BSD"@en,
         "0BSD"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Zero-Clause BSD / Free Public License 1.0.0 (0BSD)"@en .
+    skos:prefLabel "Zero-Clause BSD / Free Public License 1.0.0 (0BSD)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/0BSD> .
 
 <http://publications.europa.eu/resource/authority/licence/AGPL_3_0> a skos:Concept ;
     skos:altLabel "AGPL-3.0"@en,
         "AGPL-3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU Affero General Public License version 3"@en .
+    skos:prefLabel "GNU Affero General Public License version 3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/AGPL_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/APACHE_1_1> a skos:Concept ;
     skos:altLabel "Apache 1.1"@en,
         "Apache 1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Apache Software License, version 1.1 (Apache-1.1)"@en .
+    skos:prefLabel "Apache Software License, version 1.1 (Apache-1.1)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/APACHE_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/APACHE_2_0> a skos:Concept ;
     skos:altLabel "Apache 2.0"@en,
         "Apache 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Apache License, Version 2.0"@en .
+    skos:prefLabel "Apache License, Version 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/APACHE_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/APL_1_0> a skos:Concept ;
     skos:altLabel "APL-1.0"@en,
         "APL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Adaptive Public License 1.0"@en .
+    skos:prefLabel "Adaptive Public License 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/APL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/APSL_2_0> a skos:Concept ;
     skos:altLabel "APSL-2.0"@en,
         "APSL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Apple Public Source License 2.0"@en .
+    skos:prefLabel "Apple Public Source License 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/APSL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/ARTISTIC_1_0> a skos:Concept ;
     skos:altLabel "Artistic 1.0"@en,
         "Artistic 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Artistic License 1.0 (Artistic-1.0)"@en .
+    skos:prefLabel "Artistic License 1.0 (Artistic-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ARTISTIC_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/ARTISTIC_2_0> a skos:Concept ;
     skos:altLabel "Artistic 2.0"@en,
         "Artistic 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Artistic License 2.0"@en .
+    skos:prefLabel "Artistic License 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ARTISTIC_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/BSD_2_CLAUSE> a skos:Concept ;
     skos:altLabel "BSD-2-Clause"@en,
         "BSD-2-Clause"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "2-Clause BSD License"@en .
+    skos:prefLabel "2-Clause BSD License"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/BSD_2_CLAUSE> .
 
 <http://publications.europa.eu/resource/authority/licence/BSD_3_CLAUSE> a skos:Concept ;
     skos:altLabel "BSD-3-Clause"@en,
         "BSD-3-Clause"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "3-Clause BSD License"@en .
+    skos:prefLabel "3-Clause BSD License"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/BSD_3_CLAUSE> .
 
 <http://publications.europa.eu/resource/authority/licence/BSD_3_CLAUSE_LBNL> a skos:Concept ;
     skos:altLabel "BSD-3-Clause-LBNL"@en,
         "BSD-3-Clause-LBNL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Lawrence Berkeley National Labs BSD Variant License (BSD-3-Clause-LBNL)"@en .
+    skos:prefLabel "Lawrence Berkeley National Labs BSD Variant License (BSD-3-Clause-LBNL)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/BSD_3_CLAUSE_LBNL> .
 
 <http://publications.europa.eu/resource/authority/licence/BSD_PLUS_PATENT> a skos:Concept ;
     skos:altLabel "BSD+Patent"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "BSD+Patent"@en .
+    skos:prefLabel "BSD+Patent"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/BSD_PLUS_PATENT> .
 
 <http://publications.europa.eu/resource/authority/licence/BSL_1_0> a skos:Concept ;
     skos:altLabel "BSL-1.0"@en,
         "BSL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Boost Software License 1.0"@en .
+    skos:prefLabel "Boost Software License 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/BSL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CATOSL_1_1> a skos:Concept ;
     skos:altLabel "CATOSL-1.1"@en,
         "CATOSL-1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Computer Associates Trusted Open Source License 1.1 (CATOSL-1.1)"@en .
+    skos:prefLabel "Computer Associates Trusted Open Source License 1.1 (CATOSL-1.1)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CATOSL_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/CC0> a skos:Concept ;
     skos:altLabel "CC0 1.0"@en,
         "CC0 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons CC0 1.0 Universal"@en,
-        "Creative Commons CC0 1.0 Universel"@fr .
+        "Creative Commons CC0 1.0 Universel"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY> a skos:Concept ;
     skos:altLabel "CC BY 4.0"@en,
         "CC BY 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution 4.0 International"@en,
-        "Creative Commons Attribution 4.0 International"@fr .
+        "Creative Commons Attribution 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNC> a skos:Concept ;
     skos:altLabel "CC BY-NC 4.0"@en,
         "CC BY-NC 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial 4.0 International"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale 4.0 International"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNC> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCND> a skos:Concept ;
     skos:altLabel "CC BY-NC-ND 4.0"@en,
         "CC BY-NC-ND 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–NoDerivatives 4.0 International"@en,
-        "Creative Commons Attribution – Pas d'Utilisation Commerciale – Pas de Modification 4.0 International"@fr .
+        "Creative Commons Attribution – Pas d'Utilisation Commerciale – Pas de Modification 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCND> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCND_1_0> a skos:Concept ;
     skos:altLabel "CC BY-ND-NC 1.0"@en,
         "CC BY-ND-NC 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NoDerivs–NonCommercial 1.0 Generic"@en,
-        "Creative Commons Attribution – Pas de Modification – Pas d’Utilisation Commerciale 1.0 Générique"@fr .
+        "Creative Commons Attribution – Pas de Modification – Pas d’Utilisation Commerciale 1.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCND_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCND_2_0> a skos:Concept ;
     skos:altLabel "CC BY-NC-ND 2.0"@en,
         "CC BY-NC-ND 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–NoDerivs 2.0 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Pas de Modification 2.0 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Pas de Modification 2.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCND_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCND_2_5> a skos:Concept ;
     skos:altLabel "CC BY-NC-ND 2.5"@en,
         "CC BY-NC-ND 2.5"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–NoDerivs 2.5 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Pas de Modification 2.5 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Pas de Modification 2.5 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCND_2_5> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCND_3_0> a skos:Concept ;
     skos:altLabel "CC BY-NC-ND 3.0"@en,
         "CC BY-NC-ND 3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–NoDerivs 3.0 Unported"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Pas de Modification 3.0 non transposé"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Pas de Modification 3.0 non transposé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCND_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCND_4_0> a skos:Concept ;
     skos:altLabel "CC BY-NC-ND 4.0"@en,
         "CC BY-NC-ND 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–NoDerivatives 4.0 International"@en,
-        "Creative Commons Attribution – Pas d'Utilisation Commerciale – Pas de Modification 4.0 International"@fr .
+        "Creative Commons Attribution – Pas d'Utilisation Commerciale – Pas de Modification 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCND_4_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCSA> a skos:Concept ;
     skos:altLabel "CC BY-NC-SA 4.0"@en,
         "CC BY-NC-SA 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–ShareAlike 4.0 International"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 4.0 International"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCSA> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCSA_1_0> a skos:Concept ;
     skos:altLabel "CC BY-NC-SA 1.0"@en,
         "CC BY-NC-SA 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–ShareAlike 1.0 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 1.0 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 1.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCSA_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCSA_2_0> a skos:Concept ;
     skos:altLabel "CC BY-NC-SA 2.0"@en,
         "CC BY-NC-SA 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–ShareAlike 2.0 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 2.0 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 2.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCSA_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCSA_2_5> a skos:Concept ;
     skos:altLabel "CC BY-NC-SA 2.5"@en,
         "CC BY-NC-SA 2.5"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–ShareAlike 2.5 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 2.5 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 2.5 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCSA_2_5> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCSA_3_0> a skos:Concept ;
     skos:altLabel "CC BY-NC-SA 3.0"@en,
         "CC BY-NC-SA 3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–ShareAlike 3.0 Unported"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 3.0 non transposé"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 3.0 non transposé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCSA_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNCSA_4_0> a skos:Concept ;
     skos:altLabel "CC BY-NC-SA 4.0"@en,
         "CC BY-NC-SA 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial–ShareAlike 4.0 International"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 4.0 International"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale – Partage dans les Mêmes Conditions 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNCSA_4_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNC_1_0> a skos:Concept ;
     skos:altLabel "CC BY-NC 1.0"@en,
         "CC BY-NC 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial 1.0 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale 1.0 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale 1.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNC_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNC_2_0> a skos:Concept ;
     skos:altLabel "CC BY-NC 2.0"@en,
         "CC BY-NC 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial 2.0 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale 2.0 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale 2.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNC_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNC_2_5> a skos:Concept ;
     skos:altLabel "CC BY-NC 2.5"@en,
         "CC BY-NC 2.5"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial 2.5 Generic"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale 2.5 Générique"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale 2.5 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNC_2_5> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNC_3_0> a skos:Concept ;
     skos:altLabel "CC BY-NC 3.0"@en,
         "CC BY-NC 3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial 3.0 Unported"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale 3.0 non transposé"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale 3.0 non transposé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNC_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYNC_4_0> a skos:Concept ;
     skos:altLabel "CC BY-NC 4.0"@en,
         "CC BY-NC 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NonCommercial 4.0 International"@en,
-        "Creative Commons Attribution – Pas d’Utilisation Commerciale 4.0 International"@fr .
+        "Creative Commons Attribution – Pas d’Utilisation Commerciale 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYNC_4_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYND> a skos:Concept ;
     skos:altLabel "CC BY-ND 4.0"@en,
         "CC BY-ND 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NoDerivatives 4.0 International"@en,
-        "Creative Commons Attribution – Pas de Modification 4.0 International"@fr .
+        "Creative Commons Attribution – Pas de Modification 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYND> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYND_1_0> a skos:Concept ;
     skos:altLabel "CC BY-ND 1.0"@en,
         "CC BY-ND 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NoDerivs 1.0 Generic"@en,
-        "Creative Commons Attribution – Pas de Modification 1.0 Générique"@fr .
+        "Creative Commons Attribution – Pas de Modification 1.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYND_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYND_2_0> a skos:Concept ;
     skos:altLabel "CC BY-ND 2.0"@en,
         "CC BY-ND 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NoDerivs 2.0 Generic"@en,
-        "Creative Commons Attribution – Pas de Modification 2.0 Générique"@fr .
+        "Creative Commons Attribution – Pas de Modification 2.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYND_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYND_2_5> a skos:Concept ;
     skos:altLabel "CC BY-ND 2.5"@en,
         "CC BY-ND 2.5"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NoDerivs 2.5 Generic"@en,
-        "Creative Commons Attribution – Pas de Modification 2.5 Générique"@fr .
+        "Creative Commons Attribution – Pas de Modification 2.5 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYND_2_5> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYND_3_0> a skos:Concept ;
     skos:altLabel "CC BY-ND 3.0"@en,
         "CC BY-ND 3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NoDerivs 3.0 Unported"@en,
-        "Creative Commons Attribution – Pas de Modification 3.0 non transposé"@fr .
+        "Creative Commons Attribution – Pas de Modification 3.0 non transposé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYND_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYND_4_0> a skos:Concept ;
     skos:altLabel "CC BY-ND 4.0"@en,
         "CC BY-ND 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–NoDerivatives 4.0 International"@en,
-        "Creative Commons Attribution – Pas de Modification 4.0 International"@fr .
+        "Creative Commons Attribution – Pas de Modification 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYND_4_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYSA> a skos:Concept ;
     skos:altLabel "CC BY-SA 4.0"@en,
         "CC BY-SA 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–ShareAlike 4.0 International"@en,
-        "Creative Commons Attribution – Partage dans les Mêmes Conditions 4.0 International"@fr .
+        "Creative Commons Attribution – Partage dans les Mêmes Conditions 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYSA> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYSA_1_0> a skos:Concept ;
     skos:altLabel "CC BY-SA 1.0"@en,
         "CC BY-SA 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–ShareAlike 1.0 Generic"@en,
-        "Creative Commons Attribution – Partage dans les Mêmes Conditions 1.0 Générique"@fr .
+        "Creative Commons Attribution – Partage dans les Mêmes Conditions 1.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYSA_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYSA_2_0> a skos:Concept ;
     skos:altLabel "CC BY-SA 2.0"@en,
         "CC BY-SA 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–ShareAlike 2.0 Generic"@en,
-        "Creative Commons Attribution – Partage dans les Mêmes Conditions 2.0 Générique"@fr .
+        "Creative Commons Attribution – Partage dans les Mêmes Conditions 2.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYSA_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYSA_2_5> a skos:Concept ;
     skos:altLabel "CC BY-SA 2.5"@en,
         "CC BY-SA 2.5"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–ShareAlike 2.5 Generic"@en,
-        "Creative Commons Attribution – Partage dans les Mêmes Conditions 2.5 Générique"@fr .
+        "Creative Commons Attribution – Partage dans les Mêmes Conditions 2.5 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYSA_2_5> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYSA_3_0> a skos:Concept ;
     skos:altLabel "CC BY-SA 3.0"@en,
         "CC BY-SA 3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–ShareAlike 3.0 Unported"@en,
-        "Creative Commons Attribution – Partage dans les Mêmes Conditions 3.0 non transposé"@fr .
+        "Creative Commons Attribution – Partage dans les Mêmes Conditions 3.0 non transposé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYSA_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYSA_3_0_NL> a skos:Concept ;
     skos:altLabel "CC BY-SA 3.0 NL"@en,
         "CC BY-SA 3.0 NL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Naamsvermelding–GelijkDelen 3.0 Nederland"@en,
-        "Attribution – Partage dans les Mêmes Conditions 3.0 Pays-Bas"@fr .
+        "Attribution – Partage dans les Mêmes Conditions 3.0 Pays-Bas"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYSA_3_0_NL> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BYSA_4_0> a skos:Concept ;
     skos:altLabel "CC BY-SA 4.0"@en,
         "CC BY-SA 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution–ShareAlike 4.0 International"@en,
-        "Creative Commons Attribution – Partage dans les Mêmes Conditions 4.0 International"@fr .
+        "Creative Commons Attribution – Partage dans les Mêmes Conditions 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BYSA_4_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY_1_0> a skos:Concept ;
     skos:altLabel "CC BY 1.0"@en,
         "CC BY 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution 1.0 Generic"@en,
-        "Creative Commons Attribution 1.0 Générique"@fr .
+        "Creative Commons Attribution 1.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY_2_0> a skos:Concept ;
     skos:altLabel "CC BY 2.0"@en,
         "CC BY 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution 2.0 Generic"@en,
-        "Creative Commons Attribution 2.0 Générique"@fr .
+        "Creative Commons Attribution 2.0 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY_2_5> a skos:Concept ;
     skos:altLabel "CC BY 2.5"@en,
         "CC BY 2.5"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution 2.5 Generic"@en,
-        "Creative Commons Attribution 2.5 Générique"@fr .
+        "Creative Commons Attribution 2.5 Générique"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY_2_5> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY_3_0> a skos:Concept ;
     skos:altLabel "CC BY 3.0"@en,
         "CC BY 3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution 3.0 Unported"@en,
-        "Creative Commons Attribution 3.0 non transposé"@fr .
+        "Creative Commons Attribution 3.0 non transposé"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY_3_0_AT> a skos:Concept ;
     skos:altLabel "CC BY 3.0 AT"@en,
         "CC BY 3.0 AT"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Attribution 3.0 Austria"@en,
-        "Attribution 3.0 Autriche"@fr .
+        "Attribution 3.0 Autriche"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY_3_0_AT> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY_3_0_NL> a skos:Concept ;
     skos:altLabel "CC BY 3.0 NL"@en,
         "CC BY 3.0 NL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Attribution 3.0 Netherlands"@en,
-        "Attribution 3.0 Pays-Bas"@fr .
+        "Attribution 3.0 Pays-Bas"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY_3_0_NL> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_BY_4_0> a skos:Concept ;
     skos:altLabel "CC BY 4.0"@en,
         "CC BY 4.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Creative Commons Attribution 4.0 International"@en,
-        "Creative Commons Attribution 4.0 International"@fr .
+        "Creative Commons Attribution 4.0 International"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_BY_4_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CC_PDM_1_0> a skos:Concept ;
     skos:altLabel "CC PDM 1.0"@en,
         "CC PDM 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Public Domain Mark 1.0"@en,
-        "Marque du Domaine Public 1.0"@fr .
+        "Marque du Domaine Public 1.0"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CC_PDM_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CDDL_1_0> a skos:Concept ;
     skos:altLabel "CDDL-1.0"@en,
         "CDDL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Common Development and Distribution License 1.0"@en .
+    skos:prefLabel "Common Development and Distribution License 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CDDL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CECILL_2_1> a skos:Concept ;
     skos:altLabel "CECILL-2.1"@en,
         "CECILL-2.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "CEA CNRS Inria Free Software License Agreement, v2.1 (CECILL-2.1)"@en,
-        "CEA CNRS Inria Logiciel Libre License, version 2.1 (CECILL-2.1)"@fr .
+        "CEA CNRS Inria Logiciel Libre License, version 2.1 (CECILL-2.1)"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CECILL_2_1> .
 
 <http://publications.europa.eu/resource/authority/licence/CLARIN_ACA_1_0> a skos:Concept ;
     skos:altLabel "CLARIN-EULA-ACA-v1.0"@en,
         "CLARIN-EULA-ACA-v1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Clarin Academic End-User Licence (ACA) 1.0"@en .
+    skos:prefLabel "Clarin Academic End-User Licence (ACA) 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CLARIN_ACA_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CNRI_PYTHON> a skos:Concept ;
     skos:altLabel "CNRI-Python"@en,
         "CNRI-Python"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The CNRI portion of the multi-part Python License (CNRI-Python)"@en .
+    skos:prefLabel "The CNRI portion of the multi-part Python License (CNRI-Python)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CNRI_PYTHON> .
 
 <http://publications.europa.eu/resource/authority/licence/COM_REUSE> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "European Commission reuse notice"@en .
+    skos:prefLabel "European Commission reuse notice"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/COM_REUSE> .
 
 <http://publications.europa.eu/resource/authority/licence/CPAL_1_0> a skos:Concept ;
     skos:altLabel "CPAL-1.0"@en,
         "CPAL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Common Public Attribution License Version 1.0 (CPAL-1.0)"@en .
+    skos:prefLabel "Common Public Attribution License Version 1.0 (CPAL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CPAL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/CPL_1_0> a skos:Concept ;
     skos:altLabel "CPL-1.0"@en,
         "CPL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Common Public License, version 1.0 (CPL-1.0)"@en .
+    skos:prefLabel "Common Public License, version 1.0 (CPL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/CPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/DLDE_BYNC_1_0> a skos:Concept ;
     skos:altLabel "DL-DE BY-NC 1.0"@en,
         "DL-DE BY-NC 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Data licence Germany – attribution – non-commercial – Version 1.0"@en .
+    skos:prefLabel "Data licence Germany – attribution – non-commercial – Version 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/DLDE_BYNC_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/DLDE_BY_1_0> a skos:Concept ;
     skos:altLabel "DL-DE BY 1.0"@en,
         "DL-DE BY 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Data licence Germany – attribution – Version 1.0"@en .
+    skos:prefLabel "Data licence Germany – attribution – Version 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/DLDE_BY_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/DLDE_BY_2_0> a skos:Concept ;
     skos:altLabel "DL-DE BY 2.0"@en,
         "DL-DE BY 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Data licence Germany – attribution – Version 2.0"@en .
+    skos:prefLabel "Data licence Germany – attribution – Version 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/DLDE_BY_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/DLDE_ZERO_2_0> a skos:Concept ;
     skos:altLabel "DL-DE ZERO 2.0"@en,
         "DL-DE ZERO 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Data licence Germany – Zero – Version 2.0"@en .
+    skos:prefLabel "Data licence Germany – Zero – Version 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/DLDE_ZERO_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/ECL_1_0> a skos:Concept ;
     skos:altLabel "ECL-1.0"@en,
         "ECL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Educational Community License version 1.0 (ECL-1.0)"@en .
+    skos:prefLabel "Educational Community License version 1.0 (ECL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ECL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/ECL_2_0> a skos:Concept ;
     skos:altLabel "ECL-2.0"@en,
         "ECL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Educational Community License version 2.0 (ECL-2.0)"@en .
+    skos:prefLabel "Educational Community License version 2.0 (ECL-2.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ECL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/ECOS_2_0> a skos:Concept ;
     skos:altLabel "eCos-2.0"@en,
         "eCos-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "eCos License version 2.0"@en .
+    skos:prefLabel "eCos License version 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ECOS_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/EFL_1_0> a skos:Concept ;
     skos:altLabel "EFL-1.0"@en,
         "EFL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Eiffel Forum License, version 1 (EFL-1.0)"@en .
+    skos:prefLabel "The Eiffel Forum License, version 1 (EFL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EFL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/EFL_2> a skos:Concept ;
     skos:altLabel "EFL-2.0"@en,
         "EFL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Eiffel Forum License, version 2"@en .
+    skos:prefLabel "Eiffel Forum License, version 2"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EFL_2> .
 
 <http://publications.europa.eu/resource/authority/licence/ENTESSA> a skos:Concept ;
     skos:altLabel "Entessa"@en,
         "Entessa"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Entessa Public License Version 1.0 (Entessa)"@en .
+    skos:prefLabel "Entessa Public License Version 1.0 (Entessa)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ENTESSA> .
 
 <http://publications.europa.eu/resource/authority/licence/EPL_1_0> a skos:Concept ;
     skos:altLabel "EPL-1.0"@en,
         "EPL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Eclipse Public License 1.0 (EPL-1.0)"@en .
+    skos:prefLabel "Eclipse Public License 1.0 (EPL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/EPL_2_0> a skos:Concept ;
     skos:altLabel "EPL-2.0"@en,
         "EPL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Eclipse Public License version 2.0"@en .
+    skos:prefLabel "Eclipse Public License version 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EPL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/EUPL_1_0> a skos:Concept ;
     skos:altLabel "EUPL v.1.0"@en,
         "EUPL v.1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "European Union Public Licence v.1.0"@en,
-        "Licence Publique de l’Union européenne v.1.0"@fr .
+        "Licence Publique de l’Union européenne v.1.0"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EUPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/EUPL_1_1> a skos:Concept ;
     skos:altLabel "EUPL v.1.1"@en,
         "EUPL v.1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "European Union Public Licence v. 1.1"@en,
-        "Licence publique de l'Union européenne v. 1.1"@fr .
+        "Licence publique de l'Union européenne v. 1.1"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EUPL_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/EUPL_1_2> a skos:Concept ;
     skos:altLabel "EUPL v1.2"@en,
         "EUPL v1.2"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "European Union Public Licence v. 1.2"@en,
-        "Licence publique de l'Union européenne v. 1.2"@fr .
+        "Licence publique de l'Union européenne v. 1.2"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EUPL_1_2> .
 
 <http://publications.europa.eu/resource/authority/licence/EU_DATAGRID> a skos:Concept ;
     skos:altLabel "EUDatagrid"@en,
         "EUDatagrid"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "EU DataGrid Software License (EUDatagrid)"@en .
+    skos:prefLabel "EU DataGrid Software License (EUDatagrid)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/EU_DATAGRID> .
 
 <http://publications.europa.eu/resource/authority/licence/FAIR> a skos:Concept ;
     skos:altLabel "Fair"@en,
         "Fair"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Fair License (Fair)"@en .
+    skos:prefLabel "Fair License (Fair)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/FAIR> .
 
 <http://publications.europa.eu/resource/authority/licence/FRAMEWORX_1_0> a skos:Concept ;
     skos:altLabel "Frameworx-1.0"@en,
         "Frameworx-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Frameworx License 1.0 (Frameworx-1.0)"@en .
+    skos:prefLabel "Frameworx License 1.0 (Frameworx-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/FRAMEWORX_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/GNU_FDL> a skos:Concept ;
     skos:altLabel "GFDL"@en,
         "GFDL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU Free Documentation License"@en .
+    skos:prefLabel "GNU Free Documentation License"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/GNU_FDL> .
 
 <http://publications.europa.eu/resource/authority/licence/GNU_FDL_1_1> a skos:Concept ;
     skos:altLabel "GNU FDL 1.1"@en,
         "GNU FDL 1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU Free Documentation License 1.1"@en .
+    skos:prefLabel "GNU Free Documentation License 1.1"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/GNU_FDL_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/GNU_FDL_1_2> a skos:Concept ;
     skos:altLabel "GNU FDL 1.2"@en,
         "GNU FDL 1.2"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU Free Documentation License 1.2"@en .
+    skos:prefLabel "GNU Free Documentation License 1.2"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/GNU_FDL_1_2> .
 
 <http://publications.europa.eu/resource/authority/licence/GNU_FDL_1_3> a skos:Concept ;
     skos:altLabel "GFDL-1.3"@en,
@@ -546,442 +630,515 @@
         "GFDL-1.3"@fr,
         "GNU FDL 1.3"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU Free Documentation License 1.3"@en .
+    skos:prefLabel "GNU Free Documentation License 1.3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/GNU_FDL_1_3> .
 
 <http://publications.europa.eu/resource/authority/licence/GPL_2_0> a skos:Concept ;
     skos:altLabel "GPL-2.0"@en,
         "GPL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU General Public License version 2"@en .
+    skos:prefLabel "GNU General Public License version 2"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/GPL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/GPL_3_0> a skos:Concept ;
     skos:altLabel "GPL-3.0"@en,
         "GPL-3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU General Public License version 3"@en .
+    skos:prefLabel "GNU General Public License version 3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/GPL_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/HPND> a skos:Concept ;
     skos:altLabel "HPND"@en,
         "HPND"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Historical Permission Notice and Disclaimer (HPND)"@en .
+    skos:prefLabel "Historical Permission Notice and Disclaimer (HPND)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/HPND> .
 
 <http://publications.europa.eu/resource/authority/licence/HROD> a skos:Concept ;
     skos:altLabel "HR-OD"@en,
         "HR-OD"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Licence – The Republic of Croatia"@en .
+    skos:prefLabel "Open Licence – The Republic of Croatia"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/HROD> .
 
 <http://publications.europa.eu/resource/authority/licence/IODL_1_0> a skos:Concept ;
     skos:altLabel "IODL 1.0"@en,
         "IODL 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Italian Open Data License v1.0"@en .
+    skos:prefLabel "Italian Open Data License v1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/IODL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/IODL_2_0> a skos:Concept ;
     skos:altLabel "IODL 2.0"@en,
         "IODL 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Italian Open Data License v2.0"@en .
+    skos:prefLabel "Italian Open Data License v2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/IODL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/IPA> a skos:Concept ;
     skos:altLabel "IPA"@en,
         "IPA"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "IPA Font License (IPA)"@en .
+    skos:prefLabel "IPA Font License (IPA)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/IPA> .
 
 <http://publications.europa.eu/resource/authority/licence/IPL_1_0> a skos:Concept ;
     skos:altLabel "IPL-1.0"@en,
         "IPL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "IBM Public License Version 1.0 (IPL-1.0)"@en .
+    skos:prefLabel "IBM Public License Version 1.0 (IPL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/IPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/ISA_OML> a skos:Concept ;
     skos:altLabel "ISA OMdL 1.1"@en,
         "ISA OMdL 1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "ISA Open Metadata Licence 1.1"@en .
+    skos:prefLabel "ISA Open Metadata Licence 1.1"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ISA_OML> .
 
 <http://publications.europa.eu/resource/authority/licence/ISC> a skos:Concept ;
     skos:altLabel "ISC"@en,
         "ISC"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "ISC License (ISC)"@en .
+    skos:prefLabel "ISC License (ISC)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ISC> .
 
 <http://publications.europa.eu/resource/authority/licence/LGPL_2_1> a skos:Concept ;
     skos:altLabel "LGPL-2.1"@en,
         "LGPL-2.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU Lesser General Public License version 2.1"@en .
+    skos:prefLabel "GNU Lesser General Public License version 2.1"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LGPL_2_1> .
 
 <http://publications.europa.eu/resource/authority/licence/LGPL_3_0> a skos:Concept ;
     skos:altLabel "LGPL-3.0"@en,
         "LGPL-3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "GNU Lesser General Public License version 3"@en .
+    skos:prefLabel "GNU Lesser General Public License version 3"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LGPL_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/LILIQ_P_1_1> a skos:Concept ;
     skos:altLabel "LiLiQ-P-1.1"@en,
         "LiLiQ-P-1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Québec Free and Open-Source Licence – Permissive (LiLiQ-P) version 1.1"@en,
-        "Licence Libre du Québec – Permissive (LiLiQ-P) version 1.1"@fr .
+        "Licence Libre du Québec – Permissive (LiLiQ-P) version 1.1"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LILIQ_P_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/LILIQ_RPLUS_1_1> a skos:Concept ;
     skos:altLabel "LiLiQ-Rplus-1.1"@en,
         "LiLiQ-Rplus-1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Québec Free and Open-Source Licence – Strong Reciprocity (LiLiQ-R+) version 1.1"@en,
-        "Licence Libre du Québec – Réciprocité forte (LiLiQ-R+) version 1.1"@fr .
+        "Licence Libre du Québec – Réciprocité forte (LiLiQ-R+) version 1.1"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LILIQ_RPLUS_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/LILIQ_R_1_1> a skos:Concept ;
     skos:altLabel "LiLiQ-R-1.1"@en,
         "LiLiQ-R-1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
     skos:prefLabel "Québec Free and Open-Source Licence – Reciprocity (LiLiQ-R) version 1.1"@en,
-        "Licence Libre du Québec – Réciprocité (LiLiQ-R) version 1.1"@fr .
+        "Licence Libre du Québec – Réciprocité (LiLiQ-R) version 1.1"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LILIQ_R_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/LPL_1_0> a skos:Concept ;
     skos:altLabel "LPL-1.0"@en,
         "LPL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Lucent Public License, Plan 9, version 1.0 (LPL-1.0)"@en .
+    skos:prefLabel "Lucent Public License, Plan 9, version 1.0 (LPL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/LPL_1_02> a skos:Concept ;
     skos:altLabel "LPL-1.02"@en,
         "LPL-1.02"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Lucent Public License Version 1.02 (LPL-1.02)"@en .
+    skos:prefLabel "Lucent Public License Version 1.02 (LPL-1.02)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LPL_1_02> .
 
 <http://publications.europa.eu/resource/authority/licence/LPPL_1_3C> a skos:Concept ;
     skos:altLabel "LPPL-1.3c"@en,
         "LPPL-1.3c"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "LaTeX Project Public License v1.3c (LPPL-1.3c)"@en .
+    skos:prefLabel "LaTeX Project Public License v1.3c (LPPL-1.3c)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/LPPL_1_3C> .
 
 <http://publications.europa.eu/resource/authority/licence/MIROS> a skos:Concept ;
     skos:altLabel "MirOS"@en,
         "MirOS"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "MirOS License (MirOS)"@en .
+    skos:prefLabel "MirOS License (MirOS)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MIROS> .
 
 <http://publications.europa.eu/resource/authority/licence/MIT> a skos:Concept ;
     skos:altLabel "MIT"@en,
         "MIT"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The MIT License"@en .
+    skos:prefLabel "The MIT License"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MIT> .
 
 <http://publications.europa.eu/resource/authority/licence/MOTOSOTO> a skos:Concept ;
     skos:altLabel "Motosoto"@en,
         "Motosoto"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Motosoto Open Source License – Version 0.9.1 (Motosoto)"@en .
+    skos:prefLabel "Motosoto Open Source License – Version 0.9.1 (Motosoto)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MOTOSOTO> .
 
 <http://publications.europa.eu/resource/authority/licence/MPL_1_0> a skos:Concept ;
     skos:altLabel "MPL-1.0"@en,
         "MPL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Mozilla Public License (MPL), version 1.0 (MPL-1.0)"@en .
+    skos:prefLabel "The Mozilla Public License (MPL), version 1.0 (MPL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/MPL_1_1> a skos:Concept ;
     skos:altLabel "MPL-1.1"@en,
         "MPL-1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Mozilla Public License (MPL), version 1.1 (MPL-1.1)"@en .
+    skos:prefLabel "Mozilla Public License (MPL), version 1.1 (MPL-1.1)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MPL_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/MPL_2_0> a skos:Concept ;
     skos:altLabel "MPL-2.0"@en,
         "MPL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Mozilla Public License (MPL), version 2.0 (MPL-2.0)"@en .
+    skos:prefLabel "Mozilla Public License (MPL), version 2.0 (MPL-2.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MPL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/MS_PL> a skos:Concept ;
     skos:altLabel "MS-PL"@en,
         "MS-PL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Microsoft Public License (MS-PL)"@en .
+    skos:prefLabel "Microsoft Public License (MS-PL)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MS_PL> .
 
 <http://publications.europa.eu/resource/authority/licence/MS_RL> a skos:Concept ;
     skos:altLabel "MS-RL"@en,
         "MS-RL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Microsoft Reciprocal License (MS-RL)"@en .
+    skos:prefLabel "Microsoft Reciprocal License (MS-RL)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MS_RL> .
 
 <http://publications.europa.eu/resource/authority/licence/MULTICS> a skos:Concept ;
     skos:altLabel "Multics"@en,
         "Multics"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Multics License (Multics)"@en .
+    skos:prefLabel "Multics License (Multics)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/MULTICS> .
 
 <http://publications.europa.eu/resource/authority/licence/NASA_1_3> a skos:Concept ;
     skos:altLabel "NASA-1.3"@en,
         "NASA-1.3"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "NASA Open Source Agreement v1.3 (NASA-1.3)"@en .
+    skos:prefLabel "NASA Open Source Agreement v1.3 (NASA-1.3)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NASA_1_3> .
 
 <http://publications.europa.eu/resource/authority/licence/NAUMEN> a skos:Concept ;
     skos:altLabel "Naumen"@en,
         "Naumen"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "NAUMEN Public License (Naumen)"@en .
+    skos:prefLabel "NAUMEN Public License (Naumen)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NAUMEN> .
 
 <http://publications.europa.eu/resource/authority/licence/NCSA> a skos:Concept ;
     skos:altLabel "NCSA"@en,
         "NCSA"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The University of Illinois/NCSA Open Source License (NCSA)"@en .
+    skos:prefLabel "The University of Illinois/NCSA Open Source License (NCSA)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NCSA> .
 
 <http://publications.europa.eu/resource/authority/licence/NGPL> a skos:Concept ;
     skos:altLabel "NGPL"@en,
         "NGPL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Nethack General Public License (NGPL)"@en .
+    skos:prefLabel "The Nethack General Public License (NGPL)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NGPL> .
 
 <http://publications.europa.eu/resource/authority/licence/NLOD_1_0> a skos:Concept ;
     skos:altLabel "NLOD 1.0"@en,
         "NLOD 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Norwegian Licence for Open Government Data 1.0"@en .
+    skos:prefLabel "Norwegian Licence for Open Government Data 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NLOD_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/NLOD_2_0> a skos:Concept ;
     skos:altLabel "NLOD 2.0"@en,
         "NLOD 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Norwegian Licence for Open Government Data (NLOD) 2.0"@en .
+    skos:prefLabel "Norwegian Licence for Open Government Data (NLOD) 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NLOD_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/NOKIA> a skos:Concept ;
     skos:altLabel "NOKIA"@en,
         "NOKIA"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Nokia Open Source License Version 1.0a (NOKIA)"@en .
+    skos:prefLabel "Nokia Open Source License Version 1.0a (NOKIA)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NOKIA> .
 
 <http://publications.europa.eu/resource/authority/licence/NPOSL_3_0> a skos:Concept ;
     skos:altLabel "NPOSL-3.0"@en,
         "NPOSL-3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Non-Profit Open Software License version 3.0 (NPOSL-3.0)"@en .
+    skos:prefLabel "The Non-Profit Open Software License version 3.0 (NPOSL-3.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NPOSL_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/NTP> a skos:Concept ;
     skos:altLabel "NTP"@en,
         "NTP"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "NTP License (NTP)"@en .
+    skos:prefLabel "NTP License (NTP)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/NTP> .
 
 <http://publications.europa.eu/resource/authority/licence/OCLC_2_0> a skos:Concept ;
     skos:altLabel "OCLC-2.0"@en,
         "OCLC-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The OCLC Research Public License 2.0 License (OCLC-2.0)"@en .
+    skos:prefLabel "The OCLC Research Public License 2.0 License (OCLC-2.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OCLC_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/ODC_BL> a skos:Concept ;
     skos:altLabel "ODbL"@en,
         "ODbL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Data Commons Open Database License v1.0"@en .
+    skos:prefLabel "Open Data Commons Open Database License v1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ODC_BL> .
 
 <http://publications.europa.eu/resource/authority/licence/ODC_BY> a skos:Concept ;
     skos:altLabel "ODC-By-1.0"@en,
         "ODC-By-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Data Commons Attribution License v1.0"@en .
+    skos:prefLabel "Open Data Commons Attribution License v1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ODC_BY> .
 
 <http://publications.europa.eu/resource/authority/licence/ODC_PDDL> a skos:Concept ;
     skos:altLabel "PDDL"@en,
         "PDDL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Data Commons Public Domain Dedication and License 1.0"@en .
+    skos:prefLabel "Open Data Commons Public Domain Dedication and License 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ODC_PDDL> .
 
 <http://publications.europa.eu/resource/authority/licence/OFL_1_1> a skos:Concept ;
     skos:altLabel "OFL-1.1"@en,
         "OFL-1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "SIL Open Font License (OFL-1.1)"@en .
+    skos:prefLabel "SIL Open Font License (OFL-1.1)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OFL_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/OGL_1_0> a skos:Concept ;
     skos:altLabel "OGL 1.0"@en,
         "OGL 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Government Licence 1.0"@en .
+    skos:prefLabel "Open Government Licence 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OGL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/OGL_2_0> a skos:Concept ;
     skos:altLabel "OGL 2.0"@en,
         "OGL 2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Government Licence 2.0"@en .
+    skos:prefLabel "Open Government Licence 2.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OGL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/OGL_3_0> a skos:Concept ;
     skos:altLabel "OGL 3.0"@en,
         "OGL 3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Government Licence 3.0"@en .
+    skos:prefLabel "Open Government Licence 3.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OGL_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/OGL_NC> a skos:Concept ;
     skos:altLabel "OGL-NC"@en,
         "OGL-NC"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Non-Commercial Government Licence"@en .
+    skos:prefLabel "Non-Commercial Government Licence"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OGL_NC> .
 
 <http://publications.europa.eu/resource/authority/licence/OGL_ROU_1_0> a skos:Concept ;
     skos:altLabel "OGL-ROU 1.0"@en,
         "OGL-ROU 1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Non-Commercial Government Licence 1.0"@en .
+    skos:prefLabel "Non-Commercial Government Licence 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OGL_ROU_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/OGTSL> a skos:Concept ;
     skos:altLabel "OGTSL"@en,
         "OGTSL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Open Group Test Suite License (OGTSL)"@en .
+    skos:prefLabel "The Open Group Test Suite License (OGTSL)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OGTSL> .
 
 <http://publications.europa.eu/resource/authority/licence/OPL_2_1> a skos:Concept ;
     skos:altLabel "OPL-2.1"@en,
         "OPL-2.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "OSET Public License version 2.1"@en .
+    skos:prefLabel "OSET Public License version 2.1"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OPL_2_1> .
 
 <http://publications.europa.eu/resource/authority/licence/OSL_1_0> a skos:Concept ;
     skos:altLabel "OSL-1.0"@en,
         "OSL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Software License, version 1.0 (OSL-1.0)"@en .
+    skos:prefLabel "Open Software License, version 1.0 (OSL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OSL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/OSL_2_1> a skos:Concept ;
     skos:altLabel "OSL-2.1"@en,
         "OSL-2.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Open Software License, version 2.1 (OSL-2.1)"@en .
+    skos:prefLabel "The Open Software License, version 2.1 (OSL-2.1)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OSL_2_1> .
 
 <http://publications.europa.eu/resource/authority/licence/OSL_3_0> a skos:Concept ;
     skos:altLabel "OSL-3.0"@en,
         "OSL-3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Open Software License, version 3.0 (OSL-3.0)"@en .
+    skos:prefLabel "Open Software License, version 3.0 (OSL-3.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/OSL_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/PHP_3_0> a skos:Concept ;
     skos:altLabel "PHP-3.0"@en,
         "PHP-3.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The PHP License 3.0 (PHP-3.0)"@en .
+    skos:prefLabel "The PHP License 3.0 (PHP-3.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/PHP_3_0> .
 
 <http://publications.europa.eu/resource/authority/licence/POSTGRE_SQL> a skos:Concept ;
     skos:altLabel "PostgreSQL"@en,
         "PostgreSQL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The PostgreSQL Licence (PostgreSQL)"@en .
+    skos:prefLabel "The PostgreSQL Licence (PostgreSQL)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/POSTGRE_SQL> .
 
 <http://publications.europa.eu/resource/authority/licence/PSEUL> a skos:Concept ;
     skos:altLabel "PSEUL"@en,
         "PSEUL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "INSPIRE End User Licence"@en .
+    skos:prefLabel "INSPIRE End User Licence"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/PSEUL> .
 
 <http://publications.europa.eu/resource/authority/licence/PYTHON_2_0> a skos:Concept ;
     skos:altLabel "Python-2.0"@en,
         "Python-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Python License (Python-2.0)"@en .
+    skos:prefLabel "Python License (Python-2.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/PYTHON_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/QPL_1_0> a skos:Concept ;
     skos:altLabel "QPL-1.0"@en,
         "QPL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Q Public License Version (QPL-1.0)"@en .
+    skos:prefLabel "The Q Public License Version (QPL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/QPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/RPL_1_1> a skos:Concept ;
     skos:altLabel "RPL-1.1"@en,
         "RPL-1.1"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Reciprocal Public License, version 1.1"@en .
+    skos:prefLabel "Reciprocal Public License, version 1.1"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/RPL_1_1> .
 
 <http://publications.europa.eu/resource/authority/licence/RPL_1_5> a skos:Concept ;
     skos:altLabel "RPL-1.5"@en,
         "RPL-1.5"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Reciprocal Public License 1.5 (RPL-1.5)"@en .
+    skos:prefLabel "Reciprocal Public License 1.5 (RPL-1.5)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/RPL_1_5> .
 
 <http://publications.europa.eu/resource/authority/licence/RPSL_1_0> a skos:Concept ;
     skos:altLabel "RPSL-1.0"@en,
         "RPSL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "RealNetworks Public Source License Version 1.0 (RPSL-1.0)"@en .
+    skos:prefLabel "RealNetworks Public Source License Version 1.0 (RPSL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/RPSL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/RSCPL> a skos:Concept ;
     skos:altLabel "RSCPL"@en,
         "RSCPL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Ricoh Source Code Public License (RSCPL)"@en .
+    skos:prefLabel "The Ricoh Source Code Public License (RSCPL)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/RSCPL> .
 
 <http://publications.europa.eu/resource/authority/licence/SIMPL_2_0> a skos:Concept ;
     skos:altLabel "SimPL-2.0"@en,
         "SimPL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Simple Public License (SimPL-2.0)"@en .
+    skos:prefLabel "Simple Public License (SimPL-2.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/SIMPL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence/SLEEPYCAT> a skos:Concept ;
     skos:altLabel "Sleepycat"@en,
         "Sleepycat"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Sleepycat License (Sleepycat)"@en .
+    skos:prefLabel "The Sleepycat License (Sleepycat)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/SLEEPYCAT> .
 
 <http://publications.europa.eu/resource/authority/licence/SPL_1_0> a skos:Concept ;
     skos:altLabel "SPL-1.0"@en,
         "SPL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Sun Public License Version 1.0 (SPL-1.0)"@en .
+    skos:prefLabel "Sun Public License Version 1.0 (SPL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/SPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/UCL_1_0> a skos:Concept ;
     skos:altLabel "UCL-1.0"@en,
         "UCL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "Upstream Compatibility License v1.0"@en .
+    skos:prefLabel "Upstream Compatibility License v1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/UCL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/UPL_1_0> a skos:Concept ;
     skos:altLabel "UPL"@en,
         "UPL"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Universal Permissive License (UPL), Version 1.0"@en .
+    skos:prefLabel "The Universal Permissive License (UPL), Version 1.0"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/UPL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/VSL_1_0> a skos:Concept ;
     skos:altLabel "VSL-1.0"@en,
         "VSL-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Vovida Software License v. 1.0 (VSL-1.0)"@en .
+    skos:prefLabel "The Vovida Software License v. 1.0 (VSL-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/VSL_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/W3C> a skos:Concept ;
     skos:altLabel "W3C"@en,
         "W3C"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The W3C Software Notice and License (W3C)"@en .
+    skos:prefLabel "The W3C Software Notice and License (W3C)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/W3C> .
 
 <http://publications.europa.eu/resource/authority/licence/WATCOM_1_0> a skos:Concept ;
     skos:altLabel "Watcom-1.0"@en,
         "Watcom-1.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Sybase Open Source Licence (Watcom-1.0)"@en .
+    skos:prefLabel "The Sybase Open Source Licence (Watcom-1.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/WATCOM_1_0> .
 
 <http://publications.europa.eu/resource/authority/licence/WXWINDOWS> a skos:Concept ;
     skos:altLabel "wxWindows"@en,
         "wxWindows"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The wxWindows Library Licence (wxWindows)"@en .
+    skos:prefLabel "The wxWindows Library Licence (wxWindows)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/WXWINDOWS> .
 
 <http://publications.europa.eu/resource/authority/licence/XNET> a skos:Concept ;
     skos:altLabel "Xnet"@en,
         "Xnet"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The X.Net, Inc. License (Xnet)"@en .
+    skos:prefLabel "The X.Net, Inc. License (Xnet)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/XNET> .
 
 <http://publications.europa.eu/resource/authority/licence/ZLIB> a skos:Concept ;
     skos:altLabel "Zlib"@en,
         "Zlib"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The zlib/libpng License (Zlib)"@en .
+    skos:prefLabel "The zlib/libpng License (Zlib)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ZLIB> .
 
 <http://publications.europa.eu/resource/authority/licence/ZPL_2_0> a skos:Concept ;
     skos:altLabel "ZPL-2.0"@en,
         "ZPL-2.0"@fr ;
     skos:inScheme <http://publications.europa.eu/resource/authority/licence> ;
-    skos:prefLabel "The Zope Public License Version 2.0 (ZPL-2.0)"@en .
+    skos:prefLabel "The Zope Public License Version 2.0 (ZPL-2.0)"@en ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/licence/ZPL_2_0> .
 
 <http://publications.europa.eu/resource/authority/licence> a skos:ConceptScheme ;
     skos:prefLabel "Licence (EU)"@en,

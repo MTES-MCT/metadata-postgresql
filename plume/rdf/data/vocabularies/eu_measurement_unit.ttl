@@ -1,304 +1,355 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/2N> a skos:Concept ;
     skos:definition "The decibel (dB) is a unit of sound intensity. One bel represents the logarithm of a ratio between two power quantities of 10:1, or the logarithm of a ratio between two field quantities of √10:1. One decibel is one tenth (deci-) of one bel."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "decibel"@en,
-        "décibel"@fr .
+        "décibel"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/2N> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/3C> a skos:Concept ;
     skos:definition "The manmonth is a unit of count defining the number of months for a person or persons to perform an undertaking."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "manmonth"@en,
-        "mois-homme"@fr .
+        "mois-homme"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/3C> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/AD> a skos:Concept ;
     skos:definition "The byte is a unit of information equal to 8 bits."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "byte"@en,
-        "byte"@fr .
+        "byte"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/AD> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/AMP> a skos:Concept ;
     skos:definition "The ampere (A) is the base unit of electric current in the International System of Units, equivalent to 6.24×1018 elementary charges, such as electrons, moving through a surface in one second."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "ampere"@en,
-        "ampère"@fr .
+        "ampère"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/AMP> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/BAR> a skos:Concept ;
     skos:definition "The bar (bar) is a non-SI unit of pressure (i.e. outside of the International System of Units), defined as exactly equal to 100 000 Pa, 10⁵ Pa, which is slightly less than the current average atmospheric pressure on Earth at sea level."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "bar"@en,
-        "bar"@fr .
+        "bar"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/BAR> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/BIT> a skos:Concept ;
     skos:definition "The bit (b), short for \"binary digit\", is a non-SI unit of information (i.e. outside of the International System of Units) used in computing and digital communications, defined as the minimum amount of information required to make one simple yes-or-no decision at the lowest level in a system."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "bit"@en,
-        "bit"@fr .
+        "bit"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/BIT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/BQL> a skos:Concept ;
     skos:definition "The becquerel (Bq) is a derived unit of radioactivity in the International System of Units, defined as the activity of a quantity of radioactive material in which one nucleus decays per second, 1 Bq = s⁻¹."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "becquerel"@en,
-        "becquerel"@fr .
+        "becquerel"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/BQL> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/C34> a skos:Concept ;
     skos:definition "The mole (mol) is the base unit for amount of substance in the International System of Units, defined as the amount of a chemical substance that contains exactly 6.02214076 × 1023 constitutive particles, e.g. atoms, molecules, ions or electrons."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "mole"@en,
-        "mole"@fr .
+        "mole"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/C34> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/C45> a skos:Concept ;
     skos:definition "The nanometre (nm) is a unit of length in the International System of Units, equal to one billionth of a metre, 10⁻⁹ m (0.000000001 m)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "nanometre"@en,
-        "nanomètre"@fr .
+        "nanomètre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/C45> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/CDL> a skos:Concept ;
     skos:definition "The candela (cd) is the base unit of luminous intensity in the International System of Units. It is defined as the luminous intensity, in a given direction, of a source that emits monochromatic radiation of frequency 540×1012 hertz and has a radiant intensity in that direction of 1/683 watt per steradian."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "candela"@en,
-        "candela"@fr .
+        "candela"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/CDL> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/CEL> a skos:Concept ;
     skos:definition "The degree Celsius (°C) is a unit of temperature used by the International System of Units. The scale used to be based on 0 °C for the freezing point of water and 100 °C for the boiling point of water. The degree Celsius and the Celsius scale are now defined by absolute zero and the triple point of Vienna Standard Mean Ocean Water."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "degree Celsius"@en,
-        "degré Celsius"@fr .
+        "degré Celsius"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/CEL> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/CMK> a skos:Concept ;
     skos:definition "The square centimetre (cm²) is a unit of area in the International System of Units, equivalent to the area formed by a square measuring 1 cm by 1 cm, 10⁻⁴ m²."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "square centimetre"@en,
-        "centimètre carré"@fr .
+        "centimètre carré"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/CMK> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/CMQ> a skos:Concept ;
     skos:definition "The cubic centimetre (cm³) is a unit of volume in the International System of Units, equivalent to the volume formed by a cube measuring 1 cm by 1 cm by 1 cm, 10⁻⁶ m³."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "cubic centimetre"@en,
-        "centimètre cube"@fr .
+        "centimètre cube"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/CMQ> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/CMT> a skos:Concept ;
     skos:definition "The centimetre (cm) is a unit of length in the International System of Units, equivalent to one hundredth of a metre, 10⁻² m (0.01 m)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "centimetre"@en,
-        "centimètre"@fr .
+        "centimètre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/CMT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/D30> a skos:Concept ;
     skos:definition "The terajoule (TJ) is a derived unit of energy in the International System of Units, equivalent to one trillion, 1000 000 000 000 (10¹²), joules."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "terajoule"@en,
-        "térajoule"@fr .
+        "térajoule"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/D30> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/E34> a skos:Concept ;
     skos:definition "The gigabyte is a unit of information equal to 10⁹ bytes."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "gigabyte"@en,
-        "gigabyte"@fr .
+        "gigabyte"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/E34> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/GRM> a skos:Concept ;
     skos:definition "The gram (g) is a unit of mass in the International System of Units (SI), equivalent to one thousandth of the SI base unit, the kilogram, 10⁻³ kg (0.001 kg)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "gram"@en,
-        "gramme"@fr .
+        "gramme"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/GRM> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/GTE> a skos:Concept ;
     skos:definition "The gross tonnage (GT) is a nonlinear unit of measurement, equivalent to the volume of all of a ship's enclosed spaces (from keel to funnel) measured to the outside of the hull framing."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "gross tonnage"@en,
-        "jauge brute"@fr .
+        "jauge brute"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/GTE> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/GWH> a skos:Concept ;
     skos:definition "The gigawatt-hour (GWh, GW⋅h) is a composite unit of energy in the International System of Units, equivalent to a million (10⁶) kilowatt-hours."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "gigawatt-hour"@en,
-        "gigawattheure"@fr .
+        "gigawattheure"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/GWH> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/HAR> a skos:Concept ;
     skos:definition "The hectare (ha) is a unit of area in the International System of Units, equivalent to 10 000 square meters, 10⁴ m²."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "hectare"@en,
-        "hectare"@fr .
+        "hectare"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/HAR> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/HLT> a skos:Concept ;
     skos:definition "The hectolitre (hl) is a unit of fluid volume (or capacity), equivalent to the volume of hundred litres, 100 l, or 10⁻¹ m³ (0.1 m³)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "hectolitre"@en,
-        "hectolitre"@fr .
+        "hectolitre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/HLT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/HTZ> a skos:Concept ;
     skos:definition "The hertz (Hz) is the derived unit of frequency in the International System of Units, defined as one cycle per second."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "hertz"@en,
-        "hertz"@fr .
+        "hertz"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/HTZ> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/HUR> a skos:Concept ;
     skos:definition "The hour (h) is a unit of time accepted for use with the International System of Units, equivalent to 1⁄24 of a day, 3600 seconds (scientifically reckoned as 3599–3601 seconds)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "hour"@en,
-        "heure"@fr .
+        "heure"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/HUR> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/JOU> a skos:Concept ;
     skos:definition "The joule (J) is a derived unit of energy in the International System of Units, equivalent to the energy transferred to (or work done on) an object when a force of one newton acts on that object in the direction of its motion through a distance of one metre."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "joule"@en,
-        "joule"@fr .
+        "joule"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/JOU> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/KEL> a skos:Concept ;
     skos:definition "The Kelvin (K) is the base unit of temperature in the International System of Units. The Kelvin scale is an absolute thermodynamic temperature scale using as its null point absolute zero, the temperature at which all thermal motion ceases."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "kelvin"@en,
-        "kelvin"@fr .
+        "kelvin"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/KEL> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/KGM> a skos:Concept ;
     skos:definition "The kilogram (kg) is the base unit of mass in the International System of Units. It remains defined by a platinum alloy cylinder, the international prototype kilogram stored in Saint-Cloud, Paris."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "kilogram"@en,
-        "kilogramme"@fr .
+        "kilogramme"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/KGM> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/KMH> a skos:Concept ;
     skos:definition "The kilometre per hour (km/h) is a unit of speed in the International System of Units, equivalent to the number of kilometres covered in one hour."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "kilometre per hour"@en,
-        "kilomètre par heure"@fr .
+        "kilomètre par heure"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/KMH> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/KMK> a skos:Concept ;
     skos:definition "The square kilometre (km²) is a unit of area in the International System of Units, equivalent to the area formed by a square measuring 1 km by 1 km, 10⁶ m²."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "square kilometre"@en,
-        "kilomètre carré"@fr .
+        "kilomètre carré"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/KMK> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/KTM> a skos:Concept ;
     skos:definition "The kilometre (km) is a unit of length in the International System of Units, equivalent to 1000 meters, 10³ m, or about 0.621 miles."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "kilometre"@en,
-        "kilomètre"@fr .
+        "kilomètre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/KTM> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/KWH> a skos:Concept ;
     skos:definition "The kilowatt-hour (kWh, kW⋅h) is a composite unit of energy in the International System of Units, equivalent to the energy provided by a thousand watts in one hour."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "kilowatt-hour"@en,
-        "kilowattheure"@fr .
+        "kilowattheure"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/KWH> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/KWT> a skos:Concept ;
     skos:definition "The kilowatt (kW) is a unit of power in the International System of Units, equivalent to one thousand watts, 10³ W."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "kilowatt"@en,
-        "kilowatt"@fr .
+        "kilowatt"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/KWT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/LH> a skos:Concept ;
     skos:definition "The labour hour is a unit of time defining the number of labour hours."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "labour hour"@en,
-        "heure de travail"@fr .
+        "heure de travail"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/LH> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/LTR> a skos:Concept ;
     skos:definition "The litre (l) is a unit of volume accepted for use with the International System of Units, representing the volume of 10 cm × 10 cm × 10 cm, 1000 cubic centimetres (cm³) and is thus equal to one thousandth of a cubic metre, 10⁻³ m³, or 1 cubic decimetre (dm³)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "litre"@en,
-        "litre"@fr .
+        "litre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/LTR> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MAW> a skos:Concept ;
     skos:definition "The megawatt (MW) is a unit of power in the International System of Units, equivalent to million watts, 10⁶ W."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "megawatt"@en,
-        "mégawatt"@fr .
+        "mégawatt"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MAW> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MC> a skos:Concept ;
     skos:definition "The microgram (μg) is a unit of mass in the International System of Units, equivalent to one millionth of a gram, 1×10⁻⁶ , or 10⁻⁹ kg (0.000000001 kg)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "microgram"@en,
-        "microgramme"@fr .
+        "microgramme"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MC> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MGM> a skos:Concept ;
     skos:definition "The milligram (mg) is a unit of mass in the International System of Units, equivalent to one thousandth of a gramme, 10⁻³ g (0.001 g), or 10⁻⁶ kg (0.000001 kg)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "milligram"@en,
-        "milligramme"@fr .
+        "milligramme"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MGM> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MIN> a skos:Concept ;
     skos:definition "The minute (min) is a unit of time accepted for use with the International System of Units, equivalent to 1⁄60 of an hour, or 60 seconds."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "minute"@en,
-        "minute"@fr .
+        "minute"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MIN> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MLT> a skos:Concept ;
     skos:definition "The millilitre (ml) is a unit of fluid volume (or capacity), equivalent to one thousandth of a litre (0.001 l), 10⁻⁶ m³. The millilitre is not a unit in the International System of Units (SI), but is accepted for use with SI units and prefixes by the International Committee for Weights and Measures."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "millilitre"@en,
-        "millilitre"@fr .
+        "millilitre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MLT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MMT> a skos:Concept ;
     skos:definition "The millimetre (mm) is a unit of length in the International System of Units, equivalent to one thousandth of a metre, 10⁻³ m (0.001 m)."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "millimetre"@en,
-        "millimètre"@fr .
+        "millimètre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MMT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MTK> a skos:Concept ;
     skos:definition "The square metre (m²) is a unit of area in the International System of Units, equivalent to the area formed by a square measuring 1 m by 1 m, 1 m²."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "square metre"@en,
-        "mètre carré"@fr .
+        "mètre carré"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MTK> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MTR> a skos:Concept ;
     skos:definition "The metre (m) is the base unit of length in some metric systems, including the International System of Units. The metre is defined as the length of the path travelled by light in a vacuum in 1/299 792 458 second."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "metre"@en,
-        "mètre"@fr .
+        "mètre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MTR> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/MTS> a skos:Concept ;
     skos:definition "The metre per second (m/s) is a unit of speed in the International System of Units, equivalent to the number of metres covered in one second."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "metre per second"@en,
-        "mètre par seconde"@fr .
+        "mètre par seconde"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/MTS> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/NEW> a skos:Concept ;
     skos:definition "The newton (N) is a derived unit of force in the International System of Units, representing the force needed to accelerate one kilogram of mass at the rate of one metre per second squared in the direction of the applied force, (kg × m)/s²."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "newton"@en,
-        "newton"@fr .
+        "newton"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/NEW> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/PAL> a skos:Concept ;
     skos:definition "The pascal (Pa) is a derived unit of pressure in the International System of Units, defined as one newton per square metre, 1 N/m²."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "pascal"@en,
-        "pascal"@fr .
+        "pascal"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/PAL> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/SEC> a skos:Concept ;
     skos:definition "The second (s) is the base unit of time in the International System of Units (SI), commonly understood and historically defined as 1⁄86400 of a day. However, it is defined by the SI as the duration of 9 192 631 770 periods of the radiation corresponding to the transition between the two hyperfine levels of the ground state of the caesium-133 atom."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "second"@en,
-        "seconde"@fr .
+        "seconde"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/SEC> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/TKM> a skos:Concept ;
     skos:definition "The tonne-kilometre (tkm) is a unit of measurement used for calculating the quantity of traffic, representing the transport of one tonne of goods over a distance of one kilometre."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "tonne-kilometre"@en,
-        "tonne-kilomètre"@fr .
+        "tonne-kilomètre"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/TKM> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/TNE> a skos:Concept ;
     skos:definition "The (metric) tonne (t) is a non-SI unit of mass (i.e. outside of the International System of Units), equivalent to one thousand kilograms, 10³ kg (1000 kg), or approximately the mass of one cubic meter of water at four degrees Celsius. It is accepted for use with SI units and prefixes by the International Committee for Weights and Measures."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "tonne"@en,
-        "tonne"@fr .
+        "tonne"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/TNE> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/TOE> a skos:Concept ;
     skos:definition "The tonne of oil equivalent (toe) is a unit of energy, defined as the amount of energy released by burning one tonne of crude oil. It is approximately 42 gigajoules."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "tonne of oil equivalent"@en,
-        "tonne d’équivalent pétrole"@fr .
+        "tonne d’équivalent pétrole"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/TOE> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/VLT> a skos:Concept ;
     skos:definition "The volt (V) is the derived unit for electric potential, electric potential difference (voltage) and electromotive force, defined as the difference in electric potential between two points of a conducting wire when an electric current of one ampere dissipates one watt of power between those points."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "volt"@en,
-        "volt"@fr .
+        "volt"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/VLT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit/WTT> a skos:Concept ;
     skos:definition "The watt (W) is a unit of power in the International System of Units, defined as a derived unit of one joule per second and used to quantify the rate of energy transfer."@en ;
     skos:inScheme <http://publications.europa.eu/resource/authority/measurement-unit> ;
     skos:prefLabel "watt"@en,
-        "watt"@fr .
+        "watt"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/measurement-unit/WTT> .
 
 <http://publications.europa.eu/resource/authority/measurement-unit> a skos:ConceptScheme ;
     skos:prefLabel "Measurement unit (EU)"@en,

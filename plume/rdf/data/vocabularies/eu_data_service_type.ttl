@@ -1,24 +1,29 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <http://publications.europa.eu/resource/authority/data-service-type/API> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
     skos:prefLabel "API"@en,
-        "API"@fr .
+        "API"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-service-type/API> .
 
 <http://publications.europa.eu/resource/authority/data-service-type/DOWNLOAD> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
     skos:prefLabel "Download"@en,
-        "Téléchargement"@fr .
+        "Téléchargement"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-service-type/DOWNLOAD> .
 
 <http://publications.europa.eu/resource/authority/data-service-type/HUMAN_INTERACTION> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
     skos:prefLabel "Human interaction service"@en,
-        "Service avec interface utilisateur de requête"@fr .
+        "Service avec interface utilisateur de requête"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-service-type/HUMAN_INTERACTION> .
 
 <http://publications.europa.eu/resource/authority/data-service-type/SPARQL_ENDPOINT> a skos:Concept ;
     skos:inScheme <http://publications.europa.eu/resource/authority/data-service-type> ;
     skos:prefLabel "SPARQL endpoint"@en,
-        "Point d'accès SPARQL"@fr .
+        "Point d'accès SPARQL"@fr ;
+    foaf:page <https://op.europa.eu/fr/web/eu-vocabularies/concept/-/resource?uri=http%3A//publications.europa.eu/resource/authority/data-service-type/SPARQL_ENDPOINT> .
 
 <http://publications.europa.eu/resource/authority/data-service-type> a skos:ConceptScheme ;
     skos:prefLabel "Data service type (EU)"@en,
