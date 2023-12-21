@@ -4,10 +4,10 @@
 import os.path
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import ( QMenu, QAction, QApplication, QFileDialog, QMessageBox, \
+from PyQt5.QtWidgets import ( QMenu, QAction, QApplication, QFileDialog, QMessageBox, QMenuBar, QSizePolicy, \
                               QTreeWidget, QTabWidget, QWidget, QAbstractItemView, QTreeWidgetItemIterator, QTreeWidgetItem, QHeaderView, QGridLayout, QGraphicsOpacityEffect )
-from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt )
-from PyQt5.QtGui     import ( QStandardItemModel, QStandardItem, QIcon, QCursor )
+from PyQt5.QtCore    import ( QDate, QDateTime, QTime, QDateTime, Qt, QSize)
+from PyQt5.QtGui     import ( QStandardItemModel, QStandardItem, QIcon, QCursor, QKeySequence )
 #
 from plume.bibli_plume import ( GenereButtonsWithDictWithEvent, GenereButtonsAssistant, returnAndSaveDialogParam, returnVersion, executeSql, genereLabelWithDict, returnIcon, displayMess )
 #
@@ -411,18 +411,79 @@ class Ui_Dialog_CreateTemplate(object):
         # Zone MODELE
         self.zoneModele       = QWidget()
         self.layoutZoneModele = QGridLayout()
-        self.layoutZoneModele.setRowStretch(0, 6)
-        self.layoutZoneModele.setRowStretch(1, 6)
-        self.layoutZoneModele.setRowStretch(2, 1)
+        self.layoutZoneModele.setRowStretch(0, 0.5)
+        self.layoutZoneModele.setRowStretch(1, 5.5)
+        self.layoutZoneModele.setRowStretch(2, 6)
+        self.layoutZoneModele.setRowStretch(3, 1)
         self.zoneModele.setLayout(self.layoutZoneModele)
         #--
+        #Menu Dialog  
         #------ TREEVIEW   
         self.mTreeListeRessourceModele = TREEVIEWMODELE()
-        self.layoutZoneModele.addWidget(self.mTreeListeRessourceModele, 0, 0)
-        #-
+        self.layoutZoneModele.addWidget(self.mTreeListeRessourceModele, 1, 0)
+
+        #Barre d'outils Modèle  
+        self.mMenuBarModele = QMenuBar()  
+        self.mMenuBarModele.setContentsMargins(0, 0, 0, 0)
+        self.layoutZoneModele.addWidget(self.mMenuBarModele, 0, 0)
+        self.mMenuBarModele.setMinimumSize(23, 23)
+        self.mMenuBarModele.setStyleSheet("QMenuBar { border: 0px solid red;}")
+        self.mMenuBarModeleGrid = QtWidgets.QHBoxLayout()
+        self.mMenuBarModeleGrid.setContentsMargins(0, 0, 0, 0)
+        self.mMenuBarModele.setLayout(self.mMenuBarModeleGrid)
+
+        # [ == add modèle == ]
+        _icon = os.path.dirname(__file__) + "/icons/buttons/plus_button.svg"          
+        self.mTextAddTemplate = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add model", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextAddTemplate, self.mTreeListeRessourceModele.ihmsPlumeAdd, "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.addTemplate = self.genereButtonsToolBarModele( dicParamButton )
+        # [ == del modèle == ]
+        _icon = os.path.dirname(__file__) + "/icons/general/delete.svg"          
+        self.mTextRemoveTemplate = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove model", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextRemoveTemplate, self.mTreeListeRessourceModele.ihmsPlumeDel, "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.removeTemplate = self.genereButtonsToolBarModele( dicParamButton )
+        # [ == export modèle == ]
+        _icon = os.path.dirname(__file__) + "/icons/general/export.svg"          
+        self.mTextExportOneTemplate = QtWidgets.QApplication.translate("CreateTemplate_ui", "Export model", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextExportOneTemplate, lambda : self.mTreeListeRessourceModele.ihmsPlumeExportModel("One"), "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.exportOneTemplate = self.genereButtonsToolBarModele( dicParamButton )
+        # [ == export Several modèle == ]
+        _icon = os.path.dirname(__file__) + "/icons/general/exportseveral.svg"          
+        self.mTextExportSeveralTemplate = QtWidgets.QApplication.translate("CreateTemplate_ui", "Export models", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextExportSeveralTemplate, lambda : self.mTreeListeRessourceModele.ihmsPlumeExportModel("Several"), "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.exportSeveralTemplate = self.genereButtonsToolBarModele( dicParamButton )
+        # [ == export All modèles == ]
+        _icon = os.path.dirname(__file__) + "/icons/general/exportall.svg"          
+        self.mTextExportAllTemplate = QtWidgets.QApplication.translate("CreateTemplate_ui", "Export all models", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextExportAllTemplate, lambda : self.mTreeListeRessourceModele.ihmsPlumeExportModel("All"), "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.exportAllTemplate = self.genereButtonsToolBarModele( dicParamButton )
+        #
+        self.mMenuBarModeleGrid.addWidget(self.addTemplate)        
+        self.mMenuBarModeleGrid.addWidget(self.removeTemplate)        
+        self.mMenuBarModeleGrid.addWidget(self.exportOneTemplate)        
+        self.mMenuBarModeleGrid.addWidget(self.exportSeveralTemplate)        
+        self.mMenuBarModeleGrid.addWidget(self.exportAllTemplate)        
+        self.mMenuBarModeleGrid.addStretch(1)        
+        self._selfCreateTemplate.addTemplate.setEnabled(True)        
+        self._selfCreateTemplate.removeTemplate.setEnabled(False)        
+        self._selfCreateTemplate.exportOneTemplate.setEnabled(False)        
+        self._selfCreateTemplate.exportSeveralTemplate.setEnabled(False)        
+        self._selfCreateTemplate.exportAllTemplate.setEnabled(True) 
+        #Barre d'outils Modèle  
+
         self.mTreeListeRessourceModele.clear()
-        #------ TEMPORAIRE 
         #------
+        # [ == add template == ]
         #------ DATA template 
         mKeySql = queries.query_read_meta_template()
         r, zMessError_Code, zMessError_Erreur, zMessError_Diag = executeSql(self, self.Dialog.mConnectEnCours, mKeySql, optionRetour = "fetchall")
@@ -445,14 +506,14 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutHelpAttributsModele.setColumnStretch(1, 1)
         #-
         self.groupBoxHelpAttributsModele.setLayout(self.layoutHelpAttributsModele)
-        self.layoutZoneModele.addWidget(self.groupBoxHelpAttributsModele, 1, 0)
+        self.layoutZoneModele.addWidget(self.groupBoxHelpAttributsModele, 2, 0)
         #=====================================
         # [ == scrolling HELP et Attributs == ]
         self.scroll_bar_help_AttributsModele = QtWidgets.QScrollArea() 
         self.scroll_bar_help_AttributsModele.setStyleSheet("QScrollArea { border: 0px solid red;}")
         self.scroll_bar_help_AttributsModele.setWidgetResizable(True)
         self.scroll_bar_help_AttributsModele.setWidget(self.groupBoxHelpAttributsModele)
-        self.layoutZoneModele.addWidget(self.scroll_bar_help_AttributsModele, 1, 0)
+        self.layoutZoneModele.addWidget(self.scroll_bar_help_AttributsModele, 2, 0)
         #=====================================
         #=====================================
 
@@ -531,7 +592,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutAttributsModeleButton.setColumnStretch(0, 4)
         self.layoutAttributsModeleButton.setColumnStretch(1, 1)
         self.layoutAttributsModeleButton.setColumnStretch(2, 3)
-        self.layoutZoneModele.addWidget(self.groupBoxAttributsModeleButton, 2, 0)
+        self.layoutZoneModele.addWidget(self.groupBoxAttributsModeleButton, 3, 0)
         #------
         self.buttonAddModele = QtWidgets.QToolButton()
         self.buttonAddModele.setObjectName("buttonAddModele")
@@ -549,14 +610,47 @@ class Ui_Dialog_CreateTemplate(object):
         # Zone CATEGORIES
         self.zoneCategorie       = QWidget()
         self.layoutZoneCategorie = QtWidgets.QGridLayout()
-        self.layoutZoneCategorie.setRowStretch(0, 6)
-        self.layoutZoneCategorie.setRowStretch(1, 6)
-        self.layoutZoneCategorie.setRowStretch(2, 1)
+        self.layoutZoneCategorie.setRowStretch(0, 0.5)
+        self.layoutZoneCategorie.setRowStretch(1, 5.5)
+        self.layoutZoneCategorie.setRowStretch(2, 6)
+        self.layoutZoneCategorie.setRowStretch(3, 1)
         self.zoneCategorie.setLayout(self.layoutZoneCategorie)
         #Liste Categories
         #------ TREEVIEW CATEGORIES
         self.mTreeListeRessourceCategorie = TREEVIEWCATEGORIE()
-        self.layoutZoneCategorie.addWidget(self.mTreeListeRessourceCategorie)
+        self.layoutZoneCategorie.addWidget(self.mTreeListeRessourceCategorie, 1, 0)
+
+        #Barre d'outils Catégories
+        self.mMenuBarCategorie = QMenuBar()  
+        self.mMenuBarCategorie.setContentsMargins(0, 0, 0, 0)
+        self.layoutZoneCategorie.addWidget(self.mMenuBarCategorie, 0, 0)
+        self.mMenuBarCategorie.setMinimumSize(23, 23)
+        self.mMenuBarCategorie.setStyleSheet("QMenuBar { border: 0px solid red;}")
+        self.mMenuBarCategorieGrid = QtWidgets.QHBoxLayout()
+        self.mMenuBarCategorieGrid.setContentsMargins(0, 0, 0, 0)
+        self.mMenuBarCategorie.setLayout(self.mMenuBarCategorieGrid)
+
+        # [ == add Catégories == ]
+        _icon = os.path.dirname(__file__) + "/icons/buttons/plus_button.svg"          
+        self.mTextAddCategorie = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add category", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextAddCategorie, self.mTreeListeRessourceCategorie.ihmsPlumeAdd, "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.addCategorie = self.genereButtonsToolBarModele( dicParamButton )
+        # [ == del Catégories == ]
+        _icon = os.path.dirname(__file__) + "/icons/general/delete.svg"          
+        self.mTextRemoveCategorie = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove category", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextRemoveCategorie, self.mTreeListeRessourceCategorie.ihmsPlumeDel, "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.removeCategorie = self.genereButtonsToolBarModele( dicParamButton )
+        #
+        self.mMenuBarCategorieGrid.addWidget(self.addCategorie)        
+        self.mMenuBarCategorieGrid.addWidget(self.removeCategorie)        
+        self.mMenuBarCategorieGrid.addStretch(1)        
+        self._selfCreateTemplate.addCategorie.setEnabled(True)        
+        self._selfCreateTemplate.removeCategorie.setEnabled(False)        
+        #Barre d'outils Catégories
         #-
         self.mTreeListeRessourceCategorie.clear()
 
@@ -585,7 +679,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutHelpAttributsCategorie.setColumnStretch(0, 1)
         self.layoutHelpAttributsCategorie.setColumnStretch(1, 1)
         self.groupBoxHelpAttributsCategories.setLayout(self.layoutHelpAttributsCategorie)
-        self.layoutZoneCategorie.addWidget(self.groupBoxHelpAttributsCategories, 1, 0)
+        self.layoutZoneCategorie.addWidget(self.groupBoxHelpAttributsCategories, 2, 0)
         #=====================================
         self.groupBoxAttributsCategorie = QtWidgets.QGroupBox()
         self.groupBoxAttributsCategorie.setObjectName("groupBoxAttributsCategorie")
@@ -662,7 +756,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutAttributsCategorieButton.setColumnStretch(0, 4)
         self.layoutAttributsCategorieButton.setColumnStretch(1, 1)
         self.layoutAttributsCategorieButton.setColumnStretch(2, 3)
-        self.layoutZoneCategorie.addWidget(self.groupBoxAttributsCategorieButton, 2, 0)
+        self.layoutZoneCategorie.addWidget(self.groupBoxAttributsCategorieButton, 3, 0)
         #------
         self.buttonAddCategorie = QtWidgets.QToolButton()
         self.buttonAddCategorie.setObjectName("buttonAddCategorie")
@@ -680,16 +774,50 @@ class Ui_Dialog_CreateTemplate(object):
         # Zone ONGLETS
         self.zoneOnglet       = QWidget()
         self.layoutZoneOnglet = QtWidgets.QGridLayout()  
-        self.layoutZoneOnglet.setRowStretch(0, 6)
-        self.layoutZoneOnglet.setRowStretch(1, 6)
-        self.layoutZoneOnglet.setRowStretch(2, 1)
+        self.layoutZoneOnglet.setRowStretch(0, 0.5)
+        self.layoutZoneOnglet.setRowStretch(1, 5.5)
+        self.layoutZoneOnglet.setRowStretch(2, 6)
+        self.layoutZoneOnglet.setRowStretch(3, 1)
         self.zoneOnglet.setLayout(self.layoutZoneOnglet)
         #Liste Onglets
         #------ Déclare TREEVIEW
         self.mTreeListeRessourceOnglet = TREEVIEWONGLET()
         #-
         #------ TREEVIEW ONGLETS
-        self.layoutZoneOnglet.addWidget(self.mTreeListeRessourceOnglet)
+        self.layoutZoneOnglet.addWidget(self.mTreeListeRessourceOnglet, 1, 0)
+ 
+        #Barre d'outils Onglets
+        self.mMenuBarOnglet = QMenuBar()  
+        self.mMenuBarOnglet.setContentsMargins(0, 0, 0, 0)
+        self.layoutZoneOnglet.addWidget(self.mMenuBarOnglet, 0, 0)
+        self.mMenuBarOnglet.setMinimumSize(23, 23)
+        self.mMenuBarOnglet.setStyleSheet("QMenuBar { border: 0px solid red;}")
+        self.mMenuBarOngletGrid = QtWidgets.QHBoxLayout()
+        self.mMenuBarOngletGrid.setContentsMargins(0, 0, 0, 0)
+        self.mMenuBarOnglet.setLayout(self.mMenuBarOngletGrid)
+
+        # [ == add Onglets == ]
+        _icon = os.path.dirname(__file__) + "/icons/buttons/plus_button.svg"          
+        self.mTextAddOnglet = QtWidgets.QApplication.translate("CreateTemplate_ui", "Add tab", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextAddOnglet, self.mTreeListeRessourceOnglet.ihmsPlumeAdd, "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.addOnglet = self.genereButtonsToolBarModele( dicParamButton )
+        # [ == del Onglets == ]
+        _icon = os.path.dirname(__file__) + "/icons/general/delete.svg"          
+        self.mTextRemoveOnglet = QtWidgets.QApplication.translate("CreateTemplate_ui", "Remove tab", None)   
+        _Listkeys   = [ "typeWidget",            "textWidget", "nameWidget", "iconWidget", "toolTipWidget",       "actionWidget",                              "shorCutWidget", "autoRaise", "checkable", "qSizePolicy" ]
+        _ListValues = [ QtWidgets.QToolButton(), "Edition",    "Edition",    _icon,        self.mTextRemoveOnglet, self.mTreeListeRessourceOnglet.ihmsPlumeDel, "ALT+SHIFT+E",    False,       False,       QSizePolicy.Fixed ]
+        dicParamButton = dict(zip(_Listkeys, _ListValues))
+        self.removeOnglet = self.genereButtonsToolBarModele( dicParamButton )
+        #
+        self.mMenuBarOngletGrid.addWidget(self.addOnglet)        
+        self.mMenuBarOngletGrid.addWidget(self.removeOnglet)        
+        self.mMenuBarOngletGrid.addStretch(1)        
+        self._selfCreateTemplate.addOnglet.setEnabled(True)        
+        self._selfCreateTemplate.removeOnglet.setEnabled(False)        
+        #Barre d'outils Onglets
+
         #-
         self.mTreeListeRessourceOnglet.clear()
 
@@ -713,7 +841,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutHelpAttributsOnglet.setColumnStretch(0, 1)
         self.layoutHelpAttributsOnglet.setColumnStretch(1, 1)
         self.groupBoxHelpAttributsOnglets.setLayout(self.layoutHelpAttributsOnglet)
-        self.layoutZoneOnglet.addWidget(self.groupBoxHelpAttributsOnglets, 1, 0)
+        self.layoutZoneOnglet.addWidget(self.groupBoxHelpAttributsOnglets, 2, 0)
         #=====================================
         self.groupBoxAttributsOnglet = QtWidgets.QGroupBox()
         self.groupBoxAttributsOnglet.setObjectName("groupBoxAttributsOnglet")
@@ -791,7 +919,7 @@ class Ui_Dialog_CreateTemplate(object):
         self.layoutAttributsOngletButton.setColumnStretch(0, 4)
         self.layoutAttributsOngletButton.setColumnStretch(1, 1)
         self.layoutAttributsOngletButton.setColumnStretch(2, 3)
-        self.layoutZoneOnglet.addWidget(self.groupBoxAttributsOngletButton, 2, 0)
+        self.layoutZoneOnglet.addWidget(self.groupBoxAttributsOngletButton, 3, 0)
         #------
         self.buttonAddOnglet = QtWidgets.QToolButton()
         self.buttonAddOnglet.setObjectName("buttonAddOnglet")
@@ -1011,6 +1139,30 @@ class Ui_Dialog_CreateTemplate(object):
         self.groupBox_tab_widget_Association.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
         self.groupBox_tab_widget_Ressource.setGeometry(QtCore.QRect(10,10,self.tabWidget.width() - 20, self.tabWidget.height() - 40))
         return
+
+    #==========================         
+    def genereButtonsToolBarModele(self, dicParamButton ) :
+        for k, v in dicParamButton.items() :
+            if k == "typeWidget"    : _buttonToolBar = v
+            if k == "qSizePolicy"   : _buttonToolBar.setSizePolicy(v, v)
+            if k == "iconWidget"    : _buttonToolBar.setIcon(QIcon(v))
+            if k == "nameWidget"    : _buttonToolBar.setObjectName(v)
+            if k == "toolTipWidget" : _buttonToolBar.setToolTip(v)
+            if k == "actionWidget"  : _buttonToolBar.clicked.connect(v)
+            if k == "autoRaise"     : _buttonToolBar.setAutoRaise(v)
+            if k == "checkable"     : _buttonToolBar.setCheckable(v)
+            #-- Icon Blank
+            if k == "redimIcon"     :
+               h = _buttonToolBar.iconSize().height()
+               _buttonToolBar.setIconSize(QSize(1, h))
+            #-- Text
+            if k == "textWidget"    : _buttonToolBar.setText(v)
+            #-- StyleSheet
+            if k == "styleSheet"    : _buttonToolBar.setStyleSheet(v)
+            #-- Raccourci
+            if k == "shorCutWidget" : _buttonToolBar.setShortcut(QKeySequence(v))
+        return _buttonToolBar
+
 
 #==========================         
 #==========================         
@@ -1505,7 +1657,14 @@ def initialiseAttributsModelesCategoriesOnglets(self, _mItemClicModele, _groupBo
            # widget
            _type  = _mapping_template[ mObj.objectName()[5:] ]["type" ]
            if initialiseValueOrBlank == 0 :
-              __Val = "" if mObj.objectName()[5:] != "tpl_label" else "Nouveau modèle" # Cas où on fait nouveau modèle pour intialiser le libellé à "Nouveau modèle"
+              if mObj.objectName()[5:] == "tpl_label" :
+                 __Val = "Nouveau modèle"          # Cas où on fait nouveau modèle pour intialiser le libellé à "Nouveau modèle"
+              elif mObj.objectName()[5:] == "label" :
+                 __Val = "Nouvelle catégorie"      # Cas où on fait nouveau modèle pour intialiser le libellé à "Nouveau modèle"
+              elif mObj.objectName()[5:] == "tab_label" :
+                 __Val = "Nouvel onglet"           # Cas où on fait nouveau modèle pour intialiser le libellé à "Nouveau modèle"
+              else :
+                 __Val = ""
            else :    
               if _blank == None :
                  __Val = _mapping_template_id_template[ mObj.objectName()[5:] ]
@@ -2254,16 +2413,14 @@ class TREEVIEW_CAT_IN_OUT(QTreeWidget):
 # Class pour le tree View Ressource MODELE 
 class TREEVIEWMODELE(QTreeWidget):
     customMimeType = "text/plain"
-
-    #===============================              
+   #===============================              
     def __init__(self, *args):
         QTreeWidget.__init__(self, *args)
+        super().__init__()
         self.setColumnCount(1)
         self.hideColumn (0)   # For hide ID
         self.setHeaderLabels(["Noms", "Libellés"])
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)  
-        self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to delete a model", None)               #Click droit pour supprimer un Modèle
-        self.setToolTip(    QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / export a model", None))         #Click droit pour ajouter et exporter un Modèle
         return
 
     #===============================              
@@ -2274,7 +2431,6 @@ class TREEVIEWMODELE(QTreeWidget):
         self.zoneDisplayHelpFocusAttributsModele     = _selfCreateTemplate.zoneDisplayHelpFocusAttributsModele
         self.listLangList                            = _selfCreateTemplate.listLangList
         self.mTreeListeRessourceModele               = _selfCreateTemplate.mTreeListeRessourceModele
-        
 
         self.mListTemplates          = _selfCreateTemplate.mListTemplates
         self._selfCreateTemplate     = _selfCreateTemplate
@@ -2285,16 +2441,13 @@ class TREEVIEWMODELE(QTreeWidget):
         while i in range(len(listeModeleCol1)) :
             nodeUrlUser = QTreeWidgetItem(None, [ str(listeModeleCol1[i]), str(listeModeleCol2[i]) ])
             self.insertTopLevelItems( 0, [ nodeUrlUser ] )
-            nodeUrlUser.setToolTip(0, "{}".format(self.mnodeToolTip))
-            nodeUrlUser.setToolTip(1, "{}".format(self.mnodeToolTip))
             i += 1
  
+        # Connecter l'événement mousePressEvent
         self.itemClicked.connect( self.ihmsPlumeMODELE ) 
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect( self.menuContextuelPlumeMODELE)
         self.expandAll()
         return
-        
+
     #===============================              
     def menuContextuelPlumeMODELE(self, point):
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
@@ -2304,8 +2457,6 @@ class TREEVIEWMODELE(QTreeWidget):
         #Retourne la liste des modèles et de leurs identifiants sélectionnés
         _returnListeIdMODELE = self.returnListeIdMODELE()  
         
-        #if not index.isValid():
-        #   return
         self.treeMenu = QMenu(self)
         #-------
         if len(self.mListTemplates) == 0 : 
@@ -2381,6 +2532,7 @@ class TREEVIEWMODELE(QTreeWidget):
         fileName = QFileDialog.getSaveFileName(self, "Fichier des modèles de Plume :",InitDir,TypeList)[0]
         if fileName == "" : return
 
+        _returnListeIdMODELE = self.returnListeIdMODELE()    
         _tpl_id = [ int(elem[0]) for elem in _returnListeIdMODELE ] if param in "One, Several" else []
         
         #------
@@ -2439,6 +2591,39 @@ class TREEVIEWMODELE(QTreeWidget):
         return _returnListeIdMODELE
 
     #===============================              
+    def displayToolBarreModele(self, _returnListeIdMODELEVierge = False ) :
+        #Retourne la liste des modèles et de leurs identifiants sélectionnés
+        _returnListeIdMODELE = self.returnListeIdMODELE() if not _returnListeIdMODELEVierge else [] 
+        #-------
+        self._selfCreateTemplate.addTemplate.setEnabled(True)        
+        self._selfCreateTemplate.removeTemplate.setEnabled(False)        
+        self._selfCreateTemplate.exportOneTemplate.setEnabled(False)        
+        self._selfCreateTemplate.exportSeveralTemplate.setEnabled(False)        
+        self._selfCreateTemplate.exportAllTemplate.setEnabled(True)        
+        #-------
+        if len(self._selfCreateTemplate.mListTemplates) == 0 : 
+           self._selfCreateTemplate.addTemplate.setEnabled(True)
+        else :   
+           self._selfCreateTemplate.addTemplate.setEnabled(True)
+
+           if len(_returnListeIdMODELE) == 1 : 
+              self._selfCreateTemplate.removeTemplate.setEnabled(True)        
+              self._selfCreateTemplate.exportOneTemplate.setEnabled(True)        
+           elif len(_returnListeIdMODELE) > 1 : 
+              self._selfCreateTemplate.exportSeveralTemplate.setEnabled(True)        
+
+           self._selfCreateTemplate.exportAllTemplate.setEnabled(True)        
+        return
+        
+    #===============================              
+    def mousePressEvent(self, event):
+        item = self.itemAt(event.pos())
+        if item is None:
+           self.displayToolBarreModele(True)   
+        super().mousePressEvent(event)
+        return
+
+    #===============================              
     def ihmsPlumeMODELE(self, item, column): 
         mItemClicModele = item.data(0, QtCore.Qt.DisplayRole)
         self.modeleActif = mItemClicModele
@@ -2462,6 +2647,8 @@ class TREEVIEWMODELE(QTreeWidget):
 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsModele.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsModele.setText("")
+        
+        self.displayToolBarreModele()        
         return
 
     #===============================              
@@ -2500,6 +2687,8 @@ class TREEVIEWMODELE(QTreeWidget):
     #===============================              
     def ihmsPlumeDel(self): 
         current_item = self.currentItem()           #itemCourant
+        if current_item == None : return
+
         self.ihmsPlumeMODELE( current_item, None )  #Affiche les attributs pour impélmenter le dicForQuerieForAddModele
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
@@ -2528,9 +2717,6 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         self.setColumnCount(1)
         self.setHeaderLabels(["Identifiant et chemin"])  
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
-        self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / delete a category", None)         #Click droit pour supprimer un Modèle
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.menuContextuelPlumeCATEGORIE) 
         return
 
     #===============================              
@@ -2616,8 +2802,6 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         #Create Arbo 
         
         self.itemClicked.connect( self.ihmsPlumeCATEGORIE ) 
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect( self.menuContextuelPlumeCATEGORIE)
         self.listeRessourceCategorie              = listeRessourceCategorie
         return
         
@@ -2663,6 +2847,22 @@ class TREEVIEWCATEGORIE(QTreeWidget):
         return
         
     #===============================              
+    def displayToolBarreCategorie(self) :
+        #-------
+        current_item = self.currentItem()
+        self._selfCreateTemplate.addCategorie.setEnabled(True)     
+        self._selfCreateTemplate.removeCategorie.setEnabled(False if current_item is None else True)        
+        return
+        
+    #===============================              
+    def mousePressEvent(self, event):
+        item = self.itemAt(event.pos())
+        if item is None:
+           self.displayToolBarreCategorie()   
+        super().mousePressEvent(event)
+        return
+        
+    #===============================              
     def ihmsPlumeCATEGORIE(self, item, column): 
         mItemClicCategorie = item.data(1, QtCore.Qt.DisplayRole)
         self.categorieActif = mItemClicCategorie
@@ -2692,6 +2892,8 @@ class TREEVIEWCATEGORIE(QTreeWidget):
 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsCategorie.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsCategorie.setText("")
+
+        self.displayToolBarreCategorie() 
         return
 
     #===============================              
@@ -2733,6 +2935,8 @@ class TREEVIEWCATEGORIE(QTreeWidget):
     #===============================              
     def ihmsPlumeDel(self): 
         current_item = self.currentItem()           #itemCourant
+        if current_item == None : return
+
         self.ihmsPlumeCATEGORIE( current_item, None )  #Affiche les attributs pour impélmenter le dicForQuerieForAddCategorie
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
@@ -2762,9 +2966,6 @@ class TREEVIEWONGLET(QTreeWidget):
         self.hideColumn (0)   # For hide ID
         self.setHeaderLabels(["Noms", "Libellés"])
         self.setSelectionMode(QAbstractItemView.SingleSelection	)  
-        self.mnodeToolTip = QtWidgets.QApplication.translate("CreateTemplate_ui", "Right click to add / delete a model", None)         #Click droit pour supprimer un Modèle
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.menuContextuelPlumeONGLET) 
         return
 
     #===============================              
@@ -2784,13 +2985,9 @@ class TREEVIEWONGLET(QTreeWidget):
         while i in range(len(listeOngletCol1)) :
             nodeUrlUser = QTreeWidgetItem(None, [ str(listeOngletCol1[i]), str(listeOngletCol2[i]) ])
             self.insertTopLevelItems( 0, [ nodeUrlUser ] )
-            nodeUrlUser.setToolTip(0, "{}".format(self.mnodeToolTip))
-            nodeUrlUser.setToolTip(1, "{}".format(self.mnodeToolTip))
             i += 1
  
         self.itemClicked.connect( self.ihmsPlumeONGLET ) 
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect( self.menuContextuelPlumeONGLET)
         self.expandAll()
         return
         
@@ -2834,6 +3031,22 @@ class TREEVIEWONGLET(QTreeWidget):
         return
         
     #===============================              
+    def displayToolBarreOnglet(self) :
+        #-------
+        current_item = self.currentItem()
+        self._selfCreateTemplate.addOnglet.setEnabled(True)     
+        self._selfCreateTemplate.removeOnglet.setEnabled(False if current_item is None else True)        
+        return
+        
+    #===============================              
+    def mousePressEvent(self, event):
+        item = self.itemAt(event.pos())
+        if item is None:
+           self.displayToolBarreOnglet()   
+        super().mousePressEvent(event)
+        return
+        
+    #===============================              
     def ihmsPlumeONGLET(self, item, column): 
         mItemClicOnglet = item.data(0, QtCore.Qt.DisplayRole)
         self.ongletActif = mItemClicOnglet
@@ -2857,6 +3070,8 @@ class TREEVIEWONGLET(QTreeWidget):
 
         self._selfCreateTemplate.groupBoxdisplayHelpFocusAttributsOnglet.setVisible(False)
         self._selfCreateTemplate.zoneDisplayHelpFocusAttributsOnglet.setText("")
+        
+        self.displayToolBarreOnglet() 
         return
 
     #===============================              
@@ -2895,7 +3110,9 @@ class TREEVIEWONGLET(QTreeWidget):
     #===============================              
     def ihmsPlumeDel(self): 
         current_item = self.currentItem()           #itemCourant
-        self.ihmsPlumeONGLET( current_item, None )  #Affiche les attributs pour impélmenter le dicForQuerieForAddOnglet
+        if current_item == None : return
+
+        self.ihmsPlumeONGLET( current_item, None )  #Affiche les attributs pour implémenter le dicForQuerieForAddOnglet
         self.takeTopLevelItem(self.indexOfTopLevelItem(current_item))
         #
         dicForQuerieForAddOnglet = returnListObjKeyValue(self, self.groupBoxAttributsOnglet, self.mapping_tabs, 'initialiseAttributsOnglet')

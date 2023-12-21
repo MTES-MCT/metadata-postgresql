@@ -184,8 +184,11 @@ class MainPlugin(object):
       d.exec_()
 
   def clickIHMplume2ToolBar(self):
-      d = doplume_ui.Dialog(self.dicTooltipExiste, self.plume2ToolBar)
-      d.exec_()
+      try : 
+         d = doplume_ui.Dialog(self.dicTooltipExiste, self.plume2ToolBar)
+         d.exec_()
+      except :
+         pass
 
   def unload(self):
       self.menu.deleteLater() 
