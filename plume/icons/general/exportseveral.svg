@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg1"
+   width="24"
+   height="24"
+   viewBox="0 0 24 24.000001"
+   sodipodi:docname="exportseveral.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <title
+     id="title25169">Exporter la fiche de métadonnées</title>
+  <metadata
+     id="metadata11">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="https://spdx.org/licenses/etalab-2.0" />
+        <dc:date>2022.08.12</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Leslie Lemaire @MTECT-MTE-Mer SG/SNUM/UNI/DRC</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>République Française</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Exporter la fiche de métadonnées</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview7"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="17.173317"
+     inkscape:cx="15.851183"
+     inkscape:cy="6.0546021"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4707"
+     inkscape:snap-global="false"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-rotation="0" />
+  <g
+     id="g4707">
+    <path
+       style="fill:#f7be7c;fill-opacity:1;stroke:#8b7954;stroke-width:0.999999;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+       id="path39180"
+       sodipodi:type="arc"
+       sodipodi:cx="22.17767"
+       sodipodi:cy="23.5"
+       sodipodi:rx="17.67767"
+       sodipodi:ry="15.99829"
+       sodipodi:start="3.1415927"
+       sodipodi:end="4.712389"
+       sodipodi:arc-type="slice"
+       d="M 4.5,23.5 A 17.67767,15.99829 0 0 1 22.17767,7.5017099 V 23.5 Z" />
+    <g
+       id="g39114"
+       transform="rotate(-45,7.6656334,7.6439099)">
+      <path
+         style="fill:#f4e3c7;fill-opacity:1;stroke:#8b7954;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
+         d="M 7.6809974,4.6806933 V 23.370013"
+         id="path9939-0" />
+      <path
+         style="fill:#f7be79;fill-opacity:1;stroke:#8b7954;stroke-width:0.999999;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:transform-center-x="0.46267328"
+         d="m 7.6502727,4.1818983 c -4.836628,0 -4.836628,0 -2.418314,-3.612806 2.418314,-3.612806 2.418314,-3.612806 4.8366283,1e-6 2.418313,3.612805 2.418313,3.612805 -2.4183143,3.612805 z"
+         id="path4691"
+         inkscape:connector-curvature="0"
+         inkscape:transform-center-y="-0.22413898" />
+    </g>
+  </g>
+</svg>
