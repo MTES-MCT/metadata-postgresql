@@ -43,11 +43,13 @@
 -- - Type: z_plume.meta_datatype
 -- - Type: z_plume.meta_geo_tool
 -- - Type: z_plume.meta_compute
--- - Table: z_plume.meta_categorie
 -- - Table: z_plume.meta_shared_categorie
 -- - Function: z_plume.meta_shared_categorie_before_insert()
--- - Trigger: meta_shared_categorie_before_insert
+-- - Trigger: meta_shared_categorie_before_insert on z_plume.meta_shared_categorie
 -- - Table: z_plume.meta_local_categorie
+-- - View: z_plume.meta_categorie
+-- - Function: z_plume.meta_categorie_instead_of_action()
+-- - Trigger: meta_categorie_instead_of_action on z_plume.meta_categorie
 -- - Sequence: z_plume.meta_template_tpl_id_seq
 -- - Table: z_plume.meta_template
 -- - Sequence: z_plume.meta_tab_tab_id_seq
@@ -63,7 +65,7 @@
 -- - Function: z_plume.is_relowner(oid)
 -- - Table: z_plume.stamp_timestamp
 -- - Function: stamp_timestamp_access_control()
--- - Trigger: stamp_timestamp_access_control
+-- - Trigger: stamp_timestamp_access_control on z_plume.stamp_timestamp
 -- - Function: stamp_timestamp_to_metadata()
 -- - Trigger: stamp_timestamp_to_metadata
 -- - Function: z_plume.stamp_data_edit()
@@ -202,11 +204,11 @@ CREATE CAST (text[] AS z_plume.meta_compute[])
     AS IMPLICIT ;
 
 
---Table: z_plume.meta_categorie
+-- Table: z_plume.meta_shared_categorie
 
-CREATE TABLE z_plume.meta_categorie (
-    path text NOT NULL DEFAULT format('uuid:%s', gen_random_uuid()),
-    origin text NOT NULL DEFAULT 'local',
+CREATE TABLE z_plume.meta_shared_categorie (
+    path text PRIMARY KEY,
+    origin text NOT NULL DEFAULT 'shared',
     label text NOT NULL,
     description text,
     special z_plume.meta_special,
@@ -224,43 +226,9 @@ CREATE TABLE z_plume.meta_categorie (
     compute z_plume.meta_compute[],
     template_order int,
     compute_params jsonb,
-    CONSTRAINT meta_categorie_origin_check CHECK (origin IN ('local', 'shared')),
+    CONSTRAINT meta_categorie_origin_check CHECK (origin = 'shared'),
     CONSTRAINT meta_categorie_rowspan_check CHECK (rowspan BETWEEN 1 AND 99)
-    )
-    PARTITION BY LIST (origin) ;
-
-GRANT SELECT ON TABLE z_plume.meta_categorie TO public ;
-
-COMMENT ON TABLE z_plume.meta_categorie IS 'Catégories de métadonnées disponibles pour les modèles de formulaires.' ;
-
-COMMENT ON COLUMN z_plume.meta_categorie.path IS 'Chemin N3 de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.label IS 'Libellé de la catégorie.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.description IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.special IS 'Le cas échéant, mise en forme spécifique à appliquer au champ. Valeurs autorisées : ''url'', ''email'', ''phone''. Pour les catégories communes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.datatype IS 'Type de valeur attendu pour la catégorie. Cette information détermine notamment la nature des widgets utilisés par Plume pour afficher et éditer les valeurs, ainsi que les validateurs appliqués. Pour les catégories communes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.is_long_text IS 'True pour une catégorie appelant un texte de plusieurs lignes. Cette information ne sera prise en compte que si le type de valeur (datatype) est ''xsd:string'' ou ''rdf:langString''.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.rowspan IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu de modifier le comportement par défaut de Plume. La valeur ne sera considérée que si is_long_text vaut True.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.placeholder IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.input_mask IS 'Masque de saisie, s''il y a lieu. La valeur sera ignorée si le widget utilisé pour la catégorie ne prend pas en charge ce mécanisme.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.is_multiple IS 'True si la catégorie admet plusieurs valeurs. Pour les catégories commnes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.unilang IS 'True si la catégorie n''admet plusieurs valeurs que si elles sont dans des langues différentes (par exemple un jeu de données n''a en principe qu''un seul titre, mais il peut être traduit). is_multiple est ignoré quand unilang vaut True. Pour les catégories commnes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. À noter que ce champ permet de rendre obligatoire une catégorie commune optionnelle, pas l''inverse.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.sources IS 'Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises. Cette information n''est considérée que pour les catégories communes. Il n''est pas possible d''ajouter des sources ni de les retirer toutes - Plume reviendrait alors à la liste initiale -, mais ce champ permet de restreindre la liste à un ou plusieurs thésaurus jugés les mieux adaptés.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
-COMMENT ON COLUMN z_plume.meta_categorie.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres.' ;
-
-
--- Table: z_plume.meta_shared_categorie
-
-CREATE TABLE z_plume.meta_shared_categorie 
-    PARTITION OF z_plume.meta_categorie (
-        CONSTRAINT meta_shared_categorie_pkey PRIMARY KEY (path)
-    )
-    FOR VALUES IN ('shared') ;
+    ) ;
 
 GRANT SELECT ON TABLE z_plume.meta_shared_categorie TO public ;
 
@@ -290,7 +258,7 @@ COMMENT ON COLUMN z_plume.meta_shared_categorie.compute_params IS 'Paramètres d
 SELECT pg_extension_config_dump('z_plume.meta_shared_categorie'::regclass, '') ;
 
 -- extraction du schéma SHACL
-INSERT INTO z_plume.meta_categorie (
+INSERT INTO z_plume.meta_shared_categorie (
         path, origin, label, description, special,
         is_node, datatype, is_long_text, rowspan,
         placeholder, input_mask, is_multiple, unilang,
@@ -574,14 +542,32 @@ COMMENT ON TRIGGER meta_shared_categorie_before_insert ON z_plume.meta_shared_ca
 
 -- Table: z_plume.meta_local_categorie
 
-CREATE TABLE z_plume.meta_local_categorie 
-    PARTITION OF z_plume.meta_categorie (
-        CONSTRAINT meta_local_categorie_pkey PRIMARY KEY (path),
-        CONSTRAINT meta_local_categorie_path_check CHECK (path ~ '^uuid[:][0-9a-z-]{36}$'),
-        CONSTRAINT meta_local_categorie_is_node_check CHECK (NOT is_node),
-        CONSTRAINT meta_local_categorie_sources_check CHECK (sources IS NULL)
-    )
-    FOR VALUES IN ('local') ;
+CREATE TABLE z_plume.meta_local_categorie (
+    path text PRIMARY KEY DEFAULT format('uuid:%s', gen_random_uuid()),
+    origin text NOT NULL DEFAULT 'local',
+    label text NOT NULL,
+    description text,
+    special z_plume.meta_special,
+    is_node boolean NOT NULL DEFAULT False,
+    datatype z_plume.meta_datatype,
+    is_long_text boolean,
+    rowspan int,
+    placeholder text,
+    input_mask text,
+    is_multiple boolean,
+    unilang boolean,
+    is_mandatory boolean,
+    sources text[],
+    geo_tools z_plume.meta_geo_tool[],
+    compute z_plume.meta_compute[],
+    template_order int,
+    compute_params jsonb,
+    CONSTRAINT meta_categorie_origin_check CHECK (origin = 'local'),
+    CONSTRAINT meta_categorie_rowspan_check CHECK (rowspan BETWEEN 1 AND 99),
+    CONSTRAINT meta_local_categorie_path_check CHECK (path ~ '^uuid[:][0-9a-z-]{36}$'),
+    CONSTRAINT meta_local_categorie_is_node_check CHECK (NOT is_node),
+    CONSTRAINT meta_local_categorie_sources_check CHECK (sources IS NULL)
+    ) ;
 
 GRANT SELECT ON TABLE z_plume.meta_local_categorie TO public ;
   
@@ -609,6 +595,161 @@ COMMENT ON COLUMN z_plume.meta_local_categorie.compute_params IS 'Ignoré pour l
 
 -- la table est marquée comme table de configuration de l'extension
 SELECT pg_extension_config_dump('z_plume.meta_local_categorie'::regclass, '') ;
+
+
+-- View: z_plume.meta_categorie
+
+CREATE VIEW z_plume.meta_categorie AS (
+    SELECT * FROM z_plume.meta_shared_categorie
+    UNION 
+    SELECT * FROM z_plume.meta_local_categorie 
+    ORDER BY path
+    ) ;
+
+GRANT SELECT ON TABLE z_plume.meta_categorie TO public ;
+
+COMMENT ON VIEW z_plume.meta_categorie IS 'Catégories de métadonnées disponibles pour les modèles de formulaires.' ;
+
+COMMENT ON COLUMN z_plume.meta_categorie.path IS 'Chemin N3 de la catégorie (identifiant unique). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.origin IS 'Origine de la catégorie : ''shared'' pour une catégorie commune, ''local'' pour une catégorie locale supplémentaire. CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.label IS 'Libellé de la catégorie.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.description IS 'Description de la catégorie. Sera affiché sous la forme d''un texte d''aide dans le formulaire.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.special IS 'Le cas échéant, mise en forme spécifique à appliquer au champ. Valeurs autorisées : ''url'', ''email'', ''phone''. Pour les catégories communes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.is_node IS 'True si la catégorie est le nom d''un groupe qui contiendra lui-même d''autres catégories et non une catégorie à laquelle sera directement associée une valeur. Par exemple, is_node vaut True pour la catégorie correspondant au point de contact (dcat:contactPoint) et False pour le nom du point de contact (dcat:contactPoint / vcard:fn). CE CHAMP EST GENERE AUTOMATIQUEMENT, NE PAS MODIFIER MANUELLEMENT.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.datatype IS 'Type de valeur attendu pour la catégorie. Cette information détermine notamment la nature des widgets utilisés par Plume pour afficher et éditer les valeurs, ainsi que les validateurs appliqués. Pour les catégories communes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.is_long_text IS 'True pour une catégorie appelant un texte de plusieurs lignes. Cette information ne sera prise en compte que si le type de valeur (datatype) est ''xsd:string'' ou ''rdf:langString''.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.rowspan IS 'Nombre de lignes occupées par le widget de saisie, s''il y a lieu de modifier le comportement par défaut de Plume. La valeur ne sera considérée que si is_long_text vaut True.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.placeholder IS 'Valeur fictive pré-affichée en tant qu''exemple dans le widget de saisie, s''il y a lieu.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.input_mask IS 'Masque de saisie, s''il y a lieu. La valeur sera ignorée si le widget utilisé pour la catégorie ne prend pas en charge ce mécanisme.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.is_multiple IS 'True si la catégorie admet plusieurs valeurs. Pour les catégories commnes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.unilang IS 'True si la catégorie n''admet plusieurs valeurs que si elles sont dans des langues différentes (par exemple un jeu de données n''a en principe qu''un seul titre, mais il peut être traduit). is_multiple est ignoré quand unilang vaut True. Pour les catégories commnes, les modifications apportées à ce champ ne seront pas prises en compte.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.is_mandatory IS 'True si une valeur doit obligatoirement être saisie pour cette catégorie. À noter que ce champ permet de rendre obligatoire une catégorie commune optionnelle, pas l''inverse.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.sources IS 'Pour une catégorie prenant ses valeurs dans un ou plusieurs thésaurus, liste des sources admises. Cette information n''est considérée que pour les catégories communes. Il n''est pas possible d''ajouter des sources ni de les retirer toutes - Plume reviendrait alors à la liste initiale -, mais ce champ permet de restreindre la liste à un ou plusieurs thésaurus jugés les mieux adaptés.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.geo_tools IS 'Pour une catégorie prenant pour valeurs des géométries, liste des fonctionnalités d''aide à la saisie à proposer. Cette information ne sera considérée que si le type (datatype) est ''gsp:wktLiteral''. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.compute IS 'Liste des fonctionnalités de calcul à proposer. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie. Pour retirer toutes les fonctionnalités proposées par défaut pour une catégorie commune, on saisira une liste vide.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.template_order IS 'Ordre d''apparence de la catégorie dans le formulaire. Les plus petits numéros sont affichés en premier.' ;
+COMMENT ON COLUMN z_plume.meta_categorie.compute_params IS 'Paramètres des fonctionnalités de calcul, le cas échéant, sous une forme clé-valeur. La clé est le nom du paramètre, la valeur sa valeur. Cette information ne sera considérée que si une méthode de calcul est effectivement disponible pour la catégorie et qu''elle attend un ou plusieurs paramètres.' ;
+
+-- Function: z_plume.meta_categorie_instead_of_action()
+
+CREATE OR REPLACE FUNCTION z_plume.meta_categorie_instead_of_action()
+    RETURNS trigger
+    LANGUAGE plpgsql
+    AS $BODY$
+/* Fonction exécutée par le trigger meta_categorie_instead_of_action.
+
+    Elle répercute la commande de l'utilisateur sur la table des 
+    métadonnées communes ou la table des métadonnées locales, selon
+    la valeur du champ "origin".
+
+*/
+BEGIN
+    
+    IF TG_OP = 'DELETE'
+    THEN
+
+        IF OLD.origin = 'shared'
+        THEN
+            DELETE FROM z_plume.meta_shared_categorie 
+                WHERE meta_shared_categorie.path = OLD.path ;
+        ELSE
+            DELETE FROM z_plume.meta_local_categorie 
+                WHERE meta_local_categorie.path = OLD.path ;
+        END IF ;
+
+        RETURN OLD ;
+
+    END IF ;
+        
+    IF TG_OP = 'UPDATE'
+    THEN
+
+        IF OLD.origin = 'shared'
+        THEN
+            UPDATE z_plume.meta_shared_categorie 
+                SET (
+                    path, origin, label, description, special, is_node, datatype,
+                    is_long_text, rowspan, placeholder, input_mask, is_multiple,
+                    unilang, is_mandatory, sources, geo_tools, compute, template_order,
+                    compute_params
+                ) = (
+                    NEW.path, NEW.origin, NEW.label, NEW.description, NEW.special, NEW.is_node, NEW.datatype,
+                    NEW.is_long_text, NEW.rowspan, NEW.placeholder, NEW.input_mask, NEW.is_multiple,
+                    NEW.unilang, NEW.is_mandatory, NEW.sources, NEW.geo_tools, NEW.compute, NEW.template_order,
+                    NEW.compute_params
+                )
+                WHERE meta_shared_categorie.path = OLD.path ;
+        ELSE
+            UPDATE z_plume.meta_local_categorie 
+                SET (
+                    path, origin, label, description, special, is_node, datatype,
+                    is_long_text, rowspan, placeholder, input_mask, is_multiple,
+                    unilang, is_mandatory, sources, geo_tools, compute, template_order,
+                    compute_params
+                ) = (
+                    NEW.path, NEW.origin, NEW.label, NEW.description, NEW.special, NEW.is_node, NEW.datatype,
+                    NEW.is_long_text, NEW.rowspan, NEW.placeholder, NEW.input_mask, NEW.is_multiple,
+                    NEW.unilang, NEW.is_mandatory, NEW.sources, NEW.geo_tools, NEW.compute, NEW.template_order,
+                    NEW.compute_params
+                )
+                WHERE meta_local_categorie.path = OLD.path ;
+        END IF ;
+
+        RETURN NEW ;
+
+    END IF ;
+
+    IF TG_OP = 'INSERT'
+    THEN
+
+        IF NEW.origin = 'shared'
+        THEN
+            INSERT INTO z_plume.meta_shared_categorie 
+                (
+                    path, origin, label, description, special, is_node, datatype,
+                    is_long_text, rowspan, placeholder, input_mask, is_multiple,
+                    unilang, is_mandatory, sources, geo_tools, compute, template_order,
+                    compute_params
+                ) VALUES (
+                    NEW.path, coalesce(NEW.origin, 'shared'), NEW.label, NEW.description, NEW.special, 
+                    coalesce(NEW.is_node, False), NEW.datatype, NEW.is_long_text, NEW.rowspan, NEW.placeholder, 
+                    NEW.input_mask, NEW.is_multiple, NEW.unilang, NEW.is_mandatory, NEW.sources, NEW.geo_tools, 
+                    NEW.compute, NEW.template_order, NEW.compute_params
+                ) ;
+        ELSE
+            INSERT INTO z_plume.meta_local_categorie 
+                (
+                    path, origin, label, description, special, is_node, datatype,
+                    is_long_text, rowspan, placeholder, input_mask, is_multiple,
+                    unilang, is_mandatory, sources, geo_tools, compute, template_order,
+                    compute_params
+                ) VALUES (
+                    coalesce(NEW.path, format('uuid:%s', gen_random_uuid())), coalesce(NEW.origin, 'local'), 
+                    NEW.label, NEW.description, NEW.special, coalesce(NEW.is_node, False), NEW.datatype,
+                    NEW.is_long_text, NEW.rowspan, NEW.placeholder, NEW.input_mask, NEW.is_multiple,
+                    NEW.unilang, NEW.is_mandatory, NEW.sources, NEW.geo_tools, NEW.compute, NEW.template_order,
+                    NEW.compute_params
+                ) ;
+        END IF ;
+
+        RETURN NEW ;
+
+    END IF ;
+
+END
+$BODY$ ;
+
+COMMENT ON FUNCTION z_plume.meta_categorie_instead_of_action() IS 'Fonction exécutée par le trigger meta_categorie_instead_of_action, qui répercute l''action sur la table des métadonnées locales ou communes, selon "origin".' ;
+
+-- Trigger: meta_categorie_instead_of_action on z_plume.meta_categorie
+
+CREATE TRIGGER meta_categorie_instead_of_action
+    INSTEAD OF INSERT OR UPDATE OR DELETE
+    ON z_plume.meta_categorie
+    FOR EACH ROW
+    EXECUTE PROCEDURE z_plume.meta_categorie_instead_of_action() ;
+    
+COMMENT ON TRIGGER meta_categorie_instead_of_action ON z_plume.meta_categorie IS 'Répercute l''action sur la table des métadonnées locales ou communes, selon "origin".' ;
 
 
 ------ 1.2 - TABLE DES MODELES ------
