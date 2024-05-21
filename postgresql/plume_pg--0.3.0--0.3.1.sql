@@ -1,0 +1,51 @@
+\echo Use "ALTER EXTENSION plume_pg UPDATE TO '0.3.1'" to load this file. \quit
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PlumePg - Système de gestion des métadonnées locales, version 0.3.1
+-- > Script de mise à jour depuis la version 0.3.0
+--
+-- Copyright République Française, 2024.
+-- Secrétariat général du Ministère de la Transition écologique et
+-- de la Cohésion des territoires.
+-- Direction du numérique.
+--
+-- contributeurs : Leslie Lemaire (SNUM/UNI/DRC).
+-- 
+-- mél : drc.uni.dnum.sg@developpement-durable.gouv.fr
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- Documentation :
+-- https://mtes-mct.github.io/metadata-postgresql/usage/gestion_plume_pg.html
+-- https://snum.scenari-community.org/Plume/Documentation/ (en cours de rédaction)
+--
+-- GitHub :
+-- https://github.com/MTES-MCT/metadata-postgresql
+-- 
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- Ce logiciel est un programme informatique complémentaire au système de
+-- gestion de base de données PosgreSQL ("https://www.postgresql.org/"). Il
+-- met en place côté serveur les objets nécessaires à la gestion des 
+-- métadonnées, en complément du plugin QGIS Plume.
+--
+-- Ce logiciel est régi par la licence GNU Affero General Public License v3.0
+-- or later. Lien SPDX : https://spdx.org/licenses/AGPL-3.0-or-later.html.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- dépendances : pgcrypto
+--
+-- schéma contenant les objets : z_plume
+--
+-- objets créés par le script :
+-- Néant.
+--
+-- objets modifiés par le script :
+-- Néant.
+--
+-- objets supprimés par le script :
+-- Néant.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
