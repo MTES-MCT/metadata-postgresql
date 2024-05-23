@@ -30,7 +30,7 @@ L'extension PostgreSQL *PlumePg* crée une structure de données adaptée au sto
 
 Cf. [Installation et gestion de l'extension PostgreSQL *PlumePg*](./gestion_plume_pg.md) pour plus de détails sur l'installation et la maintenance de cette extension.
 
-*PlumePg* crée dans le schéma `z_plume` un ensemble de tables permettant de définir les modèles de formulaires :
+*PlumePg* crée dans le schéma `z_plume` un ensemble de tables et vues permettant de définir les modèles de formulaires :
 - `meta_template` liste les modèles.
 - `meta_categorie` liste les catégories de métadonnées disponibles, qu'il s'agisse des catégories du schéma commun ou de catégories locales, et paramètre leur affichage dans les formulaires.
 - `meta_tab` liste des noms d'onglets de formulaires dans lesquels pourront être classées les catégories.
@@ -78,7 +78,7 @@ D'une manière générale, toute commande renvoyant un booléen peut être utili
 
 Les ensembles sont combinés entre eux avec l'opérateur `OR`. Au sein d'un ensemble, les conditions sont combinées avec l'opérateur `AND`.
 
-Les clés des conditions sont les chemins des catégories de métadonnées (champ `path` de la table `meta_categorie` évoquée ci-après) et les valeurs des valeurs qui doivent apparaître dans les métadonnées pour les catégories considérées.
+Les clés des conditions sont les chemins des catégories de métadonnées (champ `path` de la vue `meta_categorie` évoquée ci-après) et les valeurs des valeurs qui doivent apparaître dans les métadonnées pour les catégories considérées.
 
 Dans l'exemple ci-avant, une table validera les conditions du modèle si :
 - il s'agit d'une donnée externe (valeur `True` pour la catégorie `plume:isExternal`) **ET** l'un de ses mots-clés (`dcat:keyword`) est `'IGN'` ;
@@ -124,15 +124,15 @@ Avant d'y affecter des catégories, les onglets doivent être définis dans la t
 
 ### Catégories de métadonnées
 
-La table `z_plume.meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](../../plume/rdf/data/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
+La vue éditable `z_plume.meta_categorie` répertorie toutes les catégories de métadonnées disponibles, à la fois celle qui sont décrites par le schéma SHACL des catégories communes (fichier [shape.ttl](../../plume/rdf/data/shape.ttl)) et les catégories supplémentaires locales définies par l'ADL pour le seul usage de son service.
 
-Il s'agit en fait d'une table partitionnée avec deux tables filles :
+Cette vue correspond en fait à la concaténation de deux tables sources :
 - `z_plume.meta_shared_categorie` pour les catégories communes (`origin` vaut `shared`) ;
 - `z_plume.meta_local_categorie` pour les catégories supplémentaires locales (`origin` vaut `local`).
 
-L'utilisateur peut évidemment écrire directement dans `meta_categorie` sans se préoccuper de là où sont effectivement stockées les données.
+L'utilisateur peut écrire soit dans les tables `meta_shared_categorie` et `meta_local_categorie`, soit dans la vue `meta_categorie` sans se préoccuper de là où sont effectivement stockées les données.
 
-Concrètement, la table `meta_categorie` a deux fonctions :
+Concrètement, la vue `meta_categorie` a deux fonctions :
 - elle permet de créer les catégories supplémentaires locales, en ajoutant une ligne à la table par nouvelle catégorie. Il est a minima nécessaire de renseigner un libellé, histoire de savoir de quoi il est question ;
 - elle permet de modifier la manière dont les catégories communes sont présentées par le plugin QGIS (nouveau label, nouveau texte d'aide, etc.), en jouant sur les nombreux champs de paramétrage.
 
@@ -161,7 +161,7 @@ Les champs sur lesquels l'ADL peut intervenir sont :
 
 Les champs `path` (chemin SPARQL identifiant la catégorie), `origin` et `is_node` sont calculés automatiquement. Il est fortement recommandé de ne pas les modifier à la main.
 
-Les caractéristiques spécifiées dans la table `meta_categorie` seront utilisées pour tous les modèles, sauf -- cette possibilité sera détaillée par la suite -- à avoir prévu des valeurs spécifiques au modèle via la table `meta_template_categories`. Pour les catégories partagées, elles se substitueront au paramétrage par défaut défini par le schéma des catégories communes, qui est repris dans `meta_categorie` lors de l'initialisation de l'extension.
+Les caractéristiques spécifiées dans la vue `meta_categorie` seront utilisées pour tous les modèles, sauf -- cette possibilité sera détaillée par la suite -- à avoir prévu des valeurs spécifiques au modèle via la table `meta_template_categories`. Pour les catégories partagées, elles se substitueront au paramétrage par défaut défini par le schéma des catégories communes, qui est repris dans `meta_categorie` lors de l'initialisation de l'extension.
 
 
 ### Association de catégories à un modèle
@@ -522,7 +522,7 @@ Les données des modèles sont stockées en base dans une structure de données 
    | Insertion & Mise à jour | `query_insert_or_update_meta_template` |
    | Suppression | `query_delete_meta_template` |
 
-* Objet "catégorie de métadonnée" (table `z_plume.meta_categorie`) :
+* Objet "catégorie de métadonnée" (vue éditable `z_plume.meta_categorie`) :
 
    | Action | Fonction pour générer la requête |
    | --- | --- |
@@ -736,7 +736,7 @@ from plume.rdf.thesaurus import source_label
 label = source_label(uri, langlist)
 
 ```
-*`uri` est l'URI de la source considérée. Elle peut notamment être saisie sous la forme d'une chaîne de caractères, soit telle que renvoyée par {py:func}`~plume.rdf.properties.property_sources` ou récupérée dans les champs `sources` des tables des `meta_categorie` et `meta_template_categories`. `langlist` est la liste des langues autorisées pour les traductions. On utilisera de préférence l'attribut {py:attr}`plume.rdf.widgetsdict.WidgetsDict.langlist` du dictionnaire de widgets qui a servi à générer la fiche de métadonnées courante.*
+*`uri` est l'URI de la source considérée. Elle peut notamment être saisie sous la forme d'une chaîne de caractères, soit telle que renvoyée par {py:func}`~plume.rdf.properties.property_sources` ou récupérée dans les champs `sources` de `meta_categorie` et `meta_template_categories`. `langlist` est la liste des langues autorisées pour les traductions. On utilisera de préférence l'attribut {py:attr}`plume.rdf.widgetsdict.WidgetsDict.langlist` du dictionnaire de widgets qui a servi à générer la fiche de métadonnées courante.*
 
 En jouant sur l'argument optionnel `linked`, il est possible d'obtenir non une simple chaîne de caractères mais un élément HTML avec hyperlien : 
 
