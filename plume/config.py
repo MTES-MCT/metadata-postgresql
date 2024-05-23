@@ -16,6 +16,25 @@ PLUME_PG_MIN_VERSION = '0.3.1'
 PLUME_PG_MAX_VERSION = '1.0.0'
 """Plus petite version de l'extension PlumePg présumée non rétro-compatible avec la version courante de Plume."""
 
+APP_NAME = 'Plume'
+"""Nom de l'application."""
+
+COPYRIGHT = 'République française, 2022-2024'
+"""Copyright de l'application.
+
+Cette information apparaît aussi dans le fichier README.md, où elle doit être mise 
+à jour manuellement à chaque modification de la présente variable.
+
+"""
+
+PUBLISHER = 'Direction du numérique du ministère de la Transition écologique et de la Cohésion des territoires'
+"""Editeur de l'application.
+
+Cette information apparaît aussi dans les fichiers README.md et plume/metadata.txt,
+où elle doit être mise à jour manuellement à chaque modification de la présente variable.
+
+"""
+
 # ===================
 # = for Plugin PLUME
 # - DL

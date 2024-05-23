@@ -27,5 +27,5 @@ experimental = False
 deprecated = False
 
 # Author contact information
-author=Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires - Didier LECLERC / Leslie LEMAIRE.
+author=Direction du numérique du ministère de la Transition écologique et de la Cohésion des territoires - Didier LECLERC / Leslie LEMAIRE.
 email=leslie.lemaire@developpement-durable.gouv.fr, didier.leclerc@developpement-durable.gouv.fr  

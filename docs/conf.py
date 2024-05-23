@@ -14,14 +14,14 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../.'))
 
-from plume.config import PLUME_VERSION
+from plume.config import PLUME_VERSION, PUBLISHER, COPYRIGHT, APP_NAME
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'Plume'
-copyright = '2023, République française'
-author = "Didier Leclerc et Leslie Lemaire, Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires, du Ministère de la Transition énergétique et du Secrétariat d'État chargé de la Mer"
+project = APP_NAME
+copyright = COPYRIGHT
+author = PUBLISHER
 
 # The full version, including alpha/beta/rc tags
 release = PLUME_VERSION

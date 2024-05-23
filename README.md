@@ -62,11 +62,11 @@ Documentation utilisateur : https://snum.scenari-community.org/Plume/Documentati
 
 ## Crédits
 
-© République Française, 2022-2024.
+© République française, 2022-2024.
 
 ### Éditeur
 
-Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires.
+Direction du numérique du ministère de la Transition écologique et de la Cohésion des territoires.
 
 ### Auteurs
 
