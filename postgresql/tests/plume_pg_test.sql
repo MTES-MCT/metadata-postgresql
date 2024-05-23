@@ -2029,3 +2029,120 @@ $_$;
 
 COMMENT ON FUNCTION z_plume_recette.t023() IS 'PlumePg (recette). TEST : Modèle pré-configuré avec onglets.' ;
 
+
+-- Function: z_plume_recette.t024()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t024()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+    att record ;
+    src text ;
+BEGIN
+
+    SELECT prosrc INTO src 
+        FROM pg_proc 
+        WHERE oid = 'z_plume.meta_categorie_instead_of_action()'::regprocedure ;
+    
+    FOR att IN (
+        SELECT attname, attrelid, attnum
+            FROM pg_attribute 
+            WHERE attrelid = 'z_plume.meta_shared_categorie'::regclass
+                AND attnum > 0
+        )
+    LOOP
+        ASSERT src LIKE format('%%NEW.%s%%', att.attname), 
+            format('échec assertion #1 - champ %s manquant', att.attname) ;
+
+        IF (att.attnum, att.attrelid) IN (SELECT adnum, adrelid FROM pg_attrdef)
+        THEN
+            ASSERT src LIKE format('%%coalesce(NEW.%s%%', att.attname), 
+                format('échec assertion #2 - valeur par défaut manquante pour le champ %s', att.attname) ;
+        END IF ;
+    END LOOP ;
+
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t024() IS 'PlumePg (recette). TEST : Vérifie que le trigger de mise à jour de la vue "meta_categorie" considère bien tous les champs.' ;
+
+
+-- Function: z_plume_recette.t025()
+
+CREATE OR REPLACE FUNCTION z_plume_recette.t025()
+    RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+    e_mssg text ;
+    e_detl text ;
+BEGIN
+
+    INSERT INTO z_plume.meta_categorie (label) 
+        VALUES ('Une catégorie locale') ;
+
+    ASSERT 'Une catégorie locale' IN (SELECT label FROM z_plume.meta_local_categorie), 
+        'échec assertion #1' ;
+
+    INSERT INTO z_plume.meta_categorie (path, origin, label) 
+        VALUES ('plume:chose', 'shared', 'Chose') ;
+
+    ASSERT ('plume:chose', 'Chose') IN (SELECT path, label FROM z_plume.meta_shared_categorie), 
+        'échec assertion #2' ;
+
+    UPDATE z_plume.meta_categorie
+        SET label = 'Une autre catégorie locale'
+        WHERE label = 'Une catégorie locale' AND origin = 'local' ;
+
+    ASSERT 'Une autre catégorie locale' IN (SELECT label FROM z_plume.meta_local_categorie), 
+        'échec assertion #3a' ;
+
+    ASSERT NOT 'Une catégorie locale' IN (SELECT label FROM z_plume.meta_local_categorie), 
+        'échec assertion #3b' ;
+
+    UPDATE z_plume.meta_categorie
+        SET label = 'Autre chose'
+        WHERE path = 'plume:chose' ;
+
+    ASSERT 'Autre chose' = (SELECT label FROM z_plume.meta_shared_categorie WHERE path = 'plume:chose'), 
+        'échec assertion #4' ;
+
+    DELETE FROM z_plume.meta_categorie
+        WHERE label = 'Une autre catégorie locale' AND origin = 'local' ;
+
+    ASSERT NOT 'Une autre catégorie locale' IN (SELECT label FROM z_plume.meta_local_categorie), 
+        'échec assertion #5' ;
+    
+    DELETE FROM z_plume.meta_categorie
+        WHERE path = 'plume:chose' ;
+
+    ASSERT NOT 'plume:chose' IN (SELECT path FROM z_plume.meta_shared_categorie) ;
+        
+    RETURN True ;
+    
+EXCEPTION WHEN OTHERS OR ASSERT_FAILURE THEN
+    GET STACKED DIAGNOSTICS e_mssg = MESSAGE_TEXT,
+                            e_detl = PG_EXCEPTION_DETAIL ;
+    RAISE NOTICE '%', e_mssg
+        USING DETAIL = e_detl ;
+        
+    RETURN False ;
+    
+END
+$_$;
+
+COMMENT ON FUNCTION z_plume_recette.t025() IS 'PlumePg (recette). TEST : Contrôle de l''exécution du trigger sur "meta_categorie" qui répercute les modifications sur les tables sources de la vue.' ;
+
