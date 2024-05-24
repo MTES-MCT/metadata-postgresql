@@ -22,16 +22,18 @@ APP_NAME = 'Plume'
 COPYRIGHT = 'République française, 2022-2024'
 """Copyright de l'application.
 
-Cette information apparaît aussi dans le fichier README.md, où elle doit être mise 
-à jour manuellement à chaque modification de la présente variable.
+Cette information apparaît aussi dans les fichiers README.md et admin/debian/doc/copyright,
+ainsi que dans les en-têtes des scripts de PlumePg, où elle doit être mise à jour manuellement 
+à chaque modification de la présente variable.
 
 """
 
-PUBLISHER = 'Direction du numérique du ministère de la Transition écologique et de la Cohésion des territoires'
+PUBLISHER = 'Direction du Numérique du ministère de la Transition écologique et de la Cohésion des territoires'
 """Editeur de l'application.
 
-Cette information apparaît aussi dans les fichiers README.md et plume/metadata.txt,
-où elle doit être mise à jour manuellement à chaque modification de la présente variable.
+Cette information apparaît aussi dans les fichiers README.md, plume/metadata.txt et 
+admin/debian/doc/copyright, ainsi que dans les en-têtes des scripts de PlumePg, où 
+elle doit être mise à jour manuellement à chaque modification de la présente variable.
 
 """
 

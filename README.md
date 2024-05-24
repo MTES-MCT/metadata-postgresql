@@ -66,7 +66,7 @@ Documentation utilisateur : https://snum.scenari-community.org/Plume/Documentati
 
 ### Éditeur
 
-Direction du numérique du ministère de la Transition écologique et de la Cohésion des territoires.
+Direction du Numérique du ministère de la Transition écologique et de la Cohésion des territoires.
 
 ### Auteurs
 

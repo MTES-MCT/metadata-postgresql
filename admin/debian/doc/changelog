@@ -1,11 +1,6 @@
-plume_pg (0.3.0) stable; urgency=high
+plume_pg (0.3.1) stable; urgency=critical
 
-  * Compatibilité avec Plume v1.0.0 et son schéma de métadonnées communes.
+  * Remplacement de la table partitionnée z_plume.meta_categorie par une vue pour prévenir des erreurs de segmentation à la sauvegarde.
+  Pour plus de détails : <https://mtes-mct.github.io/metadata-postgresql/changelog/v1_2_1.html>
 
-  * Nouveau modèle pré-configuré "INSPIRE" et amélioration des modèles existants.
-
-  * Ajout d'une fonction z_plume.stamp_create_triggers pour activer massivement l'enregistrement des dates de modification des tables d'un ou plusieurs schémas.
-  
-  Pour plus de détails : <https://mtes-mct.github.io/metadata-postgresql/changelog/v1_0_0.html>
-
- -- Leslie Lemaire (MTECT-MTE-SEMer/SG/DNUM/UNI/DRC) <drc.uni.dnum.sg@developpement-durable.gouv.fr>  Mon, 19 Jun 2023 08:10:00 +0200
+ -- Leslie Lemaire (MTECT/SG/DNUM/UNI/DRC) <drc.uni.dnum.sg@developpement-durable.gouv.fr>  Fri, 24 May 2024 10:00:00 +0200

@@ -3,12 +3,11 @@
 --
 -- PlumePg - Système de gestion des métadonnées locales, version 0.3.1
 --
--- Copyright République Française, 2023-2024.
--- Secrétariat général du Ministère de la Transition écologique et
+-- Copyright République française, 2022-2024.
+-- Direction du numérique du ministère de la Transition écologique et
 -- de la Cohésion des territoires.
--- Direction du numérique.
 --
--- contributeurs : Leslie Lemaire (SNUM/UNI/DRC).
+-- contributeurs : Leslie Lemaire (DNUM/UNI/DRC).
 -- 
 -- mél : drc.uni.dnum.sg@developpement-durable.gouv.fr
 --
