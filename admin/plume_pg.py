@@ -111,9 +111,8 @@ def query_from_shape(do_not_print=False):
     Returns
     -------
     str
-        Requête ``INSERT`` sur la table ``z_plume.meta_categorie``
-        de l'extension (qui mettra à jour la partition
-        ``z_plume.meta_shared_categorie``).
+        Requête ``INSERT`` sur la table ``z_plume.meta_shared_categorie``
+        de l'extension.
     
     """
     connection_string = ConnectionString()
@@ -121,7 +120,7 @@ def query_from_shape(do_not_print=False):
     t = table_from_shape()
 
     conn = connect(connection_string)
-    s = sql.SQL("""INSERT INTO z_plume.meta_categorie (
+    s = sql.SQL("""INSERT INTO z_plume.meta_shared_categorie (
         path, origin, label, description, special,
         is_node, datatype, is_long_text, rowspan,
         placeholder, input_mask, is_multiple, unilang,

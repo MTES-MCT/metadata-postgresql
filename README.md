@@ -62,16 +62,16 @@ Documentation utilisateur : https://snum.scenari-community.org/Plume/Documentati
 
 ## Crédits
 
-© République Française, 2022-2023.
+© République française, 2022-2024.
 
 ### Éditeur
 
-Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires, du Ministère de la Transition énergétique et du Secrétariat d'État chargé de la Mer.
+Direction du Numérique du ministère de la Transition écologique et de la Cohésion des territoires.
 
-### Équipe
+### Auteurs
 
-- Didier LECLERC (DNUM/UNI/DRC) : intégration, développement de l'interface utilisateur et de l'interface avec le serveur PostgreSQL, rédaction de la documentation utilisateur.
-- Leslie LEMAIRE (DNUM/UNI/DRC) : conception et développement des mécaniques sous-jacentes (modules [plume.rdf](plume/rdf), [plume.pg](plume/pg) et [plume.iso](plume/iso)), création des logos et icônes, rédaction de la documentation technique et de la documentation utilisateur.
+- Didier Leclerc : intégration, développement de l'interface utilisateur et de l'interface avec le serveur PostgreSQL, rédaction de la documentation utilisateur.
+- Leslie Lemaire : conception et développement des mécaniques sous-jacentes (modules [plume.rdf](plume/rdf), [plume.pg](plume/pg) et [plume.iso](plume/iso)), création des logos et icônes, rédaction de la documentation technique et de la documentation utilisateur.
 
 ## Contact
 

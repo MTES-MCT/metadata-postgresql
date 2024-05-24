@@ -13,7 +13,7 @@ about=Plume, pour PLUgin MÉtadonnées, est un plugin de consultation
     tout en permettant une large personnalisation des catégories de
     métadonnées présentées à l'utilisateur lorsqu'il est couplé avec
     l'extension PostgreSQL PlumePg.
-version=1.2.0
+version=1.2.1
 qgisMinimumVersion=3.10
 # Optional items:
 changelog=https://mtes-mct.github.io/metadata-postgresql/changelog/changelog.html
@@ -27,5 +27,5 @@ experimental = False
 deprecated = False
 
 # Author contact information
-author=Direction du numérique du Ministère de la Transition écologique et de la Cohésion des territoires, du Ministère de la Transition énergétique et du Secrétariat d'État chargé de la Mer - Didier LECLERC / Leslie LEMAIRE.
-email=leslie.lemaire@developpement-durable.gouv.fr, didier.leclerc@developpement-durable.gouv.fr  
+author=Direction du Numérique du ministère de la Transition écologique et de la Cohésion des territoires - Didier Leclerc / Leslie Lemaire.
+email=leslie.lemaire@developpement-durable.gouv.fr, didier.leclerc@developpement-durable.gouv.fr

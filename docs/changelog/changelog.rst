@@ -4,6 +4,7 @@ Notes de version
 .. toctree::
    :maxdepth: 1
 
+   v1_2_1
    v1_2_0
    v1_1_1
    v1_1_0

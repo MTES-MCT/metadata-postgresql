@@ -8,15 +8,15 @@ L'extension PostgreSQL *PlumePg* est un composant optionnel de Plume, qui ouvre 
 
 | Version | Compatibilité | Remarques | Modalités de test |
 | --- | --- | --- | --- |
-| PostgreSQL <= 9.6 | non | *PlumePg* requiert la prise en charge des tables partitionnées, introduites par PostgreSQL 10. | |
-| PostgreSQL 10 | oui | Nécessite l'extension `pgcrypto`. | 2023.06.16. PostgreSQL 10.12 + PlumePg 0.3.0 + pgcrypto 1.3 + Asgard 1.4.0[^withasgard]. |
-| PostgreSQL 11 | oui | Nécessite l'extension `pgcrypto`. | 2023.06.16. PostgreSQL 11.9 + PlumePg 0.3.0 + pgcrypto 1.3 + Asgard 1.4.0. |
-| PostgreSQL 12 | oui | Nécessite l'extension `pgcrypto`. | 2023.06.16. PostgreSQL 12.4 + PlumePg 0.3.0 + pgcrypto 1.3 + Asgard 1.4.0. |
-| PostgreSQL 13 | oui | | 2023.06.16. PostgreSQL 13.0 + PlumePg 0.3.0 + pgcrypto 1.3[^withcrypto] + Asgard 1.4.0. |
-| PostgreSQL 14 | oui | | 2023.06.16. PostgreSQL 14.2 + PlumePg 0.3.0 + pgcrypto 1.3 + Asgard 1.4.0. |
-| PostgreSQL 15 | oui | | 2023.06.16. PostgreSQL 15.0 + PlumePg 0.3.0 + pgcrypto 1.3 + Asgard 1.4.0. |
+| PostgreSQL 10 | oui | Nécessite l'extension `pgcrypto`. | 2024.05.23. PostgreSQL 10.12 + PlumePg 0.3.1 + pgcrypto 1.3 + Asgard 1.4.0[^withasgard]. |
+| PostgreSQL 11 | oui | Nécessite l'extension `pgcrypto`. | 2024.05.23. PostgreSQL 11.9 + PlumePg 0.3.1 + pgcrypto 1.3 + Asgard 1.4.0. |
+| PostgreSQL 12 | oui | Nécessite l'extension `pgcrypto`. | 2024.05.23. PostgreSQL 12.4 + PlumePg 0.3.1 + pgcrypto 1.3 + Asgard 1.4.0. |
+| PostgreSQL 13 | oui | | 2024.05.23. PostgreSQL 13.0 + PlumePg 0.3.1 + pgcrypto 1.3[^withcrypto] + Asgard 1.4.0. |
+| PostgreSQL 14 | oui | | 2024.05.23. PostgreSQL 14.2 + PlumePg 0.3.1 + pgcrypto 1.3 + Asgard 1.4.0. |
+| PostgreSQL 15 | oui | | 2024.05.23. PostgreSQL 15.0 + PlumePg 0.3.1 + pgcrypto 1.3 + Asgard 1.4.0. |
+| PostgreSQL 16 | oui | *Asgard* n'est à ce jour pas disponible sous PostgreSQL 16. | 2024.05.23. PostgreSQL 16.0 + PlumePg 0.3.1 + pgcrypto 1.3 |
 
-[^withasgard]: L'extension PostgreSQL *Asgard* n'est en aucune façon requise pour utiliser Plume et *PlumePg*. Les tests faisant intervenir *Asgard* s'assure simplement que, dans le cas où les deux extensions sont présentes, *Asgard* gère correctement les droits sur les objets de *PlumePg*. Cf. [Cohabitation avec *Asgard*](#cohabitation-avec-asgard)
+[^withasgard]: L'extension PostgreSQL *Asgard* n'est en aucune façon requise pour utiliser Plume et *PlumePg*. Les tests faisant intervenir *Asgard* s'assure simplement que, dans le cas où les deux extensions sont présentes, *Asgard* gère correctement les droits sur les objets de *PlumePg*. Cf. [Cohabitation avec *Asgard*](#cohabitation-avec-asgard).
 
 [^withcrypto]: Les tests sont réalisés avec le fichier de contrôle standard de *PlumePg*, unique pour toutes les versions de PostgreSQL et qui requiert `pgcrypto`. Il est donc vérifié que celui-ci peut être installé pour toutes les versions, y compris PostgreSQL 13, 14 et 15, pour lesquelles *PlumePg* n'utilise ensuite aucune de ses fonctionnalités.
 

@@ -17,7 +17,7 @@ from plume.pg.tests.connection import ConnectionString
 from plume.pg import queries
 from plume.pg.template import dump_template_data
 from plume.rdf.utils import abspath, data_from_file
-from plume.config import SAMPLE_TEMPLATES
+from plume.config import SAMPLE_TEMPLATES, PLUME_VERSION, PLUME_VERSION_TPL
 from plume import __path__ as plume_path
 
 from plume import mapping_templates 
@@ -170,6 +170,20 @@ class ConsistencyTestCase(unittest.TestCase):
             for loc_attname in attr_dict:
                 with self.subTest(loc_attname=loc_attname):
                     self.assertTrue(loc_attname in pg_attnames)
+
+    def test_plume_config_versions_consistency(self):
+        """Vérifie que les numéros de version de Plume renseignés dans le fichier de configuration sont cohérents entre eux."""
+        v = f'v{PLUME_VERSION_TPL[0]}.{PLUME_VERSION_TPL[1]}.{PLUME_VERSION_TPL[2]}'
+        self.assertTrue(PLUME_VERSION == v or PLUME_VERSION.startswith(f'{v}-'))
+
+    def test_plume_metadata_version_consistency(self):
+        """Vérifie que le numéro de version renseigné dans le fichier metadata.txt est cohérent avec celui du fichier de configuration."""
+        metadata = data_from_file(abspath('metadata.txt'))
+        v = PLUME_VERSION.lstrip('v')
+        self.assertIn(
+            f'version={v}',
+            metadata
+        )
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,7 +4,8 @@
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from plume.bibli_plume import ( returnAndSaveDialogParam, returnVersion, executeSql )
+from plume.bibli_plume import ( returnAndSaveDialogParam, returnVersion )
+from plume.config import COPYRIGHT, PUBLISHER
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -158,16 +159,8 @@ class Ui_Dialog(object):
         MonHtmlLL = "<font color='#0000FF'>" + QtWidgets.QApplication.translate("about", "Leslie LEMAIRE: design and development of the underlying mechanics (plume.rdf, plume.pg et plume.iso.), creation of logos and icons.", None) + "</font><br><br>"
         mLinkLL = '<a href=\"' + mLinkLL + '\">' + MonHtmlLL + '</a>'
         
-        MonHtml += "<b>"
-        MonHtml4 = QtWidgets.QApplication.translate("about", "MTECT/MTE/Mer", None) 
-        MonHtml += MonHtml4
-        MonHtml += "</b><br><b>"
-        MonHtml6 = QtWidgets.QApplication.translate("about", "digital service SG/DNUM/UNI/DRC", None) 
-        MonHtml += MonHtml6
-        MonHtml += "<br><br><i>"
-        MonHtml7 = QtWidgets.QApplication.translate("about", "Development in 2021/2022/2023", None) 
-        MonHtml += MonHtml7
-        MonHtml += "</i></p></body></html>"
+        MonHtml += f'<b>© {COPYRIGHT}</b><br>{PUBLISHER}'
+        MonHtml += "</p></body></html>"
 
         Dialog.setWindowTitle(QtWidgets.QApplication.translate("about", "PLUME (Metadata storage in PostGreSQL)", None) + "  (" + str(returnVersion()) + ")")
         self.label_2.setText(QtWidgets.QApplication.translate("about", "Plume", None))

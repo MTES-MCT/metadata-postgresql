@@ -129,7 +129,7 @@ La liste des métadonnées communes présentée dans le fichier [`/docs/usage/me
 
 ### Mise à jour des catégories communes dans les scripts de *PlumePg*
 
-La commande suivante permet de générer la commande `INSERT` qui ajoute toutes les métadonnées communes à la table `z_plume.meta_categorie` :
+La commande suivante permet de générer la commande `INSERT` qui ajoute toutes les métadonnées communes à la table `z_plume.meta_shared_categorie` :
 
 ```python
 
@@ -225,7 +225,7 @@ La valeur est un tuple dont le premier élément est le nom qui sera systématiq
 
 ### Extension *PlumePg*
 
-Le plus souvent, une nouvelle option de configuration se manifestera dans *PlumePg* par un champ supplémentaire dans les tables `z_plume.meta_categorie` (ainsi que ses partitions `z_plume.meta_shared_categorie` et `z_plume.meta_local_categorie`) et `z_plume.meta_template_categories`, ainsi que la vue `z_plume.meta_template_categories_full`. Autant que possible, le nom du champ sera identique au nom python de l'option de configuration correspondante (le premier élément du tuple de `prop_map` évoqué dans le paragraphe précédent), soit `geo_tools` pour l'exemple considéré.
+Le plus souvent, une nouvelle option de configuration se manifestera dans *PlumePg* par un champ supplémentaire dans la vue `z_plume.meta_categorie` (ainsi que ses tables sources `z_plume.meta_shared_categorie` et `z_plume.meta_local_categorie`) et `z_plume.meta_template_categories`, ainsi que la vue `z_plume.meta_template_categories_full`. Autant que possible, le nom du champ sera identique au nom python de l'option de configuration correspondante (le premier élément du tuple de `prop_map` évoqué dans le paragraphe précédent), soit `geo_tools` pour l'exemple considéré.
 
 Si le champ n'admet que des valeurs pré-déterminées, on pourra définir un type énuméré semblable à `z_plume.meta_datatype`. Si le champ admet un tableau de valeurs pré-déterminées, alors il importe de définir non seulement le type énuméré, mais aussi de créer un cast implicite permettant de convertir un tableau de valeur textuel en tableau de ce type :
 

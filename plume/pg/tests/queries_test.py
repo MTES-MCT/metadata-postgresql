@@ -183,12 +183,6 @@ class QueriesTestCase(unittest.TestCase):
                 kind_r = cur.fetchone()
                 cur.execute(
                     *query_get_relation_kind(
-                        'z_plume', 'meta_categorie'
-                        )
-                    )
-                kind_p = cur.fetchone()
-                cur.execute(
-                    *query_get_relation_kind(
                         'z_plume', 'meta_template_categories_full'
                         )
                     )
@@ -215,6 +209,11 @@ class QueriesTestCase(unittest.TestCase):
                         )
                         SERVER serveur_bidon
                         OPTIONS (schema_name 'schema_bidon', table_name 'table_bidon') ;
+                    
+                    CREATE TABLE z_plume.p_test (
+                        somekey text
+                        )
+                        PARTITION BY LIST (somekey) ;
                     """)
                 cur.execute(
                     *query_get_relation_kind(
@@ -222,7 +221,14 @@ class QueriesTestCase(unittest.TestCase):
                         )
                     )
                 kind_f = cur.fetchone()
+                cur.execute(
+                    *query_get_relation_kind(
+                        'z_plume', 'p_test'
+                        )
+                    )
+                kind_p = cur.fetchone()
                 cur.execute("""
+                    DROP TABLE z_plume.p_test ;
                     DROP FOREIGN TABLE z_plume.f_test ;
                     DROP SERVER serveur_bidon ;
                     """)
